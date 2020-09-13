@@ -47,17 +47,19 @@ def main():
             a1 = Activity.from_gpx_file(fpath1)
             a2 = Activity.from_gpx_file(fpath2)
             t = time()
-            length_df[i][j] = norm_length_diff(a1.distance_2d, a2.distance_2d)
+            length_df[i][j] = norm_length_diff(a1.metadata.distance_2d, a2.metadata.distance_2d)
             length_t_df[i][j] = time() - t
             t = time()
-            length_df[j][i] = norm_length_diff(a2.distance_2d, a1.distance_2d)
+            length_df[j][i] = norm_length_diff(a2.metadata.distance_2d, a1.metadata.distance_2d)
             length_t_df[j][i] = time() - t
-            lat2, lon2, _ = a2.center
+            lat2, lon2, _ = a2.metadata.center
             t = time()
-            center_df[i][j] = norm_center_diff(a1.center, a2.center, a1.points_std, a2.points_std)
+            center_df[i][j] = norm_center_diff(a1.metadata.center, a2.metadata.center,
+                                               a1.metadata.points_std, a2.metadata.points_std)
             center_t_df[i][j] = time() - t
             t = time()
-            center_df[j][i] = norm_center_diff(a2.center, a1.center, a2.points_std, a1.points_std)
+            center_df[j][i] = norm_center_diff(a2.metadata.center, a1.metadata.center,
+                                               a2.metadata.points_std, a1.metadata.points_std)
             center_t_df[j][i] = time() - t
             t = time()
             dtw_df[i][j] = norm_dtw(a1.points[['latitude', 'longitude']], a2.points[['latitude', 'longitude']])
