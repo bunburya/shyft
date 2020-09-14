@@ -1,5 +1,7 @@
 import os
+import shutil
 import unittest
+from datetime import datetime
 from os.path import exists
 
 import numpy as np
@@ -10,6 +12,7 @@ from pyft.single_activity import Activity, ActivityMetaData
 from pyft.config import Config
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
+TEST_RUN_DATA_DIR = os.path.join(TEST_DATA_DIR, 'run')
 
 # Test GPX files.
 # Neither 0 nor 1 should loose- or tight-match any other activity.
@@ -17,13 +20,13 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 # 4 and 5 should loose- but not tight-match each other.
 # TBC if 6 should match 4 or 5.
 TEST_GPX_FILES = [
-    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise_2.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.22k_clockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.23k_counterclockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_7k_counterclockwise.gpx'),
+    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),  # 2019-09-08
+    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),  # 2019-10-30
+    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise.gpx'),  # 2020-08-05
+    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise_2.gpx'),  # 2020-08-04
+    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.22k_clockwise.gpx'),  # 2020-03-20
+    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.23k_counterclockwise.gpx'),  # 2020-06-18
+    os.path.join(TEST_DATA_DIR, 'Morning_Run_7k_counterclockwise.gpx'),  # 2019-07-08
 ]
 
 # ints here are index values in TEST_GPX_FILES
@@ -38,44 +41,50 @@ TIGHT_MATCH = (
 
 UNIQUE = (0, 1)
 
-TEST_CONFIG_1 = Config(
-    db_file='/home/alan/bin/PycharmProjects/pyft/test/test1.db'
-)
-
-TEST_CONFIG_2 = Config(
-    db_file='/home/alan/bin/PycharmProjects/pyft/test/test2.db'
-)
-
 
 class ActivityManagerTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
 
-        if exists(TEST_CONFIG_1.db_file):
-            os.remove(TEST_CONFIG_1.db_file)
-        if exists(TEST_CONFIG_2.db_file):
-            os.remove(TEST_CONFIG_2.db_file)
+        if exists(TEST_RUN_DATA_DIR):
+            shutil.rmtree(TEST_RUN_DATA_DIR)
+
+        cls.TEST_CONFIG_1 = Config(
+            data_dir=TEST_RUN_DATA_DIR,
+            db_file=os.path.join(TEST_RUN_DATA_DIR, 'test1.db')
+        )
+
+        cls.TEST_CONFIG_2 = Config(
+            data_dir=TEST_RUN_DATA_DIR,
+            db_file=os.path.join(TEST_RUN_DATA_DIR, 'test2.db')
+        )
 
         cls.gpx = []
         cls.activities = []
-        for fpath in TEST_GPX_FILES:
+        for i, fpath in enumerate(TEST_GPX_FILES):
             with open(fpath) as f:
                 cls.gpx.append(gpxpy.parse(f))
-            cls.activities.append(Activity.from_gpx_file(fpath))
+            cls.activities.append(Activity.from_gpx_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
         cls.proto_ids = {}
         cls.fpath_ids = {}
-        cls.manager_1 = ActivityManager(TEST_CONFIG_1)  # Add Activities directly
-        cls.manager_2 = ActivityManager(TEST_CONFIG_2)  # Add Activities from filepaths
+        cls.manager_1 = ActivityManager(cls.TEST_CONFIG_1)  # Add Activities directly
+        cls.manager_2 = ActivityManager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
+
+        #cls.manager_1.dbm.connection.set_trace_callback(print)
 
 
 
     @classmethod
     def tearDownClass(cls):
-        if exists(TEST_CONFIG_1.db_file):
-            os.remove(TEST_CONFIG_1.db_file)
-        if exists(TEST_CONFIG_2.db_file):
-            os.remove(TEST_CONFIG_2.db_file)
+        #if exists(TEST_CONFIG_1.db_file):
+        #    os.remove(TEST_CONFIG_1.db_file)
+        #if exists(TEST_CONFIG_2.db_file):
+        #    os.remove(TEST_CONFIG_2.db_file)
+        pass
+
+    def _assert_timedeltas_almost_equal(self, td1, td2):
+        self.assertAlmostEqual(td1.total_seconds(), td2.total_seconds(), 4)
 
     def _assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData):
         self.assertEqual(md1.activity_id, md2.activity_id)
@@ -84,6 +93,10 @@ class ActivityManagerTestCase(unittest.TestCase):
         self.assertEqual(md1.date_time, md2.date_time)
         self.assertEqual(md1.distance_2d, md2.distance_2d)
         np.testing.assert_array_equal(md1.center, md2.center)
+        np.testing.assert_array_equal(md1.points_std, md2.points_std)
+        self._assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean)
+        self._assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean)
+        self._assert_timedeltas_almost_equal(md1.duration, md2.duration)
         self.assertEqual(md1.prototype_id, md2.prototype_id)
         self.assertEqual(md1.name, md2.name)
         self.assertEqual(md1.description, md2.description)
@@ -98,19 +111,20 @@ class ActivityManagerTestCase(unittest.TestCase):
 
         self.assertEqual(len(TEST_GPX_FILES), len(self.activities))
         self.assertEqual(len(TEST_GPX_FILES), len(self.gpx))
-        db1 = self.manager_1.db
+        db1 = self.manager_1.dbm
         db1.cursor.execute('SELECT name from sqlite_master where type= "table"')
-        tables = set(db1.cursor.fetchall())
-        self.assertSetEqual(tables, {('prototypes',), ('activities',), ('points',)})
-        db2 = self.manager_2.db
+        tables = {i[0] for i in db1.cursor.fetchall()}
+        self.assertSetEqual(tables, {'prototypes', 'activities', 'points'})
+        db2 = self.manager_2.dbm
         db2.cursor.execute('SELECT name from sqlite_master where type= "table"')
-        self.assertSetEqual(set(db2.cursor.fetchall()), tables)
+        self.assertSetEqual({i[0] for i in db2.cursor.fetchall()}, tables)
 
     def test_2_add_activity(self):
         """Test basic adding of activities."""
 
         for a in self.activities:
-            self.assertIsNone(a.metadata.activity_id)
+            #print(a.metadata.data_file, a.metadata.date_time)
+            self.assertIsNotNone(a.metadata.activity_id)
             self.assertIsNone(a.metadata.prototype_id)
             self.manager_1.add_activity(a)
             self.assertIsNotNone(a.metadata.activity_id)
@@ -203,6 +217,21 @@ class ActivityManagerTestCase(unittest.TestCase):
             p = self.manager_1.get_activity_by_id(a.metadata.prototype_id)
             self.assertTrue(self.manager_1.tight_match_routes(a, p))
 
+    def test_8_search(self):
+        #print(self.manager_1.get_activity_by_id(1))
+        results = self.manager_1.search_activity_data(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
+        self.assertSetEqual({a.activity_id for a in results}, {0, 1, 6})
+        #print(results)
+        results = self.manager_1.search_activity_data(prototype=2)
+        self.assertSetEqual({a.activity_id for a in results}, {2, 3})
+        #print(results)
+
+    def test_9_thumbnails(self):
+        for i in self.manager_1.activity_ids:
+            benchmark = os.path.join(TEST_DATA_DIR, 'thumbnails', f'thumb_{i}.png')
+            fpath = self.manager_1.get_activity_by_id(i).write_thumbnail()
+            with open(fpath, 'rb') as f1, open(benchmark, 'rb') as f2:
+                self.assertEqual(f1.read(), f2.read())
 
 if __name__ == '__main__':
     unittest.main()

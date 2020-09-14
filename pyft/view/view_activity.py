@@ -1,4 +1,6 @@
 import os
+from typing import Sequence
+
 import flask
 import dash
 import dash_core_components as dcc
@@ -8,7 +10,7 @@ import dash_table as dt
 from dash.dependencies import Output, Input
 from pyft.config import Config
 from pyft.multi_activity import ActivityManager
-from pyft.view.figures import get_map_figure, get_splits_dt
+from pyft.view.figures import get_map_figure, get_splits_dt, get_activities_table
 
 ### FOR TESTING ONLY
 
@@ -82,15 +84,20 @@ dash_app.layout = html.Div(children=[
             'height': 450
         },
         no_gutters=True
-    )],
-)
+    ),
+
+    dbc.Row(children=[
+        get_activities_table(activities=am.activities)
+    ])
+
+])
 
 @dash_app.callback(
     Output(component_id='map', component_property='figure'),
     [Input(component_id='km_summary', component_property='selected_rows')]
 )
-def update_map(selected_rows):
-    print(selected_rows)
+def update_map(selected_rows: Sequence[int]):
+    #print(selected_rows)
     return get_map_figure(activity.points, highlight_col='km', highlight_vals=selected_rows)
 
 if __name__ == '__main__':

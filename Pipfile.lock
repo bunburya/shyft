@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d77c4b297c840be7feffadd35a8288acf6179081875adc990817c5ee089f9cf8"
+            "sha256": "7ec9aae76579641f49ed7f98989810771c5a58af7c3cf44e0cab8a50ad10febd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,14 @@
         ]
     },
     "default": {
+        "appdirs": {
+            "hashes": [
+                "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41",
+                "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"
+            ],
+            "index": "pypi",
+            "version": "==1.4.4"
+        },
         "attrs": {
             "hashes": [
                 "sha256:26b54ddbbb9ee1d34d5d3668dd37d6cf74990ab23c828c2888dccdceee395594",
@@ -193,6 +201,17 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
             "version": "==2.11.2"
+        },
+        "kaleido": {
+            "hashes": [
+                "sha256:013454cda65ed96c70d6b9338f23f921599292069aed7aacd534b563b145bd7f",
+                "sha256:03978623a7360e22fecce14823f1aaab6818c9ea4f2ae400c2f9929fe59ecce5",
+                "sha256:3f29367f2fa86ef099b3b78211355d04abaedec9aaddc9d5ee263988fccd5641",
+                "sha256:71d65ad8ba412fc7044b856c7a49546ae29536a6ac4c05795c75bf24bd9470f7",
+                "sha256:a71e40f16e9f6d64782211b4af3f98b585e93dfc999466ecf186bdf8f8dd9d2c"
+            ],
+            "index": "pypi",
+            "version": "==0.0.3.post1"
         },
         "lxml": {
             "hashes": [

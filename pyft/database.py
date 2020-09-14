@@ -1,10 +1,10 @@
 import re
 from datetime import timezone, timedelta, datetime
-from typing import Any, Iterable
+from typing import Any, Iterable, Dict, Optional, Sequence
 
 import pyft.config
 import sqlite3 as sql
-
+import numpy as np
 import pandas as pd
 import pytz
 
@@ -61,10 +61,36 @@ sql.dbapi2.register_converter("datetime", parse_datetime)
 sql.dbapi2.register_converter("timestamp", parse_datetime)
 
 
+def str_to_timedelta(s: str) -> timedelta:
+    """Parses a string (in the format returned by converting the
+    timedelta to a str) and returns the relevant timedelta.
+    """
+    tokens = s.split()
+    if len(tokens) > 1:
+        # Days present
+        days = int(tokens[0])
+    else:
+        days = 0
+    hours, minutes, seconds = tokens[-1].split(':')
+    return timedelta(days=days, hours=int(hours), minutes=int(minutes), seconds=float(seconds))
+
+
+def activity_data_to_dict(row: sql.Row) -> Dict[str, Any]:
+    """Convert a Row object representing a query on activity data
+    into a dict.
+    """
+    results = dict(row)
+    results['center'] = np.array((results.pop('center_lat'), results.pop('center_lon'), results.pop('center_elev')))
+    results['points_std'] = np.array((results.pop('std_lat'), results.pop('std_lon'), results.pop('std_elev')))
+    for key in ('km_pace_mean', 'mile_pace_mean', 'duration'):
+        results[key] = str_to_timedelta(results[key])
+    return results
+
+
 class DatabaseManager:
     ACTIVITIES = """CREATE TABLE IF NOT EXISTS \"activities\" (
-        id INTEGER PRIMARY KEY,
-        type TEXT NOT NULL,
+        activity_id INTEGER PRIMARY KEY,
+        activity_type TEXT NOT NULL,
         date_time TIMESTAMP NOT NULL,
         distance_2d FLOAT NOT NULL,
         center_lat FLOAT NOT NULL,
@@ -73,9 +99,13 @@ class DatabaseManager:
         std_lat FLOAT,
         std_lon FLOAT,
         std_elev FLOAT,
+        km_pace_mean TEXT,
+        mile_pace_mean TEXT,
+        duration TEXT,
         prototype_id INTEGER,
         name TEXT,
         description TEXT,
+        thumbnail_file TEXT,
         data_file TEXT,
         FOREIGN KEY(prototype_id) REFERENCES prototypes(id)
     )"""
@@ -108,9 +138,9 @@ class DatabaseManager:
     )"""
 
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
-        (id, type, date_time, distance_2d, center_lat, center_lon, center_elev, std_lat, std_lon, std_elev,
-        prototype_id, name, description, data_file)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (activity_id, activity_type, date_time, distance_2d, center_lat, center_lon, center_elev, std_lat, std_lon,
+        std_elev, km_pace_mean, mile_pace_mean, duration, prototype_id, name, description, thumbnail_file, data_file)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     SAVE_PROTOTYPE = """INSERT INTO \"prototypes\"
@@ -120,7 +150,8 @@ class DatabaseManager:
 
     def __init__(self, config: pyft.config.Config):
         self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES)
-        #self.connection.set_trace_callback(print)
+        # self.connection.set_trace_callback(print)
+        self.connection.row_factory = sql.Row
         self.cursor = self.connection.cursor()
         self.create_tables()
 
@@ -140,9 +171,13 @@ class DatabaseManager:
             # Note: center and points_std should each have length 3
             *metadata.center,
             *metadata.points_std,
+            str(metadata.km_pace_mean),
+            str(metadata.mile_pace_mean),
+            str(metadata.duration),
             metadata.prototype_id,
             metadata.name,
             metadata.description,
+            metadata.thumbnail_file,
             metadata.data_file
         ))
         if commit:
@@ -161,26 +196,62 @@ class DatabaseManager:
         if commit:
             self.connection.commit()
 
-    def load_activity_data(self, activity_id: int) -> Iterable[Any]:
-        self.cursor.execute('SELECT * FROM "activities" WHERE id=?', (activity_id,))
-        return self.cursor.fetchone()
+    def load_activity_data(self, activity_id: int) -> Dict[str, Any]:
+        self.cursor.execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
+        return activity_data_to_dict(self.cursor.fetchone())
+
+    def search_activity_data(self,
+                             from_date: Optional[datetime] = None,
+                             to_date: Optional[datetime] = None,
+                             prototype: Optional[int] = None,
+                             number: Optional[int] = None
+                             ) -> Sequence[Dict[str, Any]]:
+        where = []
+        params = []
+        if from_date and to_date:
+            where.append('date_time BETWEEN ? and ?')
+            params += [from_date, to_date]
+        elif from_date:
+            where.append('date_time > ?')
+            params.append(from_date)
+        elif to_date:
+            where.append('date_time < ?')
+            params.append(to_date)
+        if prototype:
+            where.append('prototype_id = ?')
+            params.append(prototype)
+        query = 'SELECT * FROM "activities" WHERE ' + ' AND '.join(where)
+        self.cursor.execute(query, params)
+        results = self.cursor.fetchall()
+        return [activity_data_to_dict(r) for r in results[:number]]
 
     def load_points(self, activity_id: int) -> pd.DataFrame:
         points = pd.read_sql_query('SELECT * FROM "points" WHERE activity_id=?', self.connection,
                                    params=(activity_id,)).drop(['id', 'activity_id'], axis=1)
-        points['km_pace'] = pd.to_timedelta(points['km_pace'], unit='ns')
-        points['mile_pace'] = pd.to_timedelta(points['mile_pace'], unit='ns')
+        # Convert pace-related columns from floats to timedeltas
+        for col in ('km_pace', 'mile_pace'):
+            points[col] = pd.to_timedelta(points[col], unit='ns')
         return points
 
     def load_prototype(self, prototype_id: int):
         self.cursor.execute('SELECT activity_id FROM "prototypes" WHERE id=?', (prototype_id,))
         return self.cursor.fetchone()
 
-    def all_prototypes(self):
+    def get_all_activity_ids(self):
+        self.cursor.execute('SELECT activity_id from "activities"')
+        # fetchall returns a sequence of Row objects
+        return [r['activity_id'] for r in self.cursor.fetchall()]
+
+    def get_all_prototypes(self):
         self.cursor.execute('SELECT activity_id FROM "prototypes"')
-        # fetchall returns a sequence of 1-tuples
-        return [t[0] for t in self.cursor.fetchall()]
+        return [r['activity_id'] for r in self.cursor.fetchall()]
 
     def get_max_activity_id(self) -> int:
-        self.cursor.execute('SELECT MAX(id) FROM "activities"')
-        return self.cursor.fetchone()[0] or 0
+        """Return the highest activity_id in activities.  If activities
+        is empty, return -1.
+        """
+        self.cursor.execute('SELECT MAX(activity_id) FROM "activities"')
+        max_id = self.cursor.fetchone()[0]
+        if max_id is None:
+            max_id = -1
+        return max_id

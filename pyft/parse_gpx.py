@@ -103,10 +103,10 @@ def get_gpx_metadata(g: gpx.GPX) -> dict:
     }
 
 
-def parse_gpx_file(fpath: str, mark_splits: bool = True) -> Tuple[pd.DataFrame, dict]:
+def parse_gpx_file(fpath: str) -> Tuple[pd.DataFrame, dict]:
     """Parses the file located at `fpath` and returns a tuple containing:
     - a pd.DataFrame with information about each point; and
-    - a datetime representing the time of the GPX recording itself.
+    - a dict containing certain metadata about the GPX recording itself.
     """
 
     with open(fpath) as f:

@@ -1,9 +1,10 @@
-from typing import Sequence, Any, Optional
+from typing import Sequence, Any, Optional, Iterable
 
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import dash_table as dt
+from pyft.single_activity import ActivityMetaData
 
 
 def get_map_figure(df: pd.DataFrame, highlight_col: Optional[str] = None,
@@ -40,3 +41,21 @@ def get_splits_dt(id: str, df: pd.DataFrame, **kwargs) -> dt.DataTable:
         selected_rows=[],
         **kwargs
     )
+
+
+ACTIVITY_TABLE_COLS = [
+    {'id': 'thumb', 'name': '', 'presentation': 'markdown'},
+    {'id': 'name', 'name': 'Activity', 'presentation': 'markdown'},
+    {'id': 'date', 'name': 'Date', 'type': 'datetime'},
+    {'id': 'dist', 'name': 'Distance', 'type': 'numeric'}
+]
+
+
+def get_activities_table(activities: Iterable[ActivityMetaData], **kwargs) -> dt.DataTable:
+    data = [{
+        'thumb': f'![]({a.thumbnail_file})',
+        'name': f'{a.name}',
+        'date': f'{a.date_time}',
+        'dist': f'{a.distance_2d}'
+    } for a in activities]
+    return dt.DataTable(columns=ACTIVITY_TABLE_COLS, data=data, **kwargs)

@@ -18,6 +18,8 @@ sqlalchemy = "*"
 dash = "*"
 flask = "*"
 dash-bootstrap-components = "*"
+kaleido = "*"
+appdirs = "*"
 
 [requires]
 python_version = "3.8"
