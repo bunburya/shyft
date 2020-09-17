@@ -7,6 +7,7 @@ import pandas as pd
 import pytz
 import gpxpy
 from gpxpy import gpx
+from scipy.stats import stats
 
 """Helper functions for parsing GPX files."""
 
@@ -82,7 +83,15 @@ def gpx_points_to_df(g: gpx.GPX) -> pd.DataFrame:
     df['mile'] = (df['cumul_distance_2d'] // MILE).astype(int)
     df['prev_time'] = df['time'].shift()
     df['km_pace'] = (1000 / df['step_length_2d']) * (df['time'] - df['prev_time'])
+    # Basic handling of outliers (sometimes the GPX data reports a very fast pace for a short period)
+    mean_pace = df['km_pace'].mean()
+    zscore = (df['km_pace'] - df['km_pace'].mean()) / df['km_pace'].std()
+    rolling_mean = (df['km_pace'].shift(fill_value=mean_pace) + df['km_pace'].shift(-1, fill_value=mean_pace)) / 2
+    df['km_pace'] = df['km_pace'].where(np.abs(zscore) < 2, rolling_mean)
     df['mile_pace'] = (MILE / df['step_length_2d']) * (df['time'] - df['prev_time'])
+    df['kmph'] = (3600 / df['km_pace'].dt.total_seconds()).fillna(0)
+    df['mph'] = df['kmph'] / (MILE / 1000)
+    df['run_time'] = df['time'] - df.iloc[0]['time']
     df.drop(['point', 'prev_point', 'prev_time'], axis=1, inplace=True)
     return df
 

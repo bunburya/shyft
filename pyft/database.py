@@ -82,7 +82,7 @@ def activity_data_to_dict(row: sql.Row) -> Dict[str, Any]:
     results = dict(row)
     results['center'] = np.array((results.pop('center_lat'), results.pop('center_lon'), results.pop('center_elev')))
     results['points_std'] = np.array((results.pop('std_lat'), results.pop('std_lon'), results.pop('std_elev')))
-    for key in ('km_pace_mean', 'mile_pace_mean', 'duration'):
+    for key in ('km_pace_mean', 'duration'):
         results[key] = str_to_timedelta(results[key])
     return results
 
@@ -92,7 +92,7 @@ class DatabaseManager:
         activity_id INTEGER PRIMARY KEY,
         activity_type TEXT NOT NULL,
         date_time TIMESTAMP NOT NULL,
-        distance_2d FLOAT NOT NULL,
+        distance_2d_km FLOAT NOT NULL,
         center_lat FLOAT NOT NULL,
         center_lon FLOAT NOT NULL,
         center_elev FLOAT,
@@ -100,7 +100,6 @@ class DatabaseManager:
         std_lon FLOAT,
         std_elev FLOAT,
         km_pace_mean TEXT,
-        mile_pace_mean TEXT,
         duration TEXT,
         prototype_id INTEGER,
         name TEXT,
@@ -124,10 +123,13 @@ class DatabaseManager:
         cadence INTEGER,
         step_length_2d FLOAT,
         cumul_distance_2d FLOAT,
-        km INTEGER,
-        mile INTEGER,
-        km_pace FLOAT,
-        mile_pace FLOAT,
+        km INTEGER NOT NULL,
+        mile INTEGER NOT NULL,
+        km_pace FLOAT NOT NULL,
+        mile_pace FLOAT NOT NULL,
+        kmph FLOAT,
+        mph FLOAT,
+        run_time FLOAT NOT NULL,
         FOREIGN KEY(activity_id) REFERENCES activities(id),
         PRIMARY KEY(id, activity_id)
     )"""
@@ -138,9 +140,9 @@ class DatabaseManager:
     )"""
 
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
-        (activity_id, activity_type, date_time, distance_2d, center_lat, center_lon, center_elev, std_lat, std_lon,
-        std_elev, km_pace_mean, mile_pace_mean, duration, prototype_id, name, description, thumbnail_file, data_file)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (activity_id, activity_type, date_time, distance_2d_km, center_lat, center_lon, center_elev, std_lat, std_lon,
+        std_elev, km_pace_mean, duration, prototype_id, name, description, thumbnail_file, data_file)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     SAVE_PROTOTYPE = """INSERT INTO \"prototypes\"
@@ -167,12 +169,11 @@ class DatabaseManager:
             metadata.activity_id,
             metadata.activity_type,
             metadata.date_time,
-            metadata.distance_2d,
+            metadata.distance_2d_km,
             # Note: center and points_std should each have length 3
             *metadata.center,
             *metadata.points_std,
             str(metadata.km_pace_mean),
-            str(metadata.mile_pace_mean),
             str(metadata.duration),
             metadata.prototype_id,
             metadata.name,
@@ -229,7 +230,7 @@ class DatabaseManager:
         points = pd.read_sql_query('SELECT * FROM "points" WHERE activity_id=?', self.connection,
                                    params=(activity_id,)).drop(['id', 'activity_id'], axis=1)
         # Convert pace-related columns from floats to timedeltas
-        for col in ('km_pace', 'mile_pace'):
+        for col in ('km_pace', 'mile_pace', 'run_time'):
             points[col] = pd.to_timedelta(points[col], unit='ns')
         return points
 

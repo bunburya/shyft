@@ -68,7 +68,7 @@ class SingleActivityTestCase(unittest.TestCase):
         """Test that the GPX object and the associated Activity have (almost) the same 2d length."""
 
         for a, g in zip(self.activities, self.gpx):
-            self.assertAlmostEqual(a.metadata.distance_2d, g.length_2d())
+            self.assertAlmostEqual(a.metadata.distance_2d_km, g.length_2d())
 
 
 if __name__ == '__main__':

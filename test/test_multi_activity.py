@@ -1,7 +1,7 @@
 import os
 import shutil
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from os.path import exists
 
 import numpy as np
@@ -12,6 +12,7 @@ from pyft.single_activity import Activity, ActivityMetaData
 from pyft.config import Config
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
+TEST_CONFIG_FILE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
 TEST_RUN_DATA_DIR = os.path.join(TEST_DATA_DIR, 'run')
 
 # Test GPX files.
@@ -50,15 +51,13 @@ class ActivityManagerTestCase(unittest.TestCase):
         if exists(TEST_RUN_DATA_DIR):
             shutil.rmtree(TEST_RUN_DATA_DIR)
 
-        cls.TEST_CONFIG_1 = Config(
-            data_dir=TEST_RUN_DATA_DIR,
-            db_file=os.path.join(TEST_RUN_DATA_DIR, 'test1.db')
-        )
+        cls.TEST_CONFIG_1 = Config(TEST_CONFIG_FILE,
+                                   data_dir=TEST_RUN_DATA_DIR,
+                                   db_file=os.path.join(TEST_RUN_DATA_DIR, 'test1.db'))
 
-        cls.TEST_CONFIG_2 = Config(
-            data_dir=TEST_RUN_DATA_DIR,
-            db_file=os.path.join(TEST_RUN_DATA_DIR, 'test2.db')
-        )
+        cls.TEST_CONFIG_2 = Config(TEST_CONFIG_FILE,
+                                   data_dir=TEST_RUN_DATA_DIR,
+                                   db_file=os.path.join(TEST_RUN_DATA_DIR, 'test2.db'))
 
         cls.gpx = []
         cls.activities = []
@@ -71,27 +70,24 @@ class ActivityManagerTestCase(unittest.TestCase):
         cls.manager_1 = ActivityManager(cls.TEST_CONFIG_1)  # Add Activities directly
         cls.manager_2 = ActivityManager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
 
-        #cls.manager_1.dbm.connection.set_trace_callback(print)
-
-
+        # cls.manager_1.dbm.connection.set_trace_callback(print)
 
     @classmethod
     def tearDownClass(cls):
-        #if exists(TEST_CONFIG_1.db_file):
+        # if exists(TEST_CONFIG_1.db_file):
         #    os.remove(TEST_CONFIG_1.db_file)
-        #if exists(TEST_CONFIG_2.db_file):
+        # if exists(TEST_CONFIG_2.db_file):
         #    os.remove(TEST_CONFIG_2.db_file)
         pass
 
-    def _assert_timedeltas_almost_equal(self, td1, td2):
+    def _assert_timedeltas_almost_equal(self, td1: timedelta, td2: timedelta):
         self.assertAlmostEqual(td1.total_seconds(), td2.total_seconds(), 4)
 
     def _assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData):
         self.assertEqual(md1.activity_id, md2.activity_id)
         self.assertEqual(md1.activity_type, md2.activity_type)
-        self.assertEqual(md1.activity_id, md2.activity_id)
         self.assertEqual(md1.date_time, md2.date_time)
-        self.assertEqual(md1.distance_2d, md2.distance_2d)
+        self.assertEqual(md1.distance_2d_km, md2.distance_2d_km)
         np.testing.assert_array_equal(md1.center, md2.center)
         np.testing.assert_array_equal(md1.points_std, md2.points_std)
         self._assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean)
@@ -100,6 +96,7 @@ class ActivityManagerTestCase(unittest.TestCase):
         self.assertEqual(md1.prototype_id, md2.prototype_id)
         self.assertEqual(md1.name, md2.name)
         self.assertEqual(md1.description, md2.description)
+        self.assertEqual(md1.thumbnail_file, md2.thumbnail_file)
         self.assertEqual(md1.data_file, md2.data_file)
 
     def _assert_activities_equal(self, a1: Activity, a2: Activity):
@@ -123,7 +120,7 @@ class ActivityManagerTestCase(unittest.TestCase):
         """Test basic adding of activities."""
 
         for a in self.activities:
-            #print(a.metadata.data_file, a.metadata.date_time)
+            # print(a.metadata.data_file, a.metadata.date_time)
             self.assertIsNotNone(a.metadata.activity_id)
             self.assertIsNone(a.metadata.prototype_id)
             self.manager_1.add_activity(a)
@@ -218,13 +215,13 @@ class ActivityManagerTestCase(unittest.TestCase):
             self.assertTrue(self.manager_1.tight_match_routes(a, p))
 
     def test_8_search(self):
-        #print(self.manager_1.get_activity_by_id(1))
+        # print(self.manager_1.get_activity_by_id(1))
         results = self.manager_1.search_activity_data(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
         self.assertSetEqual({a.activity_id for a in results}, {0, 1, 6})
-        #print(results)
+        # print(results)
         results = self.manager_1.search_activity_data(prototype=2)
         self.assertSetEqual({a.activity_id for a in results}, {2, 3})
-        #print(results)
+        # print(results)
 
     def test_9_thumbnails(self):
         for i in self.manager_1.activity_ids:
@@ -232,6 +229,7 @@ class ActivityManagerTestCase(unittest.TestCase):
             fpath = self.manager_1.get_activity_by_id(i).write_thumbnail()
             with open(fpath, 'rb') as f1, open(benchmark, 'rb') as f2:
                 self.assertEqual(f1.read(), f2.read())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,15 +4,16 @@ General:
 
 - Custom type definitions
 
-Activity:
-
-- Downsampling
-- Splits data
-- KM -> mile conversion
-- Thumbnail
-
 View:
 
 - View single activity
+
+  - Fix matched activities
+
 - Overview
+
+  - Recent activities
+  - Scattermap:  Distance vs pace
+  - Bar chart: Miles / activities
+
 - Config page

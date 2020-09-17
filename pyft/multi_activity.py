@@ -55,6 +55,7 @@ class ActivityManager:
 
     def add_activity_from_gpx_file(self, fpath: str, activity_name: str = None,
                                    activity_description: str = None, activity_type: str = 'run') -> int:
+        # TODO:  Is any of the below necessary?
         df, metadata = parse_gpx_file(fpath)
         _id = self.get_new_activity_id()
         _distance_2d = df['cumul_distance_2d'].iloc[-1]
@@ -68,7 +69,7 @@ class ActivityManager:
         return (
                 (norm_center_diff(a1.metadata.center, a2.metadata.center, a1.metadata.points_std,
                                   a2.metadata.points_std) < self.config.match_center_threshold)
-                and (norm_length_diff(a1.metadata.distance_2d, a2.metadata.distance_2d) < self.config.match_length_threshold)
+                and (norm_length_diff(a1.metadata.distance_2d_km, a2.metadata.distance_2d_km) < self.config.match_length_threshold)
         )
 
     def tight_match_routes(self, a1: Activity, a2: Activity) -> Tuple[bool, float]:

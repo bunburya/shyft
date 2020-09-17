@@ -1,4 +1,6 @@
 import os
+import hashlib
+import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Tuple, Callable, Optional, Any
@@ -21,6 +23,11 @@ pd.options.plotting.backend = "plotly"
 class ActivityMetaData:
     """A dataclass representing a brief summary of an activity."""
 
+    # NOTE:  ActivityMetaData can be created in one of two situations:
+    #   1.  when an Activity is created from a GPX file (points-related data will be calculated from the
+    #       DataFrame at that stage); or
+    #   2.  when loaded from the database (points-related data should have been saved to the database previously).
+
     # NOTE:  Changes to the data stored in ActivityMetaData also need to be reflected in:
     # - DatabaseManager.ACTIVITIES;
     # - DatabaseManager.SAVE_ACTIVITY_DATA;
@@ -29,24 +36,37 @@ class ActivityMetaData:
     activity_id: int
     activity_type: str
     date_time: datetime
-    distance_2d: float = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    data_file: Optional[str] = None
+
+    # The following will be auto-generated when the associated Activity is instantiated, if not explicitly provided
+    distance_2d_km: float = None
     center: np.ndarray = None
     points_std: np.ndarray = None
     km_pace_mean: timedelta = None
-    mile_pace_mean: timedelta = None
     duration: timedelta = None
     prototype_id: Optional[int] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
     thumbnail_file: Optional[str] = None
-    data_file: Optional[str] = None
+
+    # The following will be auto-generated when ActivityMetaData is instantiated, if not explicitly provided
+    distance_2d_mile: float = None
+    mile_pace_mean: timedelta = None
+
+    def __post_init__(self):
+        if self.distance_2d_mile is None:
+            self.distance_2d_mile = self.distance_2d_km * MILE
+        if self.mile_pace_mean is None:
+            kmph = (1 / self.km_pace_mean.seconds) * 3600
+            mph = kmph / MILE
+            self.mile_pace_mean = timedelta(seconds=60/mph)
 
 
-@dataclass
 class Activity:
     """ A dataclass representing a single activity.  Stores the points (as a pd.DataFrame),
     as well as some metadata about the activity.  We only separately store data about
-    the activity which cannot easily and quickly be deduced from the points."""
+    the activity which cannot easily and quickly be deduced from the points.
+    """
 
     metadata: ActivityMetaData
     points: pd.DataFrame
@@ -57,28 +77,31 @@ class Activity:
         if metadata is not None:
             self.metadata = metadata
         else:
+            if kwargs.get('distance_2d_km') is None:
+                kwargs['distance_2d_km'] = self.points['cumul_distance_2d'].iloc[-1] / 1000
+            if kwargs.get('center') is None:
+                kwargs['center'] = self.points[['latitude', 'longitude', 'elevation']].mean().to_numpy()
+            if kwargs.get('points_std') is None:
+                kwargs['points_std'] = self.points[['latitude', 'longitude', 'elevation']].std().to_numpy()
+            if kwargs.get('km_pace_mean') is None:
+                kwargs['km_pace_mean'] = self.points['km_pace'].mean()
+            if kwargs.get('duration') is None:
+                kwargs['duration'] = self.points.iloc[-1]['time'] - kwargs['date_time']
+            if (kwargs.get('thumbnail_file') is None) and config.thumbnail_dir:
+                kwargs['thumbnail_file'] = self.write_thumbnail(activity_id=kwargs['activity_id'])
             self.metadata = ActivityMetaData(**kwargs)
 
-        if self.metadata.distance_2d is None:
-            self.metadata.distance_2d = self.points['cumul_distance_2d'].iloc[-1]
-        if self.metadata.center is None:
-            self.metadata.center = self.points[['latitude', 'longitude', 'elevation']].mean().to_numpy()
-        if self.metadata.points_std is None:
-            self.metadata.points_std = self.points[['latitude', 'longitude', 'elevation']].std().to_numpy()
-        if self.metadata.km_pace_mean is None:
-            self.metadata.km_pace_mean = self.points['km_pace'].mean()
-        if self.metadata.mile_pace_mean is None:
-            self.metadata.mile_pace_mean = self.points['mile_pace'].mean()
-        if self.metadata.duration is None:
-            self.metadata.duration = self.points.iloc[-1]['time'] - self.metadata.date_time
-        if (self.metadata.thumbnail_file is None) and config.thumbnail_dir:
-            self.metadata.thumbnail_file = self.write_thumbnail()
-
-    def get_split_markers(self, split_col: str, split_len: float) -> pd.DataFrame:
+    def get_split_markers(self, split_col: str) -> pd.DataFrame:
         """Takes a DataFrame, calculates the points that lie directly on
         the boundaries between splits and returns those points as a
         DataFrame.
         """
+        if split_col == 'km':
+            split_len = 1000
+        elif split_col == 'mile':
+            split_len = MILE
+        else:
+            raise ValueError(f'split_col must be "km" or "mile", not "{split_col}".')
         df = self.points
         min_split = df[split_col].min()
         max_split = df[split_col].max()
@@ -89,7 +112,10 @@ class Activity:
             overrun = p2['cumul_distance_2d'] - (split_len * i)
             underrun = (split_len * i) - p1['cumul_distance_2d']
             portion = underrun / (underrun + overrun)
-            markers.append(intersect_points(p1, p2, portion))
+            m = intersect_points(p1, p2, portion)
+            m['ends'] = i - 1
+            m['begins'] = i
+            markers.append(m)
         return pd.DataFrame(markers)
 
     @property
@@ -100,32 +126,41 @@ class Activity:
     def mile_markers(self):
         return self.get_split_markers('mile', MILE)
 
-    def get_split_summary(self, split_col: str, pace_col: str) -> pd.DataFrame:
+    def get_split_summary(self, split_col: str) -> pd.DataFrame:
+        if split_col == 'km':
+            pace_col = 'km_pace'
+        elif split_col == 'mile':
+            pace_col = 'mile_pace'
+        else:
+            raise ValueError(f'split_col must be "km" or "mile", not "{split_col}".')
         splits = self.points[[split_col, pace_col, 'time', 'cadence', 'hr', 'elevation']]
         grouped = splits.groupby(split_col)
         summary = grouped.mean()
-        first = grouped.apply(lambda s: s.iloc[0])
-        last = grouped.apply(lambda s: s.iloc[-1])
-        summary['time'] = last['time'] - first['time']
+        split_times = self.get_split_markers(split_col)['time']
+        summary['time'] = split_times - split_times.shift(fill_value=self.points.iloc[0]['time'])
+        summary.loc[summary.index[-1], 'time'] = self.points.iloc[-1]['time'] - split_times.iloc[-1]
         return summary
 
     @property
     def km_summary(self):
-        return self.get_split_summary('km', 'km_pace')
+        return self.get_split_summary('km')
 
     @property
     def mile_summary(self):
-        return self.get_split_summary('mile', 'mile_pace')
+        return self.get_split_summary('mile')
 
-    def write_thumbnail(self, fpath: Optional[str] = None) -> str:
+    def write_thumbnail(self, fpath: Optional[str] = None, activity_id: int = None) -> str:
         """Create a thumbnail representing the route and write it to
         fpath (determined by the config if not explicitly provided.
         Returns the path to which the image was saved.
         """
         # TODO:  Would be better not to rely on plotly / kaleido for this;
         # maybe roll our own using pillow.
+        if activity_id is None:
+            activity_id = self.metadata.activity_id
+
         if fpath is None:
-            fpath = os.path.join(self.config.thumbnail_dir, f'thumb_{self.metadata.activity_id}.png')
+            fpath = os.path.join(self.config.thumbnail_dir, f'thumb_{activity_id}.png')
 
         fig = self.points.plot(
             x='longitude',
@@ -160,20 +195,27 @@ class Activity:
         fig.write_image(fpath, format='png', scale=0.1)
         return fpath
 
+    @property
+    def activity_hash(self):
+        """Generate a unique (enough) hash for the Activity by hashing the combination of the ActivityMetaData
+        variables and the shape (rows and cols) of the points.
+        """
+        return hashlib.sha1(json.dumps(vars(self.metadata)).encode('utf-8') + bytes(self.points.shape)).hexdigest()
+
     @staticmethod
     def from_gpx_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
                       activity_description: str = None, activity_type: str = 'run') -> 'Activity':
         points, metadata = parse_gpx_file(fpath)
-        _distance_2d = points['cumul_distance_2d'].iloc[-1]
-        center = points[['latitude', 'longitude', 'elevation']].mean()
+        #_distance_2d_km = points['cumul_distance_2d'].iloc[-1]
+        #center = points[['latitude', 'longitude', 'elevation']].mean()
         return Activity(
             config,
             points,
             activity_id=activity_id,
             activity_type=activity_type,
             date_time=metadata['time'],
-            distance_2d=_distance_2d,
-            center=center,
+            #distance_2d_km=_distance_2d_km,
+            #center=center,
             data_file=fpath,
             name=activity_name or metadata['name'],
             description=activity_description or metadata['description']

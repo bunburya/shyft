@@ -56,6 +56,7 @@ def distance(latitude_1: Union[float, np.ndarray], longitude_1: Union[float, np.
     else:
         return naive_distance(latitude_1, longitude_1, latitude_2, longitude_2)
 
+
 def intersect_points(p1: pd.Series, p2: pd.Series, portion: float) -> pd.Series:
     """Returns a pd.Series representing a point that lies `portion`
     way between p1 and p2.

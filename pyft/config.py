@@ -3,38 +3,32 @@
 TODO:  Implement proper configuration using ConfigParser.
 """
 import os
-from dataclasses import dataclass
+import configparser
+from typing import Any, Dict
 
 import appdirs
 
 
-@dataclass
 class Config:
 
-    data_dir: str = appdirs.user_data_dir(appname='pyft')
-    db_file: str = None
-    thumbnail_dir: str = None
-    gpx_file_dir: str = None
+    def __init__(self, ini_fpath: str, **kwargs):
+        parser = configparser.ConfigParser()
+        parser.read(ini_fpath)
+        if parser['general']['data_dir'] is None:
+            self.data_dir = appdirs.user_data_dir(appname='pyft')
+        else:
+            self.data_dir = parser['general']['data_dir']
 
-    # Size of thumbnail images in px (width, height)
-    # Not currently implemented, until we find a way to properly scale thumbnail images to custom sizes
-    #thumbnail_size = (70, 50)
+        self.thumbnail_dir = os.path.join(self.data_dir, 'thumbnails')
+        self.gpx_file_dir = os.path.join(self.data_dir, 'gpx_files')
+        self.db_file = os.path.join(self.data_dir, 'pyft.db')
 
-    # Thresholds for loose matching
-    match_center_threshold: float = 10000
-    match_length_threshold: float = 0.01
+        self.match_center_threshold = parser['general'].getfloat('match_center_threshold')
+        self.match_length_threshold = parser['general'].getfloat('match_length_threshold')
+        self.tight_match_threshold = parser['general'].getfloat('tight_match_threshold')
 
-    # Threshold for tight matching
-    tight_match_threshold: float = 0.1
-
-    def __post_init__(self):
-        # TODO:  Create sane defaults for files
-        if not self.db_file:
-            self.db_file = os.path.join(self.data_dir, 'pyft.db')
-        if not self.thumbnail_dir:
-            self.thumbnail_dir = os.path.join(self.data_dir, 'thumbnails')
-        if not self.gpx_file_dir:
-            self.gpx_file_dir = os.path.join(self.data_dir, 'gpx_files')
-        for fpath in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir):
-            if not os.path.exists(fpath):
-                os.makedirs(fpath)
+        for k in kwargs:
+            setattr(self, k, kwargs[k])
+        for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir):
+            if not os.path.exists(_dir):
+                os.makedirs(_dir)

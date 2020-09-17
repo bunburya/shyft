@@ -47,10 +47,10 @@ def main():
             a1 = Activity.from_gpx_file(fpath1)
             a2 = Activity.from_gpx_file(fpath2)
             t = time()
-            length_df[i][j] = norm_length_diff(a1.metadata.distance_2d, a2.metadata.distance_2d)
+            length_df[i][j] = norm_length_diff(a1.metadata.distance_2d_km, a2.metadata.distance_2d_km)
             length_t_df[i][j] = time() - t
             t = time()
-            length_df[j][i] = norm_length_diff(a2.metadata.distance_2d, a1.metadata.distance_2d)
+            length_df[j][i] = norm_length_diff(a2.metadata.distance_2d_km, a1.metadata.distance_2d_km)
             length_t_df[j][i] = time() - t
             lat2, lon2, _ = a2.metadata.center
             t = time()
