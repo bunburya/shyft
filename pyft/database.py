@@ -218,7 +218,7 @@ class DatabaseManager:
         elif to_date:
             where.append('date_time < ?')
             params.append(to_date)
-        if prototype:
+        if prototype is not None:
             where.append('prototype_id = ?')
             params.append(prototype)
         query = 'SELECT * FROM "activities" WHERE ' + ' AND '.join(where)
@@ -256,3 +256,4 @@ class DatabaseManager:
         if max_id is None:
             max_id = -1
         return max_id
+

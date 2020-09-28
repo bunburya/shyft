@@ -64,6 +64,8 @@ dash_app.layout = html.Div(id='main_layout', children=[
         children=[f'View activity: {dc_factory.get_activity_name(activity.metadata)}']
     ),
 
+    html.Div([dc_factory.get_activity_overview(activity.metadata)]),
+
     dbc.Row(
         children=[
             dbc.Col(
@@ -98,7 +100,12 @@ dash_app.layout = html.Div(id='main_layout', children=[
     ]),
 
     dbc.Row([
-        dbc.Col([dc_factory.get_activities_table([a.metadata for a in am.activities], id='test')])
+        dbc.Col([
+            dc_factory.get_activities_table(
+                am.get_activity_matches(activity.metadata, number=5),
+                id='test'
+            )
+        ])
     ])
 ])
 

@@ -1,6 +1,6 @@
 """A number of helper functions for generating dashboards.
 
-Most of these are implemented as factory functions which return Dash
+Most of these are implemented as factory methods which return Dash
 objects, which can be included in the layout of the Dash app.
 """
 
@@ -19,7 +19,6 @@ from pyft.single_activity import ActivityMetaData, Activity
 
 
 class DashComponentFactory:
-
     ACTIVITY_TABLE_COLS = (
         {'id': 'thumb', 'name': '', 'presentation': 'markdown'},
         {'id': 'name', 'name': 'Activity', 'presentation': 'markdown'},
@@ -46,8 +45,27 @@ class DashComponentFactory:
         """
         name = metadata.name
         if name is None:
-            name = f'{metadata.distance_2d_km:0.1f}km {metadata.activity_type} on {metadata.date_time}'
+            name = self.config.default_activity_name_format.format(**vars(metadata))
         return name
+
+    def get_activity_overview(self, metadata: ActivityMetaData) -> html.Div:
+        if self.config.distance_unit == 'km':
+            distance = metadata.distance_2d_km
+            mean_pace = metadata.km_pace_mean
+        elif self.config.distance_unit == 'mile':
+            distance = metadata.distance_2d_mile
+            mean_pace = metadata.mile_pace_mean
+        else:
+            raise ValueError(f'Invalid value for distance_unit: \"{self.config.distance_unit}\".')
+        return html.Div(
+            dcc.Markdown(f"""
+                **Distance:**\t{distance} {self.config.distance_unit}
+
+                **Duration:**\t{metadata.duration}
+
+                **Average pace:**\t{mean_pace}
+            """)
+        )
 
     def get_splits_table(self, id: str, splits_df: pd.DataFrame, **kwargs) -> dt.DataTable:
         splits_df = splits_df['time'].reset_index()
@@ -99,7 +117,6 @@ class DashComponentFactory:
             fig.data = traces
 
             for v in highlight_vals:
-
                 data = df[df[highlight_col] == v]
                 fig.add_trace(go.Scattermapbox(
                     mode='lines',
@@ -111,7 +128,6 @@ class DashComponentFactory:
                     hovertext=data['time'].dt.strftime('%H:%M:%S')
                 ))
         return fig
-
 
     def get_activity_graph(self, activity: Activity, **kwargs) -> go.Figure:
 
@@ -142,9 +158,6 @@ class DashComponentFactory:
                 width=10
             )
         ])
-
-    #def get_activities_table(self, metadata: Iterable[ActivityMetaData], base_id: str) -> html.Div:
-    #    return html.Div([self.get_activity_row(a, base_id) for a in metadata])
 
     def get_activities_table(self, metadata_list: Iterable[ActivityMetaData], **kwargs) -> dt.DataTable:
         data = [{

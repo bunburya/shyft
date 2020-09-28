@@ -23,9 +23,13 @@ class Config:
         self.gpx_file_dir = os.path.join(self.data_dir, 'gpx_files')
         self.db_file = os.path.join(self.data_dir, 'pyft.db')
 
+        self.distance_unit = parser['general']['distance_unit']
+
         self.match_center_threshold = parser['general'].getfloat('match_center_threshold')
         self.match_length_threshold = parser['general'].getfloat('match_length_threshold')
         self.tight_match_threshold = parser['general'].getfloat('tight_match_threshold')
+
+        self.default_activity_name_format = parser['general']['default_activity_name_format']
 
         for k in kwargs:
             setattr(self, k, kwargs[k])

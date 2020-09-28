@@ -106,3 +106,13 @@ class ActivityManager:
     def save_activity_to_db(self, activity: Activity):
         self.dbm.save_activity_data(activity.metadata)
         self.dbm.save_points(activity.points, activity.metadata.activity_id)
+
+    def get_activity_matches(self, activity: ActivityMetaData, number=None) -> Iterable[ActivityMetaData]:
+        results = list(filter(
+            lambda a: a.activity_id != activity.activity_id,
+            self.search_activity_data(prototype=activity.prototype_id)
+        ))
+        if number is None:
+            return results
+        else:
+            return results[:number]
