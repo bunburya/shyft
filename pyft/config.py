@@ -19,6 +19,8 @@ class Config:
         else:
             self.data_dir = parser['general']['data_dir']
 
+        self.user_name = parser['general']['user_name']
+
         self.thumbnail_dir = os.path.join(self.data_dir, 'thumbnails')
         self.gpx_file_dir = os.path.join(self.data_dir, 'gpx_files')
         self.db_file = os.path.join(self.data_dir, 'pyft.db')

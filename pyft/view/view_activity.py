@@ -1,127 +1,136 @@
-import os
-import shutil
-from typing import Sequence, List
+from typing import List, Optional
+from urllib.parse import urlsplit
 
-import flask
 import plotly.graph_objects as go
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-import dash_table as dt
 from dash.dependencies import Output, Input, State
 from pyft.config import Config
 from pyft.multi_activity import ActivityManager
-from pyft.view.dash_utils import DashComponentFactory
+from pyft.single_activity import ActivityMetaData, Activity
+from pyft.view.dash_utils import ActivityViewComponentFactory
 
-### FOR TESTING ONLY
 
-import sys
+def get_page_content(
+        activity_manager: ActivityManager,
+        dc_factory: ActivityViewComponentFactory,
+        activity: Optional[Activity] = None
+) -> list:
 
-TEST_DATA_DIR = sys.argv[1]
+    if activity is None:
+        return [dcc.Markdown('No activity specified, or no such activity exists.')]
 
-TEST_GPX_FILES = [
-    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise_2.gpx'),
-    # os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.22k_clockwise.gpx'),
-    # os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.23k_counterclockwise.gpx'),
-    # os.path.join(TEST_DATA_DIR, 'Morning_Run_7k_counterclockwise.gpx'),
-]
-TEST_RUN_DATA_DIR = os.path.join(TEST_DATA_DIR, 'dash_run')
-if os.path.exists(TEST_RUN_DATA_DIR):
-    shutil.rmtree(TEST_RUN_DATA_DIR)
-
-TEST_DB_FILE = os.path.join(TEST_RUN_DATA_DIR, 'dash_test.db')
-TEST_CONFIG_FILE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
-
-TEST_CONFIG = Config(
-    TEST_CONFIG_FILE,
-    data_dir=TEST_RUN_DATA_DIR,
-    db_file=TEST_DB_FILE
-)
-
-am = ActivityManager(TEST_CONFIG)
-for fpath in TEST_GPX_FILES:
-    am.add_activity_from_gpx_file(fpath)
-
-activity = am.get_activity_by_id(0)
-km_summary = activity.km_summary
-
-### /TESTING
-
-# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.BOOTSTRAP]
-
-app = flask.Flask(__name__)
-dash_app = dash.Dash(__name__, server=app, external_stylesheets=external_stylesheets)
-
-dc_factory = DashComponentFactory(TEST_CONFIG)
-
-dash_app.layout = html.Div(id='main_layout', children=[
-    html.H1(
-        children=[f'View activity: {dc_factory.get_activity_name(activity.metadata)}']
-    ),
-
-    html.Div([dc_factory.get_activity_overview(activity.metadata)]),
-
-    dbc.Row(
-        children=[
-            dbc.Col(
-                dc_factory.get_splits_table(
-                    id='km_summary',
-                    splits_df=km_summary,
+    return [
+        html.H1([f'View activity: {dc_factory.get_activity_name(activity.metadata)}']),
+        html.Div([dc_factory.get_activity_overview(activity.metadata)]),
+        dbc.Row(
+            children=[
+                dbc.Col(
+                    dc_factory.get_splits_table(
+                        id='km_summary',
+                        splits_df=activity.km_summary,
+                    ),
+                    width=4
                 ),
-                width=4
-            ),
 
-            dbc.Col(
+                dbc.Col(
+                    dcc.Graph(
+                        id='map',
+                        figure=dc_factory.get_map_figure(activity.points)
+                    ),
+                    width=8
+                )
+            ],
+            style={
+                'height': 450
+            },
+            no_gutters=True
+        ),
+        dbc.Row([
+            dbc.Col([
                 dcc.Graph(
-                    id='map',
-                    figure=dc_factory.get_map_figure(activity.points)
-                ),
-                width=8
-            )
-        ],
-        style={
-            'height': 450
-        },
-        no_gutters=True
-    ),
-
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(
-                id='graph',
-                figure=dc_factory.get_activity_graph(activity)
-            )
+                    id='graph',
+                    figure=dc_factory.get_activity_graph(activity)
+                )
+            ])
+        ]),
+        dbc.Row([
+            dbc.Col([
+                dc_factory.get_activities_table(
+                    activity_manager.get_activity_matches(activity.metadata, number=5),
+                    id='test'
+                )
+            ])
         ])
-    ]),
+    ]
 
-    dbc.Row([
-        dbc.Col([
-            dc_factory.get_activities_table(
-                am.get_activity_matches(activity.metadata, number=5),
-                id='test'
-            )
-        ])
+
+def get_layout(
+        activity_manager: ActivityManager,
+        dc_factory: ActivityViewComponentFactory,
+        activity: Optional[Activity] = None,
+        empty = True
+) -> html.Div:
+
+    if empty:
+        page_content = []
+    else:
+        page_content = get_page_content(activity_manager, dc_factory, activity)
+
+    return html.Div(id='main_layout', children=[
+        dcc.Store(id='activity_id'),
+        dcc.Location(id='url', refresh=False),
+        html.Div(
+            id='page_content',
+            children=page_content
+        )
     ])
-])
 
+def get_dash_app(activity_manager: ActivityManager, config: Config, *dash_args, **dash_kwargs) -> dash.Dash:
+    dc_factory = ActivityViewComponentFactory(config)
+    dash_app = dash.Dash(*dash_args, **dash_kwargs)
 
-@dash_app.callback(
-    Output(component_id='map', component_property='figure'),
-    [Input(component_id='km_summary', component_property='selected_rows')],
-    [State(component_id='map', component_property='figure')]
-)
-def update_map(selected_rows: List[int], figure: go.Figure):
-    # print(selected_rows)
-    return dc_factory.get_map_figure(activity.points, figure=figure, highlight_col='km', highlight_vals=selected_rows)
+    dash_app.layout = get_layout(activity_manager, dc_factory, empty=True)
 
+    @dash_app.callback(
+        Output('map', 'figure'),
+        [Input('km_summary', 'selected_rows')],
+        [State('map', 'figure'), State('activity_id', 'data')]
+    )
+    def update_map(selected_rows: List[int], figure: go.Figure, activity_id: int):
+        # print(selected_rows)
+        #print(f'update_map called with selected rows {selected_rows}')
+        activity = activity_manager.get_activity_by_id(activity_id)
+        new_map = dc_factory.get_map_figure(activity.points, figure=figure, highlight_col='km',
+                                            highlight_vals=selected_rows)
+        #print(new_map.data)
+        return new_map
 
-if __name__ == '__main__':
-    from sys import argv
+    @dash_app.callback(
+        Output('page_content', 'children'),
+        [Input('activity_id', 'data')]
+    )
+    def display_page(activity_id: Optional[int]):
+        if activity_id is None:
+            activity = None
+        else:
+            #print(f'activity_id: {activity_id} (type {type(activity_id)}')
+            activity = activity_manager.get_activity_by_id(activity_id)
+        return get_page_content(activity_manager, dc_factory, activity)
 
-    debug = '--debug' in argv
-    app.run(host='0.0.0.0', debug=debug, port=8080)
+    @dash_app.callback(
+        Output('activity_id', 'data'),
+        [Input('url', 'pathname')]
+    )
+    def update_activity(pathname: str):
+        #print(f'display_page called with {pathname}')
+        try:
+            activity_id = int(urlsplit(pathname)[2].split('/')[-1])
+        except (TypeError, ValueError):
+            activity_id = None
+
+        return activity_id
+
+    return dash_app

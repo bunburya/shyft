@@ -18,7 +18,14 @@ from pyft.config import Config
 from pyft.single_activity import ActivityMetaData, Activity
 
 
-class DashComponentFactory:
+class BaseDashComponentFactory:
+    """A base for classes that generate Dash various components
+    depending on the configuration and the given activity data.
+
+    This base class contains methods and data which are expected to be
+    common to all such factory classes.
+    """
+
     ACTIVITY_TABLE_COLS = (
         {'id': 'thumb', 'name': '', 'presentation': 'markdown'},
         {'id': 'name', 'name': 'Activity', 'presentation': 'markdown'},
@@ -48,7 +55,54 @@ class DashComponentFactory:
             name = self.config.default_activity_name_format.format(**vars(metadata))
         return name
 
+    def get_activity_row(self, metadata: ActivityMetaData, base_id: str) -> dbc.Row:
+        """A generic function to return a Row containing a thumbnail,
+        description and link in respect of a particular activity.
+        """
+        # TODO:  Is this used?
+        return dbc.Row([
+            dbc.Col(
+                [
+                    html.Img(
+                        id=f'{base_id}_thumb_{metadata.activity_id}',
+                        src='TODO'  # TODO:  Host thumbnails as static content
+                    )
+                ],
+                width=2
+            ),
+
+            dbc.Col(
+                [
+                    html.A(
+                        [f'{self.get_activity_name(metadata)}'],  # TODO:  Get default name
+                        id=f'{base_id}_link_{metadata.activity_id}',
+                        href='TODO'  # TODO:  Get relative link to display activity
+                    )
+                ],
+                width=10
+            )
+        ])
+
+    def get_activities_table(self, metadata_list: Iterable[ActivityMetaData], **kwargs) -> dt.DataTable:
+        """A generic function to return a DataTable containing a list of activities."""
+        data = [{
+            'thumb': f'![{md.activity_id}]({md.thumbnail_file})',
+            'name': f'[{self.get_activity_name(md)}](http://TODO_LINK_TO_ACTIVITY)',
+        } for md in metadata_list]
+        return dt.DataTable(
+            columns=self.ACTIVITY_TABLE_COLS,
+            data=data,
+            **self.COMMON_DATATABLE_OPTIONS,
+            **kwargs
+        )
+
+class ActivityViewComponentFactory(BaseDashComponentFactory):
+    """Methods to generate Dash components used to view a single activity."""
+
     def get_activity_overview(self, metadata: ActivityMetaData) -> html.Div:
+        """Return markdown containing a summary of some key metrics
+        about the given activity.
+        """
         if self.config.distance_unit == 'km':
             distance = metadata.distance_2d_km
             mean_pace = metadata.km_pace_mean
@@ -68,8 +122,12 @@ class DashComponentFactory:
         )
 
     def get_splits_table(self, id: str, splits_df: pd.DataFrame, **kwargs) -> dt.DataTable:
+        """Return a DataTable with information about an activity broken
+        down by split.
+        """
+        split_col = self.config.distance_unit
         splits_df = splits_df['time'].reset_index()
-        splits_df['km'] += 1
+        splits_df[split_col] += 1
         # TODO:  Make this less awful
         splits_df['time'] = splits_df['time'].astype(str).str.split(' ').str[-1].str.split('.').str[:-1]
         cols = [{'name': i, 'id': i} for i in splits_df.columns]
@@ -88,6 +146,13 @@ class DashComponentFactory:
             **self.COMMON_DATATABLE_OPTIONS,
             **kwargs
         )
+
+    def get_activity_graph(self, activity: Activity, **kwargs) -> go.Figure:
+        """Return a graph with various bits of information relating
+        to the given activity.
+        """
+        fig = px.line(activity.points, x='time', y='kmph')
+        return fig
 
     def get_map_figure(self, df: pd.DataFrame, highlight_col: Optional[str] = None,
                        highlight_vals: Optional[List[int]] = None, figure: Optional[go.Figure] = None,
@@ -129,44 +194,9 @@ class DashComponentFactory:
                 ))
         return fig
 
-    def get_activity_graph(self, activity: Activity, **kwargs) -> go.Figure:
+class OverviewComponentFactory(BaseDashComponentFactory):
+    """Methods to generate Dash components used to in an overview of all
+    a user's activities.
+    """
 
-        fig = px.line(activity.points, x='time', y='kmph')
-        return fig
-
-    def get_activity_row(self, metadata: ActivityMetaData, base_id: str) -> dbc.Row:
-        """A generic function to return a DataTable containing a list of activities."""
-        return dbc.Row([
-            dbc.Col(
-                [
-                    html.Img(
-                        id=f'{base_id}_thumb_{metadata.activity_id}',
-                        src='TODO'  # TODO:  Host thumbnails as static content
-                    )
-                ],
-                width=2
-            ),
-
-            dbc.Col(
-                [
-                    html.A(
-                        [f'{metadata.name}'],  # TODO:  Get default name
-                        id=f'{base_id}_link_{metadata.activity_id}',
-                        href='TODO'  # TODO:  Get relative link to display activity
-                    )
-                ],
-                width=10
-            )
-        ])
-
-    def get_activities_table(self, metadata_list: Iterable[ActivityMetaData], **kwargs) -> dt.DataTable:
-        data = [{
-            'thumb': f'![{md.activity_id}]({md.thumbnail_file})',
-            'name': f'[{self.get_activity_name(md)}](http://TODO_LINK_TO_ACTIVITY)',
-        } for md in metadata_list]
-        return dt.DataTable(
-            columns=self.ACTIVITY_TABLE_COLS,
-            data=data,
-            **self.COMMON_DATATABLE_OPTIONS,
-            **kwargs
-        )
+    pass

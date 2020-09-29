@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Iterable, Tuple, Sequence, Optional, Dict, Any
+from typing import Iterable, Tuple, Sequence, Optional, Dict, Any, List
 
 import numpy as np
 from scipy.spatial.distance import euclidean
@@ -18,7 +18,7 @@ class ActivityManager:
     def __init__(self, config: Config):
         self.config = config
         self.dbm = DatabaseManager(config)
-        self.activities = []
+        self.activities: List[Activity] = []
 
 
     @property
@@ -30,13 +30,16 @@ class ActivityManager:
         """Return a sequence of the activity_ids of all Activities which are prototypes."""
         return self.dbm.get_all_prototypes()
 
-    def get_activity_by_id(self, activity_id: int) -> Activity:
+    def get_activity_by_id(self, activity_id: int) -> Optional[Activity]:
         points = self.dbm.load_points(activity_id)
-        return Activity(
-            self.config,
-            points,
-            **self.dbm.load_activity_data(activity_id)
-        )
+        try:
+            return Activity(
+                self.config,
+                points,
+                **self.dbm.load_activity_data(activity_id)
+            )
+        except ValueError:
+            return None
 
     def get_new_activity_id(self):
         return self.dbm.get_max_activity_id() + 1

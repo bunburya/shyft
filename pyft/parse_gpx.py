@@ -16,8 +16,8 @@ MILE = 1609.344
 namespaces = {'garmin_tpe': 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'}
 
 
-def get_try_func(func: Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], float]) -> Callable[
-        [gpx.GPXTrackPoint, gpx.GPXTrackPoint], float]:
+def get_try_func(func: Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], float]) \
+        -> Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], Optional[float]]:
     def _try_func(p1: gpx.GPXTrackPoint, p2: gpx.GPXTrackPoint) -> Optional[float]:
         try:
             return func(p1, p2)

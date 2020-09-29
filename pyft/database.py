@@ -151,11 +151,12 @@ class DatabaseManager:
     """
 
     def __init__(self, config: pyft.config.Config):
-        self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES)
+        self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES, check_same_thread=False)
         # self.connection.set_trace_callback(print)
         self.connection.row_factory = sql.Row
         self.cursor = self.connection.cursor()
         self.create_tables()
+
 
     def create_tables(self, commit: bool = True):
         self.cursor.execute(self.ACTIVITIES)
@@ -198,8 +199,15 @@ class DatabaseManager:
             self.connection.commit()
 
     def load_activity_data(self, activity_id: int) -> Dict[str, Any]:
+        """Load metadata for the activity represented by activity_id and
+        return it as a dict.  Raises a ValueError if activity_id is not
+        valid.
+        """
         self.cursor.execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
-        return activity_data_to_dict(self.cursor.fetchone())
+        result = self.cursor.fetchone()
+        if not result:
+            raise ValueError(f'No activity found with activity_id {activity_id}.')
+        return activity_data_to_dict(result)
 
     def search_activity_data(self,
                              from_date: Optional[datetime] = None,
