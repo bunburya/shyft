@@ -160,7 +160,7 @@ class Activity:
             activity_id = self.metadata.activity_id
 
         if fpath is None:
-            fpath = os.path.join(self.config.thumbnail_dir, f'thumb_{activity_id}.png')
+            fpath = os.path.join(self.config.thumbnail_dir, f'{activity_id}.png')
 
         fig = self.points.plot(
             x='longitude',

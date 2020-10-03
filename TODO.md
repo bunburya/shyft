@@ -8,7 +8,8 @@ View:
 
 - View single activity
 
-  - Fix matched activities
+  - Tidy up
+  - Improve graph
 
 - Overview
 
@@ -17,3 +18,5 @@ View:
   - Bar chart: Miles / activities
 
 - Config page
+
+- Calendar (fullCalendar?)

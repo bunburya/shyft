@@ -11,6 +11,10 @@ from pyft.database import DatabaseManager
 from pyft.single_activity import Activity, ActivityMetaData
 from pyft.config import Config
 
+# TODO:  Should probably merge this into test_multi_activity.
+# Activities only really make sense within the context of an ActivityManager
+# (to assign the activity_id) so there doesn't seem much point to test them separately.
+
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 
 # Test GPX files.
@@ -21,11 +25,11 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES = [
     os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),
     os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise_2.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.22k_clockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.23k_counterclockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_7k_counterclockwise.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),
 ]
 
 TEST_CONFIG = Config(
@@ -69,6 +73,8 @@ class SingleActivityTestCase(unittest.TestCase):
 
         for a, g in zip(self.activities, self.gpx):
             self.assertAlmostEqual(a.metadata.distance_2d_km, g.length_2d())
+
+
 
 
 if __name__ == '__main__':

@@ -21,10 +21,6 @@ class Config:
 
         self.user_name = parser['general']['user_name']
 
-        self.thumbnail_dir = os.path.join(self.data_dir, 'thumbnails')
-        self.gpx_file_dir = os.path.join(self.data_dir, 'gpx_files')
-        self.db_file = os.path.join(self.data_dir, 'pyft.db')
-
         self.distance_unit = parser['general']['distance_unit']
 
         self.match_center_threshold = parser['general'].getfloat('match_center_threshold')
@@ -35,6 +31,11 @@ class Config:
 
         for k in kwargs:
             setattr(self, k, kwargs[k])
+
+        self.thumbnail_dir = os.path.join(self.data_dir, 'thumbnails')
+        self.gpx_file_dir = os.path.join(self.data_dir, 'gpx_files')
+        self.db_file = os.path.join(self.data_dir, 'pyft.db')
+
         for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir):
             if not os.path.exists(_dir):
                 os.makedirs(_dir)

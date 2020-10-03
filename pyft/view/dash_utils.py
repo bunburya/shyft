@@ -46,7 +46,7 @@ class BaseDashComponentFactory:
     def __init__(self, config: Config):
         self.config = config
 
-    def get_activity_name(self, metadata: ActivityMetaData) -> str:
+    def activity_name(self, metadata: ActivityMetaData) -> str:
         """Return an activity's name or, if the activity has no name,
         generate one using the activity's other metadata.
         """
@@ -55,7 +55,7 @@ class BaseDashComponentFactory:
             name = self.config.default_activity_name_format.format(**vars(metadata))
         return name
 
-    def get_activity_row(self, metadata: ActivityMetaData, base_id: str) -> dbc.Row:
+    def activity_row(self, metadata: ActivityMetaData, base_id: str) -> dbc.Row:
         """A generic function to return a Row containing a thumbnail,
         description and link in respect of a particular activity.
         """
@@ -74,7 +74,7 @@ class BaseDashComponentFactory:
             dbc.Col(
                 [
                     html.A(
-                        [f'{self.get_activity_name(metadata)}'],  # TODO:  Get default name
+                        [f'{self.activity_name(metadata)}'],  # TODO:  Get default name
                         id=f'{base_id}_link_{metadata.activity_id}',
                         href='TODO'  # TODO:  Get relative link to display activity
                     )
@@ -83,11 +83,11 @@ class BaseDashComponentFactory:
             )
         ])
 
-    def get_activities_table(self, metadata_list: Iterable[ActivityMetaData], **kwargs) -> dt.DataTable:
+    def activities_table(self, metadata_list: Iterable[ActivityMetaData], **kwargs) -> dt.DataTable:
         """A generic function to return a DataTable containing a list of activities."""
         data = [{
-            'thumb': f'![{md.activity_id}]({md.thumbnail_file})',
-            'name': f'[{self.get_activity_name(md)}](http://TODO_LINK_TO_ACTIVITY)',
+            'thumb': f'![{md.activity_id}]({self.thumbnail_link(md)})',
+            'name': f'[{self.activity_name(md)}]({self.activity_link(md)})',
         } for md in metadata_list]
         return dt.DataTable(
             columns=self.ACTIVITY_TABLE_COLS,
@@ -96,10 +96,21 @@ class BaseDashComponentFactory:
             **kwargs
         )
 
+    def activity_link(self, metadata: ActivityMetaData) -> str:
+        """Returns a (relative) link to the given activity."""
+        return f'/activity/{metadata.activity_id}'
+
+    def thumbnail_link(self, metadata: ActivityMetaData) -> str:
+        """Returns a (relative) link to to the thumbnail image of the
+        given activity.
+        """
+        # NOTE:  Not currently used; we just pull metadata.thumbnail_file.
+        return f'/thumbnails/{metadata.activity_id}.png'
+
 class ActivityViewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
 
-    def get_activity_overview(self, metadata: ActivityMetaData) -> html.Div:
+    def activity_overview(self, metadata: ActivityMetaData) -> html.Div:
         """Return markdown containing a summary of some key metrics
         about the given activity.
         """
@@ -121,7 +132,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
             """)
         )
 
-    def get_splits_table(self, id: str, splits_df: pd.DataFrame, **kwargs) -> dt.DataTable:
+    def splits_table(self, id: str, splits_df: pd.DataFrame, **kwargs) -> dt.DataTable:
         """Return a DataTable with information about an activity broken
         down by split.
         """
@@ -147,16 +158,16 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
             **kwargs
         )
 
-    def get_activity_graph(self, activity: Activity, **kwargs) -> go.Figure:
+    def activity_graph(self, activity: Activity, **kwargs) -> go.Figure:
         """Return a graph with various bits of information relating
         to the given activity.
         """
         fig = px.line(activity.points, x='time', y='kmph')
         return fig
 
-    def get_map_figure(self, df: pd.DataFrame, highlight_col: Optional[str] = None,
-                       highlight_vals: Optional[List[int]] = None, figure: Optional[go.Figure] = None,
-                       **kwargs) -> go.Figure:
+    def map_figure(self, df: pd.DataFrame, highlight_col: Optional[str] = None,
+                   highlight_vals: Optional[List[int]] = None, figure: Optional[go.Figure] = None,
+                   **kwargs) -> go.Figure:
         # TODO:  More helpful hover text
         if figure:
             fig = go.Figure(figure)
@@ -174,7 +185,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 try:
                     tn_int = int(trace.name)
                 except (AttributeError, ValueError):
-                    # Trace has no attribute name, or its name can't be converted to an int
+                    # Trace has no attribute "name", or its name can't be converted to an int
                     continue
                 if tn_int in highlight_vals:
                     traces.append(trace)
@@ -199,4 +210,5 @@ class OverviewComponentFactory(BaseDashComponentFactory):
     a user's activities.
     """
 
-    pass
+    def intro(self):
+        return dcc.Markdown(f'# Activity overview for {self.config.user_name}')

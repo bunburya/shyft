@@ -16,11 +16,11 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES = [
     os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),                                # 0
     os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),                       # 1
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise.gpx'),         # 2
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise_2.gpx'),       # 3
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.22k_clockwise.gpx'),           # 4
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.23k_counterclockwise.gpx'),    # 5
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_7k_counterclockwise.gpx'),         # 6
+    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),         # 2
+    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),       # 3
+    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),           # 4
+    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),    # 5
+    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),         # 6
 ]
 
 # ints here are index values in TEST_GPX_FILES

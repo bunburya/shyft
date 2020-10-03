@@ -23,12 +23,14 @@ def get_page_content(
         return [dcc.Markdown('No activity specified, or no such activity exists.')]
 
     return [
-        html.H1([f'View activity: {dc_factory.get_activity_name(activity.metadata)}']),
-        html.Div([dc_factory.get_activity_overview(activity.metadata)]),
+        html.H1(f'View activity: {dc_factory.activity_name(activity.metadata)}'),
+        html.H2('Activity overview'),
+        html.Div([dc_factory.activity_overview(activity.metadata)]),
+        html.H2('Route'),
         dbc.Row(
             children=[
                 dbc.Col(
-                    dc_factory.get_splits_table(
+                    dc_factory.splits_table(
                         id='km_summary',
                         splits_df=activity.km_summary,
                     ),
@@ -38,7 +40,7 @@ def get_page_content(
                 dbc.Col(
                     dcc.Graph(
                         id='map',
-                        figure=dc_factory.get_map_figure(activity.points)
+                        figure=dc_factory.map_figure(activity.points)
                     ),
                     width=8
                 )
@@ -48,17 +50,19 @@ def get_page_content(
             },
             no_gutters=True
         ),
+        html.H2('Analysis'),
         dbc.Row([
             dbc.Col([
                 dcc.Graph(
                     id='graph',
-                    figure=dc_factory.get_activity_graph(activity)
+                    figure=dc_factory.activity_graph(activity)
                 )
             ])
         ]),
+        html.H2('Recent matched activities'),
         dbc.Row([
             dbc.Col([
-                dc_factory.get_activities_table(
+                dc_factory.activities_table(
                     activity_manager.get_activity_matches(activity.metadata, number=5),
                     id='test'
                 )
@@ -103,8 +107,8 @@ def get_dash_app(activity_manager: ActivityManager, config: Config, *dash_args, 
         # print(selected_rows)
         #print(f'update_map called with selected rows {selected_rows}')
         activity = activity_manager.get_activity_by_id(activity_id)
-        new_map = dc_factory.get_map_figure(activity.points, figure=figure, highlight_col='km',
-                                            highlight_vals=selected_rows)
+        new_map = dc_factory.map_figure(activity.points, figure=figure, highlight_col='km',
+                                        highlight_vals=selected_rows)
         #print(new_map.data)
         return new_map
 

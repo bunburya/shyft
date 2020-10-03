@@ -13,7 +13,9 @@ from pyft.config import Config
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_CONFIG_FILE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
-TEST_RUN_DATA_DIR = os.path.join(TEST_DATA_DIR, 'run')
+TEST_RUN_DATA_DIR_BASE = os.path.join(TEST_DATA_DIR, 'run')
+TEST_RUN_DATA_DIR_1 = TEST_RUN_DATA_DIR_BASE + '_1'
+TEST_RUN_DATA_DIR_2 = TEST_RUN_DATA_DIR_BASE + '_2'
 
 # Test GPX files.
 # Neither 0 nor 1 should loose- or tight-match any other activity.
@@ -21,13 +23,21 @@ TEST_RUN_DATA_DIR = os.path.join(TEST_DATA_DIR, 'run')
 # 4 and 5 should loose- but not tight-match each other.
 # TBC if 6 should match 4 or 5.
 TEST_GPX_FILES = [
-    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),  # 2019-09-08
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),  # 2019-10-30
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise.gpx'),  # 2020-08-05
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise_2.gpx'),  # 2020-08-04
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.22k_clockwise.gpx'),  # 2020-03-20
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.23k_counterclockwise.gpx'),  # 2020-06-18
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_7k_counterclockwise.gpx'),  # 2019-07-08
+    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),                    # 0     2019-09-08
+    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),           # 1     2019-10-30
+    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),        # 2     2020-08-05
+    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),        # 3     2020-08-04
+    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),      # 4     2020-03-20
+    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),     # 5     2020-06-18
+    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),        # 6     2019-07-08
+    os.path.join(TEST_DATA_DIR, 'Calcutta_Run_10k_2019.gpx'),       # 7     2019
+    os.path.join(TEST_DATA_DIR, 'cuilcagh_walk_2019.gpx'),          # 8     2019
+    os.path.join(TEST_DATA_DIR, 'fermanagh_walk_2019.gpx'),         # 9     2019
+    os.path.join(TEST_DATA_DIR, 'Frank_Duffy_10_Mile_2019.gpx'),    # 10    2019
+    os.path.join(TEST_DATA_DIR, 'Great_Ireland_Run_2019.gpx'),      # 11    2019
+    os.path.join(TEST_DATA_DIR, 'howth_walk_2019.gpx'),             # 12    2019
+    os.path.join(TEST_DATA_DIR, 'Irish_Runner_10_Mile_2019.gpx'),   # 13    2019
+    os.path.join(TEST_DATA_DIR, 'run_in_the_dark_10k_2019.gpx'),    # 14    2019
 ]
 
 # ints here are index values in TEST_GPX_FILES
@@ -40,7 +50,11 @@ TIGHT_MATCH = (
     (2, 3),
 )
 
-UNIQUE = (0, 1)
+UNIQUE = (0, 1, 7, 8, 9, 10, 11, 12, 13, 14)
+
+_2019 = (0, 1, 6, 7, 8, 9, 10, 11, 12, 13, 14)
+_2020 = (2, 3, 4, 5)
+_2020_08 = (2, 3)
 
 
 class ActivityManagerTestCase(unittest.TestCase):
@@ -48,16 +62,16 @@ class ActivityManagerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
 
-        if exists(TEST_RUN_DATA_DIR):
-            shutil.rmtree(TEST_RUN_DATA_DIR)
+        if exists(TEST_RUN_DATA_DIR_1):
+            shutil.rmtree(TEST_RUN_DATA_DIR_1)
+        if exists(TEST_RUN_DATA_DIR_2):
+            shutil.rmtree(TEST_RUN_DATA_DIR_2)
 
         cls.TEST_CONFIG_1 = Config(TEST_CONFIG_FILE,
-                                   data_dir=TEST_RUN_DATA_DIR,
-                                   db_file=os.path.join(TEST_RUN_DATA_DIR, 'test1.db'))
+                                   data_dir=TEST_RUN_DATA_DIR_1)
 
         cls.TEST_CONFIG_2 = Config(TEST_CONFIG_FILE,
-                                   data_dir=TEST_RUN_DATA_DIR,
-                                   db_file=os.path.join(TEST_RUN_DATA_DIR, 'test2.db'))
+                                   data_dir=TEST_RUN_DATA_DIR_2)
 
         cls.gpx = []
         cls.activities = []
@@ -96,6 +110,8 @@ class ActivityManagerTestCase(unittest.TestCase):
         self.assertEqual(md1.prototype_id, md2.prototype_id)
         self.assertEqual(md1.name, md2.name)
         self.assertEqual(md1.description, md2.description)
+        # TODO:  These should check that the files are equal, not just that the
+        # filepaths are equal (which they won't be if the data directories are different).
         self.assertEqual(md1.thumbnail_file, md2.thumbnail_file)
         self.assertEqual(md1.data_file, md2.data_file)
 
@@ -103,7 +119,7 @@ class ActivityManagerTestCase(unittest.TestCase):
         self._assert_metadata_equal(a1.metadata, a2.metadata)
         pd.testing.assert_frame_equal(a1.points, a2.points, check_like=True)
 
-    def test_1_setup(self):
+    def test_01_setup(self):
         """Perform some basic checks to ensure the test is set up properly."""
 
         self.assertEqual(len(TEST_GPX_FILES), len(self.activities))
@@ -116,7 +132,7 @@ class ActivityManagerTestCase(unittest.TestCase):
         db2.cursor.execute('SELECT name from sqlite_master where type= "table"')
         self.assertSetEqual({i[0] for i in db2.cursor.fetchall()}, tables)
 
-    def test_2_add_activity(self):
+    def test_02_add_activity(self):
         """Test basic adding of activities."""
 
         for a in self.activities:
@@ -129,7 +145,7 @@ class ActivityManagerTestCase(unittest.TestCase):
             self.proto_ids[a.metadata.activity_id] = a.metadata.prototype_id
             self._assert_activities_equal(a, self.manager_1.get_activity_by_id(a.metadata.activity_id))
 
-    def test_3_add_activity_from_file(self):
+    def test_03_add_activity_from_file(self):
         """Test basic adding of activities from filepaths, including
         that the results are the same as adding activities directly.
         """
@@ -143,7 +159,7 @@ class ActivityManagerTestCase(unittest.TestCase):
 
         self.assertSequenceEqual(self.manager_1.prototypes, self.manager_2.prototypes)
 
-    def test_4_test_loose_matching(self):
+    def test_04_test_loose_matching(self):
 
         for i1, i2 in LOOSE_MATCH:
             id1 = self.fpath_ids[TEST_GPX_FILES[i1]]
@@ -154,7 +170,7 @@ class ActivityManagerTestCase(unittest.TestCase):
                             msg=f'{os.path.basename(TEST_GPX_FILES[i1])} and {os.path.basename(TEST_GPX_FILES[i2])}'
                                 ' do not loose match.')
 
-    def test_5_test_tight_matching(self):
+    def test_05_test_tight_matching(self):
 
         for i1, i2 in TIGHT_MATCH:
             id1 = self.fpath_ids[TEST_GPX_FILES[i1]]
@@ -172,7 +188,7 @@ class ActivityManagerTestCase(unittest.TestCase):
             a2 = self.manager_1.get_activity_by_id(id2)
             self.assertFalse(self.manager_1.tight_match_routes(a1, a2)[0])
 
-    def test_6_unique_matching(self):
+    def test_06_unique_matching(self):
         for i in UNIQUE:
             fpath1 = TEST_GPX_FILES[i]
             id1 = self.fpath_ids[fpath1]
@@ -191,7 +207,7 @@ class ActivityManagerTestCase(unittest.TestCase):
                     self.assertFalse(self.manager_1.tight_match_routes(a1, a2)[0],
                                      msg=f'{os.path.basename(fpath1)} is tight matching {os.path.basename(fpath2)}.')
 
-    def test_7_prototypes(self):
+    def test_07_prototypes(self):
         for i in UNIQUE:
             fpath1 = TEST_GPX_FILES[i]
             a1 = self.manager_1.get_activity_by_id(self.fpath_ids[fpath1])
@@ -214,21 +230,28 @@ class ActivityManagerTestCase(unittest.TestCase):
             p = self.manager_1.get_activity_by_id(a.metadata.prototype_id)
             self.assertTrue(self.manager_1.tight_match_routes(a, p))
 
-    def test_8_search(self):
+    def test_08_search(self):
         # print(self.manager_1.get_activity_by_id(1))
         results = self.manager_1.search_activity_data(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
-        self.assertSetEqual({a.activity_id for a in results}, {0, 1, 6})
+        self.assertSetEqual({a.activity_id for a in results}, set(_2019))
         # print(results)
         results = self.manager_1.search_activity_data(prototype=2)
         self.assertSetEqual({a.activity_id for a in results}, {2, 3})
         # print(results)
 
-    def test_9_thumbnails(self):
+    def test_09_thumbnails(self):
         for i in self.manager_1.activity_ids:
-            benchmark = os.path.join(TEST_DATA_DIR, 'thumbnails', f'thumb_{i}.png')
+            benchmark = os.path.join(TEST_RUN_DATA_DIR_1, 'thumbnails', f'{i}.png')
             fpath = self.manager_1.get_activity_by_id(i).write_thumbnail()
             with open(fpath, 'rb') as f1, open(benchmark, 'rb') as f2:
                 self.assertEqual(f1.read(), f2.read())
+
+    def test_10_activity_ids(self):
+        self.assertEqual(len(TEST_GPX_FILES), len(self.manager_1.activity_ids))
+        for id in self.manager_1.activity_ids:
+            a = self.manager_1.get_activity_by_id(id)
+            self.assertEqual(id, a.metadata.activity_id)
+            self._assert_activities_equal(a, self.manager_1.activities[id])
 
 
 if __name__ == '__main__':

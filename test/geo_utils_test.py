@@ -13,11 +13,11 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES = [
     os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),
     os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Evening_Run_9k_counterclockwise_2.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.22k_clockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Afternoon_Run_7.23k_counterclockwise.gpx'),
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_7k_counterclockwise.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),
+    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),
 ]
 
 class GeoUtilsTestCase(unittest.TestCase):

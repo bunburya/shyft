@@ -2,6 +2,9 @@ import re
 from datetime import timezone, timedelta, datetime
 from typing import Any, Iterable, Dict, Optional, Sequence
 
+#import warnings
+#warnings.simplefilter(action='ignore', category=UserWarning)
+
 import pyft.config
 import sqlite3 as sql
 import numpy as np
@@ -75,7 +78,7 @@ def str_to_timedelta(s: str) -> timedelta:
     return timedelta(days=days, hours=int(hours), minutes=int(minutes), seconds=float(seconds))
 
 
-def activity_data_to_dict(row: sql.Row) -> Dict[str, Any]:
+def activity_row_to_dict(row: sql.Row) -> Dict[str, Any]:
     """Convert a Row object representing a query on activity data
     into a dict.
     """
@@ -207,14 +210,13 @@ class DatabaseManager:
         result = self.cursor.fetchone()
         if not result:
             raise ValueError(f'No activity found with activity_id {activity_id}.')
-        return activity_data_to_dict(result)
+        return activity_row_to_dict(result)
 
     def search_activity_data(self,
                              from_date: Optional[datetime] = None,
                              to_date: Optional[datetime] = None,
                              prototype: Optional[int] = None,
-                             number: Optional[int] = None
-                             ) -> Sequence[Dict[str, Any]]:
+                             number: Optional[int] = None) -> Sequence[Dict[str, Any]]:
         where = []
         params = []
         if from_date and to_date:
@@ -232,7 +234,29 @@ class DatabaseManager:
         query = 'SELECT * FROM "activities" WHERE ' + ' AND '.join(where)
         self.cursor.execute(query, params)
         results = self.cursor.fetchall()
-        return [activity_data_to_dict(r) for r in results[:number]]
+        return [activity_row_to_dict(r) for r in results[:number]]
+
+    def get_activities_in_timerange(self,
+                                    year: int = None,
+                                    month: int = None,
+                                    dow: int = None,
+                                    number: int = None) -> Sequence[Dict[str, Any]]:
+        dt_format = []
+        expected = []
+        if year is not None:
+            dt_format.append('%Y')
+            expected.append(year)
+        if month is not None:
+            dt_format.append('%m')
+            expected.append(f'{month:02}')
+        if dow is not None:
+            dt_format.append('%w')
+            expected.append(f'{dow:02}')
+        query = f'SELECT * FROM "activities" WHERE datetime({" ".join(dt_format)}, date_time) = "{" ".join(expected)}"'
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        return [activity_row_to_dict(r) for r in results[:number]]
+
 
     def load_points(self, activity_id: int) -> pd.DataFrame:
         points = pd.read_sql_query('SELECT * FROM "points" WHERE activity_id=?', self.connection,

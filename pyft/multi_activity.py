@@ -41,6 +41,12 @@ class ActivityManager:
         except ValueError:
             return None
 
+    def get_metadata_by_id(self, activity_id: int) -> Optional[ActivityMetaData]:
+        try:
+            return ActivityMetaData(**self.dbm.load_activity_data(activity_id))
+        except ValueError:
+            return None
+
     def get_new_activity_id(self):
         return self.dbm.get_max_activity_id() + 1
 
