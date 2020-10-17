@@ -1,3 +1,4 @@
+import filecmp
 import os
 import shutil
 import unittest
@@ -97,6 +98,9 @@ class ActivityManagerTestCase(unittest.TestCase):
     def _assert_timedeltas_almost_equal(self, td1: timedelta, td2: timedelta):
         self.assertAlmostEqual(td1.total_seconds(), td2.total_seconds(), 4)
 
+    def _assert_files_equal(self, fpath1: str, fpath2: str):
+        self.assertTrue(filecmp.cmp(fpath1, fpath2), f'{fpath1} is not equal to {fpath2}.')
+
     def _assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData):
         self.assertEqual(md1.activity_id, md2.activity_id)
         self.assertEqual(md1.activity_type, md2.activity_type)
@@ -110,10 +114,8 @@ class ActivityManagerTestCase(unittest.TestCase):
         self.assertEqual(md1.prototype_id, md2.prototype_id)
         self.assertEqual(md1.name, md2.name)
         self.assertEqual(md1.description, md2.description)
-        # TODO:  These should check that the files are equal, not just that the
-        # filepaths are equal (which they won't be if the data directories are different).
-        self.assertEqual(md1.thumbnail_file, md2.thumbnail_file)
-        self.assertEqual(md1.data_file, md2.data_file)
+        self._assert_files_equal(md1.thumbnail_file, md2.thumbnail_file)
+        self._assert_files_equal(md1.data_file, md2.data_file)
 
     def _assert_activities_equal(self, a1: Activity, a2: Activity):
         self._assert_metadata_equal(a1.metadata, a2.metadata)
@@ -252,6 +254,31 @@ class ActivityManagerTestCase(unittest.TestCase):
             a = self.manager_1.get_activity_by_id(id)
             self.assertEqual(id, a.metadata.activity_id)
             self._assert_activities_equal(a, self.manager_1.activities[id])
+
+    def test_11_time(self):
+        """Test that the GPX object and the associated Activity have the same time."""
+
+        for a, g in zip(self.activities, self.gpx):
+            self.assertEqual(a.metadata.date_time, g.time)
+
+    def test_12_distance(self):
+        """Test that the GPX object and the associated Activity have (almost) the same 2d length."""
+
+        for a, g in zip(self.activities, self.gpx):
+            self.assertAlmostEqual(a.metadata.distance_2d_km * 1000, g.length_2d())
+
+    def test_13_load_metadata(self):
+        """Test searching for Activity metadata by activity_id.
+
+        As well as checking that metadata is retrieved correctly, we
+        run the searches multiple times to ensure that the
+        DatabaseManager has no trouble with, eg, recursive cursors.
+        """
+        for _ in range(3):
+            for _id, _activity in enumerate(self.activities):
+                md = self.manager_1.get_activity_by_id(_id).metadata
+                self._assert_metadata_equal(md, _activity.metadata)
+                self.manager_1.get_activity_by_id(_id)
 
 
 if __name__ == '__main__':

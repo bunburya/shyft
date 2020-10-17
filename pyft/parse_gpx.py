@@ -102,13 +102,31 @@ def get_gpx_time(g: gpx.GPX) -> datetime:
     except AttributeError:
         return g.time
 
+ACTIVITY_TYPES = {'run', 'walk'}
+def get_activity_type(g: gpx.GPX) -> str:
+    activity_type = 'activity'
+    track_type = g.tracks[0].type
+    if track_type in ACTIVITY_TYPES:
+        activity_type = track_type
+    elif g.creator.startswith('StravaGPX'):
+        if track_type == '9':
+            activity_type = 'run'
+        elif track_type == '10':
+            activity_type = 'walk'
+    elif g.creator.startswith('Garmin Connect'):
+        if track_type == 'running':
+            activity_type = 'run'
+        elif track_type == 'walking':
+            activity_type = 'walk'
+    return activity_type
 
 def get_gpx_metadata(g: gpx.GPX) -> dict:
     """Return (selected) metadata for GPX object."""
     return {
         'name': g.name,
         'description': g.description,
-        'time': get_gpx_time(g)
+        'time': get_gpx_time(g),
+        'activity_type': get_activity_type(g)
     }
 
 

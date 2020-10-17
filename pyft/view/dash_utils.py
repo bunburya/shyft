@@ -107,6 +107,12 @@ class BaseDashComponentFactory:
         # NOTE:  Not currently used; we just pull metadata.thumbnail_file.
         return f'/thumbnails/{metadata.activity_id}.png'
 
+    def gpx_file_link(self, metadata: ActivityMetaData) -> str:
+        """Returns a (relative) link to the GPX file associated with the
+        given activity.
+        """
+        return f'/gpx_files/{metadata.activity_id}.gpx'
+
 class ActivityViewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
 
@@ -129,6 +135,8 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 **Duration:**\t{metadata.duration}
 
                 **Average pace:**\t{mean_pace}
+
+                [Download GPX file]({self.gpx_file_link(metadata)})
             """)
         )
 

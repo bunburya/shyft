@@ -162,6 +162,8 @@ class Activity:
         if fpath is None:
             fpath = os.path.join(self.config.thumbnail_dir, f'{activity_id}.png')
 
+        fpath = os.path.abspath(fpath)
+
         fig = self.points.plot(
             x='longitude',
             y='latitude'
@@ -193,6 +195,7 @@ class Activity:
         # results in the image just being a tiny blue dot.
         # TODO:  Find a way to explicitly specify the dimensions of the output image
         fig.write_image(fpath, format='png', scale=0.1)
+        #print(f'thumbnail fpath is {fpath}')
         return fpath
 
     @property
@@ -204,7 +207,7 @@ class Activity:
 
     @staticmethod
     def from_gpx_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
-                      activity_description: str = None, activity_type: str = 'run') -> 'Activity':
+                      activity_description: str = None, activity_type: str = None) -> 'Activity':
         points, metadata = parse_gpx_file(fpath)
         #_distance_2d_km = points['cumul_distance_2d'].iloc[-1]
         #center = points[['latitude', 'longitude', 'elevation']].mean()
@@ -212,11 +215,11 @@ class Activity:
             config,
             points,
             activity_id=activity_id,
-            activity_type=activity_type,
+            activity_type=activity_type or metadata['activity_type'],
             date_time=metadata['time'],
             #distance_2d_km=_distance_2d_km,
             #center=center,
-            data_file=fpath,
+            data_file=os.path.abspath(fpath),
             name=activity_name or metadata['name'],
             description=activity_description or metadata['description']
         )

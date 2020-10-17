@@ -1,4 +1,5 @@
 import re
+import threading
 from datetime import timezone, timedelta, datetime
 from typing import Any, Iterable, Dict, Optional, Sequence
 
@@ -159,6 +160,7 @@ class DatabaseManager:
         self.connection.row_factory = sql.Row
         self.cursor = self.connection.cursor()
         self.create_tables()
+        self.lock = threading.Lock()
 
 
     def create_tables(self, commit: bool = True):
@@ -206,8 +208,12 @@ class DatabaseManager:
         return it as a dict.  Raises a ValueError if activity_id is not
         valid.
         """
-        self.cursor.execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
-        result = self.cursor.fetchone()
+        try:
+            self.lock.acquire(True)
+            self.cursor.execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
+            result = self.cursor.fetchone()
+        finally:
+            self.lock.release()
         if not result:
             raise ValueError(f'No activity found with activity_id {activity_id}.')
         return activity_row_to_dict(result)

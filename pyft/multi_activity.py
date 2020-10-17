@@ -63,7 +63,7 @@ class ActivityManager:
         return activity.metadata.activity_id
 
     def add_activity_from_gpx_file(self, fpath: str, activity_name: str = None,
-                                   activity_description: str = None, activity_type: str = 'run') -> int:
+                                   activity_description: str = None, activity_type: str = None) -> int:
         # TODO:  Is any of the below necessary?
         df, metadata = parse_gpx_file(fpath)
         _id = self.get_new_activity_id()
