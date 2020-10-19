@@ -37,9 +37,11 @@ if os.path.exists(TEST_RUN_DATA_DIR):
 
 TEST_DB_FILE = os.path.join(TEST_RUN_DATA_DIR, 'dash_test.db')
 TEST_CONFIG_FILE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
+TEST_ACTIVITY_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_activity_graphs.json')
 
 TEST_CONFIG = Config(
     TEST_CONFIG_FILE,
+    TEST_ACTIVITY_GRAPHS_FILE,
     data_dir=TEST_RUN_DATA_DIR,
     db_file=TEST_DB_FILE
 )

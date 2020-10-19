@@ -119,12 +119,12 @@ class Activity:
         return pd.DataFrame(markers)
 
     @property
-    def km_markers(self):
-        return self.get_split_markers('km', 1000)
+    def km_markers(self) -> pd.DataFrame:
+        return self.get_split_markers('km')
 
     @property
-    def mile_markers(self):
-        return self.get_split_markers('mile', MILE)
+    def mile_markers(self) -> pd.DataFrame:
+        return self.get_split_markers('mile')
 
     def get_split_summary(self, split_col: str) -> pd.DataFrame:
         if split_col == 'km':
@@ -203,6 +203,7 @@ class Activity:
         """Generate a unique (enough) hash for the Activity by hashing the combination of the ActivityMetaData
         variables and the shape (rows and cols) of the points.
         """
+        # TODO:  Check if this is used
         return hashlib.sha1(json.dumps(vars(self.metadata)).encode('utf-8') + bytes(self.points.shape)).hexdigest()
 
     @staticmethod

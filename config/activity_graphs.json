@@ -1,0 +1,8 @@
+[
+  {
+    "graph_type": "line",
+    "x": "time",
+    "y": "kmph",
+    "title": "Speed (kmph) over time"
+  }
+]

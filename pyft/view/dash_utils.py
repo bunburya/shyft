@@ -113,6 +113,7 @@ class BaseDashComponentFactory:
         """
         return f'/gpx_files/{metadata.activity_id}.gpx'
 
+
 class ActivityViewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
 
@@ -173,6 +174,46 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         fig = px.line(activity.points, x='time', y='kmph')
         return fig
 
+    def graph(self, data: pd.DataFrame, graph_type: str, **kwargs) -> go.Figure:
+        """A generic function to create a graph object in respect of an Activity.
+
+        graph_type should correspond to the name of a factory function in
+        plotly.express.
+
+        Any additional keyword arguments will be passed to the relevant factory
+        function.
+        """
+
+        func = getattr(px, graph_type)
+        return func(data_frame=data, **kwargs)
+
+    def all_graphs(self, activity: Activity) -> List[dbc.Row]:
+        graphs = []
+        for i, go_data in enumerate(self.config.activity_graphs):
+            go_data = go_data.copy()
+            source = go_data.pop('data_source')
+            if source == 'points':
+                data = activity.points
+            elif source == 'km_splits':
+                data = activity.km_summary
+            elif source == 'mile_splits':
+                data = activity.mile_summary
+            else:
+                raise ValueError(f'Bad value for source_data: "{source}".')
+            print(go_data)
+            graphs.append(
+                dbc.Row(
+                    dbc.Col(
+                        dcc.Graph(
+                            id=f'graph_{i}',
+                            figure=self.graph(data, go_data.pop('graph_type'), **go_data)
+                        )
+                    )
+                )
+            )
+        print(graphs)
+        return graphs
+
     def map_figure(self, df: pd.DataFrame, highlight_col: Optional[str] = None,
                    highlight_vals: Optional[List[int]] = None, figure: Optional[go.Figure] = None,
                    **kwargs) -> go.Figure:
@@ -212,6 +253,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                     hovertext=data['time'].dt.strftime('%H:%M:%S')
                 ))
         return fig
+
 
 class OverviewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to in an overview of all

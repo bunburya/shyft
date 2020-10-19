@@ -2,16 +2,17 @@
 
 TODO:  Implement proper configuration using ConfigParser.
 """
+import json
 import os
 import configparser
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import appdirs
 
 
 class Config:
 
-    def __init__(self, ini_fpath: str, **kwargs):
+    def __init__(self, ini_fpath: str, activity_graphs_fpath: Optional[str] = None, **kwargs):
         parser = configparser.ConfigParser()
         parser.read(ini_fpath)
         if parser['general']['data_dir'] is None:
@@ -39,3 +40,10 @@ class Config:
         for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir):
             if not os.path.exists(_dir):
                 os.makedirs(_dir)
+
+        if activity_graphs_fpath is not None:
+            with open(activity_graphs_fpath) as f:
+                self.activity_graphs = json.load(f)
+        else:
+            self.activity_graphs = []
+        print(self.activity_graphs)

@@ -51,14 +51,7 @@ def get_page_content(
             no_gutters=True
         ),
         html.H2('Analysis'),
-        dbc.Row([
-            dbc.Col([
-                dcc.Graph(
-                    id='graph',
-                    figure=dc_factory.activity_graph(activity)
-                )
-            ])
-        ]),
+        *dc_factory.all_graphs(activity),
         html.H2('Recent matched activities'),
         dbc.Row([
             dbc.Col([
