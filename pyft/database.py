@@ -3,8 +3,8 @@ import threading
 from datetime import timezone, timedelta, datetime
 from typing import Any, Iterable, Dict, Optional, Sequence
 
-#import warnings
-#warnings.simplefilter(action='ignore', category=UserWarning)
+import warnings
+warnings.simplefilter('ignore', UserWarning)
 
 import pyft.config
 import sqlite3 as sql
@@ -155,18 +155,30 @@ class DatabaseManager:
     """
 
     def __init__(self, config: pyft.config.Config):
+        self.lock = threading.Lock()
         self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES, check_same_thread=False)
-        # self.connection.set_trace_callback(print)
+        #self.connection.set_trace_callback(print)
         self.connection.row_factory = sql.Row
         self.cursor = self.connection.cursor()
         self.create_tables()
-        self.lock = threading.Lock()
+
+    def sql_execute(self, *args, **kwargs):
+        """Execute SQL in a threadsafe manner and return the results.
+
+        args and kwargs should be the arguments that would normally be
+        passed to cursor.execute.
+        """
+        try:
+            self.lock.acquire(True)
+            self.cursor.execute(*args, **kwargs)
+        finally:
+            self.lock.release()
 
 
     def create_tables(self, commit: bool = True):
-        self.cursor.execute(self.ACTIVITIES)
-        self.cursor.execute(self.POINTS)
-        self.cursor.execute(self.PROTOTYPES)
+        self.sql_execute(self.ACTIVITIES)
+        self.sql_execute(self.POINTS)
+        self.sql_execute(self.PROTOTYPES)
         if commit:
             self.connection.commit()
 
@@ -208,12 +220,8 @@ class DatabaseManager:
         return it as a dict.  Raises a ValueError if activity_id is not
         valid.
         """
-        try:
-            self.lock.acquire(True)
-            self.cursor.execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
-            result = self.cursor.fetchone()
-        finally:
-            self.lock.release()
+        self.sql_execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
+        result = self.cursor.fetchone()
         if not result:
             raise ValueError(f'No activity found with activity_id {activity_id}.')
         return activity_row_to_dict(result)
@@ -237,8 +245,10 @@ class DatabaseManager:
         if prototype is not None:
             where.append('prototype_id = ?')
             params.append(prototype)
-        query = 'SELECT * FROM "activities" WHERE ' + ' AND '.join(where)
-        self.cursor.execute(query, params)
+        query = 'SELECT * FROM "activities"'
+        if where:
+            query += ' WHERE ' + ' AND '.join(where)
+        self.sql_execute(query, params)
         results = self.cursor.fetchall()
         return [activity_row_to_dict(r) for r in results[:number]]
 
@@ -259,7 +269,7 @@ class DatabaseManager:
             dt_format.append('%w')
             expected.append(f'{dow:02}')
         query = f'SELECT * FROM "activities" WHERE datetime({" ".join(dt_format)}, date_time) = "{" ".join(expected)}"'
-        self.cursor.execute(query)
+        self.sql_execute(query)
         results = self.cursor.fetchall()
         return [activity_row_to_dict(r) for r in results[:number]]
 
@@ -273,23 +283,23 @@ class DatabaseManager:
         return points
 
     def load_prototype(self, prototype_id: int):
-        self.cursor.execute('SELECT activity_id FROM "prototypes" WHERE id=?', (prototype_id,))
+        self.sql_execute('SELECT activity_id FROM "prototypes" WHERE id=?', (prototype_id,))
         return self.cursor.fetchone()
 
     def get_all_activity_ids(self):
-        self.cursor.execute('SELECT activity_id from "activities"')
+        self.sql_execute('SELECT activity_id from "activities"')
         # fetchall returns a sequence of Row objects
         return [r['activity_id'] for r in self.cursor.fetchall()]
 
     def get_all_prototypes(self):
-        self.cursor.execute('SELECT activity_id FROM "prototypes"')
+        self.sql_execute('SELECT activity_id FROM "prototypes"')
         return [r['activity_id'] for r in self.cursor.fetchall()]
 
     def get_max_activity_id(self) -> int:
         """Return the highest activity_id in activities.  If activities
         is empty, return -1.
         """
-        self.cursor.execute('SELECT MAX(activity_id) FROM "activities"')
+        self.sql_execute('SELECT MAX(activity_id) FROM "activities"')
         max_id = self.cursor.fetchone()[0]
         if max_id is None:
             max_id = -1

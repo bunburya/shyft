@@ -200,7 +200,6 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 data = activity.mile_summary
             else:
                 raise ValueError(f'Bad value for source_data: "{source}".')
-            print(go_data)
             graphs.append(
                 dbc.Row(
                     dbc.Col(
@@ -211,7 +210,6 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                     )
                 )
             )
-        print(graphs)
         return graphs
 
     def map_figure(self, df: pd.DataFrame, highlight_col: Optional[str] = None,

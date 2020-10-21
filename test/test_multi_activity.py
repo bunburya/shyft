@@ -17,6 +17,8 @@ TEST_CONFIG_FILE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
 TEST_RUN_DATA_DIR_BASE = os.path.join(TEST_DATA_DIR, 'run')
 TEST_RUN_DATA_DIR_1 = TEST_RUN_DATA_DIR_BASE + '_1'
 TEST_RUN_DATA_DIR_2 = TEST_RUN_DATA_DIR_BASE + '_2'
+TEST_RUN_DATA_DIR_3 = TEST_RUN_DATA_DIR_BASE + '_3'
+
 
 # Test GPX files.
 # Neither 0 nor 1 should loose- or tight-match any other activity.
@@ -67,12 +69,17 @@ class ActivityManagerTestCase(unittest.TestCase):
             shutil.rmtree(TEST_RUN_DATA_DIR_1)
         if exists(TEST_RUN_DATA_DIR_2):
             shutil.rmtree(TEST_RUN_DATA_DIR_2)
+        if exists(TEST_RUN_DATA_DIR_3):
+            shutil.rmtree(TEST_RUN_DATA_DIR_3)
 
         cls.TEST_CONFIG_1 = Config(TEST_CONFIG_FILE,
                                    data_dir=TEST_RUN_DATA_DIR_1)
 
         cls.TEST_CONFIG_2 = Config(TEST_CONFIG_FILE,
                                    data_dir=TEST_RUN_DATA_DIR_2)
+
+        cls.TEST_CONFIG_3 = Config(TEST_CONFIG_FILE,
+                                   data_dir=TEST_RUN_DATA_DIR_3)
 
         cls.gpx = []
         cls.activities = []
@@ -82,8 +89,13 @@ class ActivityManagerTestCase(unittest.TestCase):
             cls.activities.append(Activity.from_gpx_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
         cls.proto_ids = {}
         cls.fpath_ids = {}
-        cls.manager_1 = ActivityManager(cls.TEST_CONFIG_1)  # Add Activities directly
+        cls.manager_1 = ActivityManager(cls.TEST_CONFIG_1)  # Add Activities directly (populate in setUp and use as the
+                                                            # base for most tests)
         cls.manager_2 = ActivityManager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
+        cls.manager_3 = ActivityManager(cls.TEST_CONFIG_3)  # Add Activities directly (just to test adding)
+
+        for a in cls.activities:
+            cls.manager_1.add_activity(a)
 
         # cls.manager_1.dbm.connection.set_trace_callback(print)
 
@@ -137,15 +149,22 @@ class ActivityManagerTestCase(unittest.TestCase):
     def test_02_add_activity(self):
         """Test basic adding of activities."""
 
-        for a in self.activities:
+        activities = []
+        for i, fpath in enumerate(TEST_GPX_FILES):
+            with open(fpath) as f:
+                self.gpx.append(gpxpy.parse(f))
+            activities.append(Activity.from_gpx_file(fpath, self.TEST_CONFIG_3, activity_id=i))
+
+
+        for a in activities:
             # print(a.metadata.data_file, a.metadata.date_time)
             self.assertIsNotNone(a.metadata.activity_id)
             self.assertIsNone(a.metadata.prototype_id)
-            self.manager_1.add_activity(a)
+            self.manager_3.add_activity(a)
             self.assertIsNotNone(a.metadata.activity_id)
             self.assertIsNotNone(a.metadata.prototype_id)
             self.proto_ids[a.metadata.activity_id] = a.metadata.prototype_id
-            self._assert_activities_equal(a, self.manager_1.get_activity_by_id(a.metadata.activity_id))
+            self._assert_activities_equal(a, self.manager_3.get_activity_by_id(a.metadata.activity_id))
 
     def test_03_add_activity_from_file(self):
         """Test basic adding of activities from filepaths, including
@@ -279,6 +298,13 @@ class ActivityManagerTestCase(unittest.TestCase):
                 md = self.manager_1.get_activity_by_id(_id).metadata
                 self._assert_metadata_equal(md, _activity.metadata)
                 self.manager_1.get_activity_by_id(_id)
+
+    def test_14_summarize_activities(self):
+
+        df = self.manager_1.summarize_activity_data()
+        #print(df)
+        print(df.columns)
+        print(df.shape)
 
 
 if __name__ == '__main__':

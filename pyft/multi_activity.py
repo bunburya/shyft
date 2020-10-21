@@ -1,16 +1,35 @@
 from datetime import datetime
 from typing import Iterable, Tuple, Sequence, Optional, Dict, Any, List
 
-import numpy as np
-from scipy.spatial.distance import euclidean
-
-from fastdtw import fastdtw
+import pandas as pd
 
 from pyft.config import Config
 from pyft.database import DatabaseManager, str_to_timedelta
 from pyft.geo_utils import distance, norm_dtw, norm_length_diff, norm_center_diff
 from pyft.parse_gpx import distance_2d, parse_gpx_file
 from pyft.single_activity import Activity, ActivityMetaData
+
+
+class ActivityGroup:
+
+    def __init__(self, activities: Sequence[Activity]):
+        self._activities = list(activities)
+
+    def __getitem__(self, i: int) -> Activity:
+        return self._activities.__getitem__(i)
+
+    def __setitem__(self, i: int, a: Activity):
+        return self._activities.__setitem__(i, a)
+
+    def __iter__(self):
+        return self._activities.__iter__()
+
+    def __len__(self) -> int:
+        return self._activities.__len__()
+
+    def summary(self, n: int) -> pd.DataFrame:
+        # TODO
+        activities = self._activities[:n]
 
 
 class ActivityManager:
@@ -111,6 +130,15 @@ class ActivityManager:
                              ) -> Sequence[ActivityMetaData]:
         results = self.dbm.search_activity_data(from_date, to_date, prototype, number)
         return [ActivityMetaData(**kwargs) for kwargs in results]
+
+    def summarize_activity_data(self,
+                             from_date: Optional[datetime] = None,
+                             to_date: Optional[datetime] = None,
+                             prototype: Optional[int] = None,
+                             number: Optional[int] = None
+                             ) -> pd.DataFrame:
+        results = self.dbm.search_activity_data(from_date, to_date, prototype, number)
+        return pd.DataFrame(results)
 
     def save_activity_to_db(self, activity: Activity):
         self.dbm.save_activity_data(activity.metadata)

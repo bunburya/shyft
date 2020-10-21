@@ -46,4 +46,4 @@ class Config:
                 self.activity_graphs = json.load(f)
         else:
             self.activity_graphs = []
-        print(self.activity_graphs)
+        #print(self.activity_graphs)
