@@ -12,7 +12,10 @@ import appdirs
 
 class Config:
 
-    def __init__(self, ini_fpath: str, activity_graphs_fpath: Optional[str] = None, **kwargs):
+    def __init__(self, ini_fpath: str,
+                 activity_graphs_fpath: Optional[str] = None,
+                 overview_graphs_fpath: Optional[str] = None,
+                 **kwargs):
         parser = configparser.ConfigParser()
         parser.read(ini_fpath)
         if parser['general']['data_dir'] is None:
@@ -46,4 +49,11 @@ class Config:
                 self.activity_graphs = json.load(f)
         else:
             self.activity_graphs = []
+
+        if overview_graphs_fpath is not None:
+            with open(overview_graphs_fpath) as f:
+                self.overview_graphs = json.load(f)
+        else:
+            self.overview_graphs = []
+
         #print(self.activity_graphs)

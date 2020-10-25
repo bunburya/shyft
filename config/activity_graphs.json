@@ -1,8 +1,23 @@
 [
   {
+    "data_source": "points",
     "graph_type": "line",
     "x": "time",
     "y": "kmph",
-    "title": "Speed (kmph) over time"
+    "title": "Speed (kmph)"
+  },
+  {
+    "data_source": "points",
+    "graph_type": "line",
+    "x": "time",
+    "y": "elevation",
+    "title": "Elevation (m)"
+  },
+  {
+    "data_source": "km_splits",
+    "graph_type": "scatter",
+    "x": "cadence",
+    "y": "hr",
+    "title": "Heart rate vs cadence"
   }
 ]

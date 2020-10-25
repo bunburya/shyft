@@ -17,6 +17,6 @@ def get_dash_app(activity_manager: ActivityManager, config: Config, *dash_args, 
         html.H1(f'Activity overview for {config.user_name}'),
         html.H2('Recent activities'),
         dc_factory.activities_table([a.metadata for a in activity_manager.activities]),
-        html.H2('Activities over time')
-
+        html.H2('Analysis'),
+        *dc_factory.all_graphs(activity_manager)
     ])

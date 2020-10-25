@@ -50,16 +50,30 @@ class ActivityMetaData:
     thumbnail_file: Optional[str] = None
 
     # The following will be auto-generated when ActivityMetaData is instantiated, if not explicitly provided
+    kmph_mean: float = None
     distance_2d_mile: float = None
     mile_pace_mean: timedelta = None
+    mph_mean: float = None
+    day: str = None
+    hour: int = None
+    month: str = None
+
 
     def __post_init__(self):
         if self.distance_2d_mile is None:
             self.distance_2d_mile = self.distance_2d_km * MILE
+        if self.kmph_mean is None:
+            self.kmph_mean = 3600 / self.km_pace_mean.seconds
+        if self.mph_mean is None:
+            self.mph_mean = self.kmph_mean / MILE
         if self.mile_pace_mean is None:
-            kmph = (1 / self.km_pace_mean.seconds) * 3600
-            mph = kmph / MILE
-            self.mile_pace_mean = timedelta(seconds=60/mph)
+            self.mile_pace_mean = timedelta(seconds=60/self.mph_mean)
+        if self.day is None:
+            self.day = self.date_time.strftime('%A')
+        if self.hour is None:
+            self.hour = self.date_time.hour
+        if self.month is None:
+            self.month = self.date_time.strftime('%M')
 
 
 class Activity:

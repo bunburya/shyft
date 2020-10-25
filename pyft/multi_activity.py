@@ -137,8 +137,12 @@ class ActivityManager:
                              prototype: Optional[int] = None,
                              number: Optional[int] = None
                              ) -> pd.DataFrame:
-        results = self.dbm.search_activity_data(from_date, to_date, prototype, number)
-        return pd.DataFrame(results)
+        metadata = self.search_activity_data(from_date, to_date, prototype, number)
+        df = pd.DataFrame(vars(md) for md in metadata)
+        print(df.columns)
+        #df['day'] = df['date_time'].dt.strftime('%A')
+        #df['hour'] = df['date_time'].dt.hour
+        return df
 
     def save_activity_to_db(self, activity: Activity):
         self.dbm.save_activity_data(activity.metadata)

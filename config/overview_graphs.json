@@ -1,0 +1,14 @@
+[
+  {
+    "graph_type": "bar",
+    "groupby": "day",
+    "agg": "count",
+    "x": "day",
+    "y": "activity_id"
+  },
+  {
+    "graph_type": "scatter",
+    "x": "distance_2d_km",
+    "y": "km_pace_mean"
+  }
+]

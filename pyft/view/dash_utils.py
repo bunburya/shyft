@@ -15,6 +15,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from pyft.config import Config
+from pyft.multi_activity import ActivityManager
 from pyft.single_activity import ActivityMetaData, Activity
 
 
@@ -113,6 +114,22 @@ class BaseDashComponentFactory:
         """
         return f'/gpx_files/{metadata.activity_id}.gpx'
 
+    def graph(self, data: pd.DataFrame, graph_type: str, **kwargs) -> go.Figure:
+        """A generic function to create a graph object in respect of an Activity.
+
+        graph_type should correspond to the name of a factory function in
+        plotly.express.
+
+        Any additional keyword arguments will be passed to the relevant factory
+        function.
+        """
+
+        func = getattr(px, graph_type)
+        for k in kwargs:
+            if kwargs[k] is None:
+                kwargs[k] = data.index
+        return func(data_frame=data, **kwargs)
+
 
 class ActivityViewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
@@ -174,20 +191,12 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         fig = px.line(activity.points, x='time', y='kmph')
         return fig
 
-    def graph(self, data: pd.DataFrame, graph_type: str, **kwargs) -> go.Figure:
-        """A generic function to create a graph object in respect of an Activity.
-
-        graph_type should correspond to the name of a factory function in
-        plotly.express.
-
-        Any additional keyword arguments will be passed to the relevant factory
-        function.
-        """
-
-        func = getattr(px, graph_type)
-        return func(data_frame=data, **kwargs)
-
     def all_graphs(self, activity: Activity) -> List[dbc.Row]:
+        """Generate all graphs based on the contents of config.overview_graphs
+        (which is in turn generated based on the contents of activity_graphs.json).
+
+        See docs/graphs.md for help on how activity_graphs.json is interpreted.
+        """
         graphs = []
         for i, go_data in enumerate(self.config.activity_graphs):
             go_data = go_data.copy()
@@ -260,3 +269,31 @@ class OverviewComponentFactory(BaseDashComponentFactory):
 
     def intro(self):
         return dcc.Markdown(f'# Activity overview for {self.config.user_name}')
+
+    def all_graphs(self, activity_manager: ActivityManager) -> List[dbc.Row]:
+        """Generate all graphs based on the contents of config.overview_graphs
+        (which is in turn generated based on the contents of test_overview_graphs.json).
+
+        See docs/graphs.md for help on how test_overview_graphs.json is interpreted.
+        """
+        graphs = []
+        # TODO: Figure this out
+        summary = activity_manager.summarize_activity_data()
+        for i, go_data in enumerate(self.config.overview_graphs):
+            groupby = go_data.pop('groupby', None)
+            agg = go_data.pop('agg', None)
+            if groupby and agg:
+                data = getattr(summary.groupby(groupby), agg)()
+            else:
+                data = summary
+            graphs.append(
+                dbc.Row(
+                    dbc.Col(
+                        dcc.Graph(
+                            id=f'graph_{i}',
+                            figure=self.graph(data, go_data.pop('graph_type'), **go_data)
+                        )
+                    )
+                )
+            )
+        return graphs
