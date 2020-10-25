@@ -69,7 +69,7 @@ class ActivityMetaData:
         if self.mile_pace_mean is None:
             self.mile_pace_mean = timedelta(seconds=60/self.mph_mean)
         if self.day is None:
-            self.day = self.date_time.strftime('%A')
+            self.day = self.date_time.strftime('%w - %A')
         if self.hour is None:
             self.hour = self.date_time.hour
         if self.month is None:
