@@ -191,7 +191,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         fig = px.line(activity.points, x='time', y='kmph')
         return fig
 
-    def all_graphs(self, activity: Activity) -> List[dbc.Row]:
+    def custom_graphs(self, activity: Activity) -> List[dbc.Row]:
         """Generate all graphs based on the contents of config.overview_graphs
         (which is in turn generated based on the contents of activity_graphs.json).
 
@@ -267,10 +267,53 @@ class OverviewComponentFactory(BaseDashComponentFactory):
     a user's activities.
     """
 
-    def intro(self):
+    def __init__(self, config: Config, activity_manager: ActivityManager):
+        self.activity_manager = activity_manager
+        self.summary = activity_manager.summarize_activity_data()
+        super().__init__(config)
+
+
+    def intro(self) -> dcc.Markdown:
         return dcc.Markdown(f'# Activity overview for {self.config.user_name}')
 
-    def all_graphs(self, activity_manager: ActivityManager) -> List[dbc.Row]:
+    def weekday_count(self) -> dbc.Row:
+        counts = self.summary.groupby(['activity_type', 'day']).count()['activity_id'].rename('count')
+        for act_type in counts.index.levels[0]:
+            for day in self.config.days_of_week:
+                if day not in counts[act_type]:
+                    counts.loc[act_type, day] = 0
+        counts.sort_index(level=1, key=lambda i: i.map(self.config.days_of_week.index), inplace=True)
+        bars = []
+        for act_type in counts.index.levels[0]:
+            bars.append(go.Bar(name=act_type, x=self.config.days_of_week, y=counts[act_type]))
+        fig = go.Figure(data=bars)
+        fig.update_layout(barmode='stack', title='Most active days of the week')
+        return dbc.Row(
+            dbc.Col(
+                dcc.Graph(id='weekday_count', figure=fig)
+            )
+        )
+
+    def distance_pace(self) -> dbc.Row:
+        return dbc.Row(
+            dbc.Col(
+                dcc.Graph(
+                    id='distance_pace',
+                    figure=px.scatter(
+                        self.summary,
+                        x='distance_2d_km',
+                        y='kmph_mean',
+                        labels={
+                            'distance_2d_km': 'Distance (km)',
+                            'kmph_mean': 'Average speed (km/h)'
+                        },
+                        title='Average speed vs. distance'
+                    )
+                )
+            )
+        )
+
+    def custom_graphs(self) -> List[dbc.Row]:
         """Generate all graphs based on the contents of config.overview_graphs
         (which is in turn generated based on the contents of test_overview_graphs.json).
 
@@ -278,14 +321,13 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """
         graphs = []
         # TODO: Figure this out
-        summary = activity_manager.summarize_activity_data()
         for i, go_data in enumerate(self.config.overview_graphs):
             groupby = go_data.pop('groupby', None)
             agg = go_data.pop('agg', None)
             if groupby and agg:
-                data = getattr(summary.groupby(groupby), agg)()
+                data = getattr(self.summary.groupby(groupby), agg)()
             else:
-                data = summary
+                data = self.summary
             graphs.append(
                 dbc.Row(
                     dbc.Col(

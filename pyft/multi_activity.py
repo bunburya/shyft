@@ -10,28 +10,6 @@ from pyft.parse_gpx import distance_2d, parse_gpx_file
 from pyft.single_activity import Activity, ActivityMetaData
 
 
-class ActivityGroup:
-
-    def __init__(self, activities: Sequence[Activity]):
-        self._activities = list(activities)
-
-    def __getitem__(self, i: int) -> Activity:
-        return self._activities.__getitem__(i)
-
-    def __setitem__(self, i: int, a: Activity):
-        return self._activities.__setitem__(i, a)
-
-    def __iter__(self):
-        return self._activities.__iter__()
-
-    def __len__(self) -> int:
-        return self._activities.__len__()
-
-    def summary(self, n: int) -> pd.DataFrame:
-        # TODO
-        activities = self._activities[:n]
-
-
 class ActivityManager:
 
     def __init__(self, config: Config):
@@ -139,7 +117,10 @@ class ActivityManager:
                              ) -> pd.DataFrame:
         metadata = self.search_activity_data(from_date, to_date, prototype, number)
         df = pd.DataFrame(vars(md) for md in metadata)
-        print(df.columns)
+        #print(df.columns)
+        df['center_lat'] = df['center'].str[0]
+        df['center_lon'] = df['center'].str[1]
+        df['center_elev'] = df['center'].str[2]
         #df['day'] = df['date_time'].dt.strftime('%A')
         #df['hour'] = df['date_time'].dt.hour
         return df

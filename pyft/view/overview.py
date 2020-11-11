@@ -10,7 +10,8 @@ from pyft.view.dash_utils import OverviewComponentFactory
 
 
 def get_dash_app(activity_manager: ActivityManager, config: Config, *dash_args, **dash_kwargs) -> dash.Dash:
-    dc_factory = OverviewComponentFactory(config)
+
+    dc_factory = OverviewComponentFactory(config, activity_manager)
 
     dash_app = dash.Dash(*dash_args, **dash_kwargs)
     dash_app.layout = html.Div(id='overview_layout', children=[
@@ -18,5 +19,8 @@ def get_dash_app(activity_manager: ActivityManager, config: Config, *dash_args, 
         html.H2('Recent activities'),
         dc_factory.activities_table([a.metadata for a in activity_manager.activities]),
         html.H2('Analysis'),
-        *dc_factory.all_graphs(activity_manager)
+        dc_factory.weekday_count(),
+        dc_factory.distance_pace(),
+        *dc_factory.custom_graphs()
     ])
+    return dash_app
