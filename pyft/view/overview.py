@@ -24,6 +24,7 @@ class Overview:
         return html.Div(
             id='overview_layout', children=[
                 html.H1(f'Activity overview for {self.config.user_name}'),
+                dcc.Markdown('[Configure](/config)'),
                 html.H2('Recent activities'),
                 self.dc_factory.activities_table([a.metadata for a in self.activity_manager.activities]),
                 html.H2('Analysis'),

@@ -31,7 +31,7 @@ class Config:
                  activity_graphs_fpath: Optional[str] = None,
                  overview_graphs_fpath: Optional[str] = None,
                  **kwargs):
-        parser = configparser.ConfigParser()
+        parser = configparser.ConfigParser(interpolation=None)
         parser.read(ini_fpath)
         if parser['general']['data_dir'] is None:
             self.data_dir = appdirs.user_data_dir(appname='pyft')
@@ -105,7 +105,7 @@ class Config:
     def to_file(self, fpath):
         """Save the current configuration options to `fpath` as a .ini file."""
 
-        parser = configparser.ConfigParser()
+        parser = configparser.ConfigParser(interpolation=None)
         parser.add_section('general')
         for _field in self.__dataclass_fields__:
             parser['general'][_field] = str(getattr(self, _field))

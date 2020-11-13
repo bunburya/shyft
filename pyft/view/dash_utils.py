@@ -34,14 +34,22 @@ class BaseDashComponentFactory:
 
     COMMON_DATATABLE_OPTIONS = {
         'style_cell': {
-            'textAlign': 'left'
+            'textAlign': 'left',
+            'fontSize': 20
         },
-        'style_data_conditional': [{
-            # Disable highlighting of selected cells
-            'if': {'state': 'active'},
-            'backgroundColor': 'transparent',
-            'border': '1px solid rgb(211, 211, 211)'
-        }],
+        'style_data_conditional': [
+            {
+                # Disable highlighting of selected cells
+                'if': {'state': 'active'},
+                'backgroundColor': 'transparent',
+                'border': '1px solid rgb(211, 211, 211)'
+            },
+            {
+                # Fix size of thumbnail column
+                'if': {'column_id': 'thumb'},
+                'width': '37px'
+            }
+        ],
     }
 
     def __init__(self, config: Config):
