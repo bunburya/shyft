@@ -306,6 +306,15 @@ class ActivityManagerTestCase(unittest.TestCase):
         print(df.columns)
         print(df.shape)
 
+    def test_15_config(self):
+        """Test equality, loading and saving of configurations."""
+
+        self.assertTrue(self.TEST_CONFIG_1 == self.TEST_CONFIG_1)
+        self.assertFalse(self.TEST_CONFIG_1 == self.TEST_CONFIG_2)
+        ini_fpath = os.path.join(TEST_RUN_DATA_DIR_1, 'test_config.ini')
+        self.TEST_CONFIG_1.to_file(ini_fpath)
+        self.assertEqual(self.TEST_CONFIG_1, Config(ini_fpath))
+
 
 if __name__ == '__main__':
     unittest.main()

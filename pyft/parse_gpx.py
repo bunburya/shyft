@@ -73,9 +73,16 @@ INITIAL_COL_NAMES = (
     'time', 'hr', 'cadence', 'point'
 )
 
-
-def gpx_points_to_df(g: gpx.GPX) -> pd.DataFrame:
+def gpx_points_to_df(g: gpx.GPX, infer=True) -> pd.DataFrame:
     df = pd.DataFrame(_iter_points(g), columns=INITIAL_COL_NAMES)
+    if infer:
+        infer_points_data(df, inplace=True)
+    return df
+
+
+def infer_points_data(df: pd.DataFrame, inplace=True) -> Optional[pd.DataFrame]:
+    if not inplace:
+        df = df.copy()
     df['prev_point'] = df['point'].shift()
     df['step_length_2d'] = distance_2d(df['point'], df['prev_point'])
     df['cumul_distance_2d'] = df['step_length_2d'].fillna(0).cumsum()
@@ -83,7 +90,7 @@ def gpx_points_to_df(g: gpx.GPX) -> pd.DataFrame:
     df['mile'] = (df['cumul_distance_2d'] // MILE).astype(int)
     df['prev_time'] = df['time'].shift()
     df['km_pace'] = (1000 / df['step_length_2d']) * (df['time'] - df['prev_time'])
-    # Basic handling of outliers (sometimes the GPX data reports a very fast pace for a short period)
+    # Basic handling of outliers (sometimes the raw data reports a very fast pace for a short period)
     mean_pace = df['km_pace'].mean()
     zscore = (df['km_pace'] - df['km_pace'].mean()) / df['km_pace'].std()
     rolling_mean = (df['km_pace'].shift(fill_value=mean_pace) + df['km_pace'].shift(-1, fill_value=mean_pace)) / 2
@@ -93,7 +100,8 @@ def gpx_points_to_df(g: gpx.GPX) -> pd.DataFrame:
     df['mph'] = df['kmph'] / (MILE / 1000)
     df['run_time'] = df['time'] - df.iloc[0]['time']
     df.drop(['point', 'prev_point', 'prev_time'], axis=1, inplace=True)
-    return df
+    if not inplace:
+        return df
 
 
 def get_gpx_time(g: gpx.GPX) -> datetime:

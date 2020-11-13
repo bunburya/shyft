@@ -1,7 +1,7 @@
 import os
 import shutil
 
-import flask
+from flask import Flask, url_for, render_template, redirect, send_file
 import dash_bootstrap_components as dbc
 from pyft.config import Config
 from pyft.multi_activity import ActivityManager
@@ -10,6 +10,8 @@ from pyft.view import view_activity, overview
 ### FOR TESTING ONLY
 
 import sys
+
+from pyft.view.edit_config import ConfigForm
 
 TEST_DATA_DIR = 'test/test_data'
 
@@ -56,7 +58,8 @@ for fpath in TEST_GPX_FILES:
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.BOOTSTRAP]
 
-server = flask.Flask(__name__)
+server = Flask(__name__, template_folder='templates')
+server.secret_key = 'TEST_KEY'
 
 overview_app = overview.get_dash_app(am, TEST_CONFIG,
                                      __name__,
@@ -93,7 +96,7 @@ def get_thumbnail(id: str):
         return f'Invalid activity ID specified: "{id}".'
     # print(f'Activity with ID {activity_id}: {am.get_metadata_by_id(activity_id)}')
     metadata = am.get_metadata_by_id(activity_id)
-    return flask.send_file(metadata.thumbnail_file, mimetype='image/png')
+    return send_file(metadata.thumbnail_file, mimetype='image/png')
 
 
 @server.route('/gpx_files/<id>.gpx')
@@ -103,7 +106,15 @@ def get_gpx_file(id: str):
     except ValueError:
         return f'Invalid activity ID specified: "{id}".'
     metadata = am.get_metadata_by_id(activity_id)
-    return flask.send_file(metadata.data_file, mimetype='application/gpx+xml')
+    return send_file(metadata.data_file, mimetype='application/gpx+xml')
+
+@server.route('/config')
+def config():
+    # https://hackersandslackers.com/flask-wtforms-forms/
+    form = ConfigForm(obj=TEST_CONFIG)
+    if form.validate_on_submit():
+        return redirect(url_for('success'))
+    return render_template('config.html', form=form)
 
 
 if __name__ == '__main__':

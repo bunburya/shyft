@@ -20,6 +20,8 @@ flask = "*"
 dash-bootstrap-components = "*"
 kaleido = "*"
 appdirs = "*"
+fitdecode = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.8"
