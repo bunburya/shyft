@@ -61,7 +61,7 @@ class ActivityMetaData:
 
     def __post_init__(self):
         if self.distance_2d_mile is None:
-            self.distance_2d_mile = self.distance_2d_km * MILE
+            self.distance_2d_mile = self.distance_2d_km * 1000 / MILE
         if self.kmph_mean is None:
             self.kmph_mean = 3600 / self.km_pace_mean.seconds
         if self.mph_mean is None:

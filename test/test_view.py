@@ -1,36 +1,38 @@
 import os
 import shutil
 
-from flask import Flask, url_for, render_template, redirect, send_file
+from flask import Flask, url_for, render_template, redirect, send_file, flash
 import dash_bootstrap_components as dbc
 from pyft.config import Config
 from pyft.multi_activity import ActivityManager
-from pyft.view import view_activity, overview
+from pyft.view import view_activity
+from pyft.view.overview import Overview
 
 ### FOR TESTING ONLY
 
 import sys
 
 from pyft.view.edit_config import ConfigForm
+from pyft.view.view_activity import ActivityView
 
 TEST_DATA_DIR = 'test/test_data'
 
 TEST_GPX_FILES = [
-    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),                    # 0     2019-09-08
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),           # 1     2019-10-30
-    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),        # 2     2020-08-05
-    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),        # 3     2020-08-04
-    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),      # 4     2020-03-20
-    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),     # 5     2020-06-18
-    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),        # 6     2019-07-08
-    os.path.join(TEST_DATA_DIR, 'Calcutta_Run_10k_2019.gpx'),       # 7     2019
-    os.path.join(TEST_DATA_DIR, 'cuilcagh_walk_2019.gpx'),          # 8     2019
-    os.path.join(TEST_DATA_DIR, 'fermanagh_walk_2019.gpx'),         # 9     2019
-    os.path.join(TEST_DATA_DIR, 'Frank_Duffy_10_Mile_2019.gpx'),    # 10    2019
-    os.path.join(TEST_DATA_DIR, 'Great_Ireland_Run_2019.gpx'),      # 11    2019
-    os.path.join(TEST_DATA_DIR, 'howth_walk_2019.gpx'),             # 12    2019
-    os.path.join(TEST_DATA_DIR, 'Irish_Runner_10_Mile_2019.gpx'),   # 13    2019
-    os.path.join(TEST_DATA_DIR, 'run_in_the_dark_10k_2019.gpx'),    # 14    2019
+    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),  # 0     2019-09-08
+    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),  # 1     2019-10-30
+    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),  # 2     2020-08-05
+    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),  # 3     2020-08-04
+    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),  # 4     2020-03-20
+    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),  # 5     2020-06-18
+    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),  # 6     2019-07-08
+    os.path.join(TEST_DATA_DIR, 'Calcutta_Run_10k_2019.gpx'),  # 7     2019
+    os.path.join(TEST_DATA_DIR, 'cuilcagh_walk_2019.gpx'),  # 8     2019
+    os.path.join(TEST_DATA_DIR, 'fermanagh_walk_2019.gpx'),  # 9     2019
+    os.path.join(TEST_DATA_DIR, 'Frank_Duffy_10_Mile_2019.gpx'),  # 10    2019
+    os.path.join(TEST_DATA_DIR, 'Great_Ireland_Run_2019.gpx'),  # 11    2019
+    os.path.join(TEST_DATA_DIR, 'howth_walk_2019.gpx'),  # 12    2019
+    os.path.join(TEST_DATA_DIR, 'Irish_Runner_10_Mile_2019.gpx'),  # 13    2019
+    os.path.join(TEST_DATA_DIR, 'run_in_the_dark_10k_2019.gpx'),  # 14    2019
 ]
 
 TEST_RUN_DATA_DIR = os.path.join(TEST_DATA_DIR, 'dash_run')
@@ -61,16 +63,10 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes
 server = Flask(__name__, template_folder='templates')
 server.secret_key = 'TEST_KEY'
 
-overview_app = overview.get_dash_app(am, TEST_CONFIG,
-                                     __name__,
-                                     server=server,
-                                     external_stylesheets=external_stylesheets)
+overview = Overview(am, TEST_CONFIG, __name__, server=server, external_stylesheets=external_stylesheets)
 
-view_activity_app = view_activity.get_dash_app(am, TEST_CONFIG,
-                                               __name__,
-                                               server=server,
-                                               external_stylesheets=external_stylesheets,
-                                               routes_pathname_prefix='/activity/')
+activity_view = ActivityView(am, TEST_CONFIG, __name__, server=server, external_stylesheets=external_stylesheets,
+                             routes_pathname_prefix='/activity/')
 
 
 def id_to_int(id: str) -> int:
@@ -108,12 +104,17 @@ def get_gpx_file(id: str):
     metadata = am.get_metadata_by_id(activity_id)
     return send_file(metadata.data_file, mimetype='application/gpx+xml')
 
-@server.route('/config')
+
+@server.route('/config', methods=['GET', 'POST'])
 def config():
     # https://hackersandslackers.com/flask-wtforms-forms/
     form = ConfigForm(obj=TEST_CONFIG)
     if form.validate_on_submit():
-        return redirect(url_for('success'))
+        form.populate_obj(TEST_CONFIG)
+        TEST_CONFIG.to_file(TEST_CONFIG_FILE)
+        overview.update_layout()
+        # return redirect(url_for('save_config'))
+        flash('Configuration saved.')
     return render_template('config.html', form=form)
 
 
