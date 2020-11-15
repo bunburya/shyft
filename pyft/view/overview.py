@@ -26,7 +26,7 @@ class Overview:
                 html.H1(f'Activity overview for {self.config.user_name}'),
                 dcc.Markdown('[Configure](/config)'),
                 html.H2('Recent activities'),
-                self.dc_factory.activities_table([a.metadata for a in self.activity_manager.activities]),
+                self.dc_factory.recent_activities(),
                 html.H2('Analysis'),
                 self.dc_factory.weekday_count(),
                 self.dc_factory.distance_pace(),

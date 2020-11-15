@@ -20,7 +20,7 @@ class ActivityView:
         self.dash_app = dash.Dash(*dash_args, **dash_kwargs)
         self.activity_manager = activity_manager
         self.config = config
-        self.dc_factory = ActivityViewComponentFactory(config)
+        self.dc_factory = ActivityViewComponentFactory(config, activity_manager)
         self.dash_app.layout = self.layout(empty=True)
         self.register_callbacks()
 

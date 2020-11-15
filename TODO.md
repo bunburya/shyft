@@ -3,6 +3,7 @@
 General:
 
 - Custom type definitions
+- Handle .FIT and .TCX files
 
 View:
 
@@ -14,8 +15,6 @@ View:
 - Overview
 
   - Recent activities
-  - Scattermap:  Distance vs pace
-  - Bar chart: Miles / activities
 
 - Config page
 

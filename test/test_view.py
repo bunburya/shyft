@@ -10,46 +10,24 @@ from pyft.view.overview import Overview
 
 ### FOR TESTING ONLY
 
-import sys
+from test.test_data_vars import *
 
 from pyft.view.edit_config import ConfigForm
 from pyft.view.view_activity import ActivityView
 
 TEST_DATA_DIR = 'test/test_data'
 
-TEST_GPX_FILES = [
-    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),  # 0     2019-09-08
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),  # 1     2019-10-30
-    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),  # 2     2020-08-05
-    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),  # 3     2020-08-04
-    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),  # 4     2020-03-20
-    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),  # 5     2020-06-18
-    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),  # 6     2019-07-08
-    os.path.join(TEST_DATA_DIR, 'Calcutta_Run_10k_2019.gpx'),  # 7     2019
-    os.path.join(TEST_DATA_DIR, 'cuilcagh_walk_2019.gpx'),  # 8     2019
-    os.path.join(TEST_DATA_DIR, 'fermanagh_walk_2019.gpx'),  # 9     2019
-    os.path.join(TEST_DATA_DIR, 'Frank_Duffy_10_Mile_2019.gpx'),  # 10    2019
-    os.path.join(TEST_DATA_DIR, 'Great_Ireland_Run_2019.gpx'),  # 11    2019
-    os.path.join(TEST_DATA_DIR, 'howth_walk_2019.gpx'),  # 12    2019
-    os.path.join(TEST_DATA_DIR, 'Irish_Runner_10_Mile_2019.gpx'),  # 13    2019
-    os.path.join(TEST_DATA_DIR, 'run_in_the_dark_10k_2019.gpx'),  # 14    2019
-]
 
-TEST_RUN_DATA_DIR = os.path.join(TEST_DATA_DIR, 'dash_run')
+TEST_RUN_DATA_DIR = run_data_dir('view')
 if os.path.exists(TEST_RUN_DATA_DIR):
     shutil.rmtree(TEST_RUN_DATA_DIR)
 
-TEST_DB_FILE = os.path.join(TEST_RUN_DATA_DIR, 'dash_test.db')
-TEST_CONFIG_FILE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
-TEST_ACTIVITY_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_activity_graphs.json')
-TEST_OVERVIEW_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_overview_graphs.json')
 
 TEST_CONFIG = Config(
     TEST_CONFIG_FILE,
     TEST_ACTIVITY_GRAPHS_FILE,
     TEST_OVERVIEW_GRAPHS_FILE,
-    data_dir=TEST_RUN_DATA_DIR,
-    db_file=TEST_DB_FILE
+    data_dir=TEST_RUN_DATA_DIR
 )
 
 am = ActivityManager(TEST_CONFIG)
@@ -108,10 +86,12 @@ def get_gpx_file(id: str):
 @server.route('/config', methods=['GET', 'POST'])
 def config():
     # https://hackersandslackers.com/flask-wtforms-forms/
-    form = ConfigForm(obj=TEST_CONFIG)
+    form = ConfigForm(obj=TEST_CONFIG.raw())
     if form.validate_on_submit():
         form.populate_obj(TEST_CONFIG)
         TEST_CONFIG.to_file(TEST_CONFIG_FILE)
+        # Have to load again to get the interpolation working right
+        TEST_CONFIG.load()
         overview.update_layout()
         # return redirect(url_for('save_config'))
         flash('Configuration saved.')

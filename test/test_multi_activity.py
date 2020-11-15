@@ -11,53 +11,11 @@ import gpxpy
 from pyft.multi_activity import ActivityManager
 from pyft.single_activity import Activity, ActivityMetaData
 from pyft.config import Config
+from test.test_data_vars import *
 
-TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
-TEST_CONFIG_FILE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
-TEST_RUN_DATA_DIR_BASE = os.path.join(TEST_DATA_DIR, 'run')
-TEST_RUN_DATA_DIR_1 = TEST_RUN_DATA_DIR_BASE + '_1'
-TEST_RUN_DATA_DIR_2 = TEST_RUN_DATA_DIR_BASE + '_2'
-TEST_RUN_DATA_DIR_3 = TEST_RUN_DATA_DIR_BASE + '_3'
-
-
-# Test GPX files.
-# Neither 0 nor 1 should loose- or tight-match any other activity.
-# 2 and 3 should loose- and tight-match each other but not match any others.
-# 4 and 5 should loose- but not tight-match each other.
-# TBC if 6 should match 4 or 5.
-TEST_GPX_FILES = [
-    os.path.join(TEST_DATA_DIR, 'GNR_2019.gpx'),                    # 0     2019-09-08
-    os.path.join(TEST_DATA_DIR, 'Morning_Run_Miami.gpx'),           # 1     2019-10-30
-    os.path.join(TEST_DATA_DIR, '2020_08_05_pp_9k_ccw.gpx'),        # 2     2020-08-05
-    os.path.join(TEST_DATA_DIR, '2020_08_04_pp_9k_ccw.gpx'),        # 3     2020-08-04
-    os.path.join(TEST_DATA_DIR, '2020_03_20_pp_7.22k_cw.gpx'),      # 4     2020-03-20
-    os.path.join(TEST_DATA_DIR, '2020_06_18_pp_7.23k_ccw.gpx'),     # 5     2020-06-18
-    os.path.join(TEST_DATA_DIR, '2019_07_08_pp_7k_ccw.gpx'),        # 6     2019-07-08
-    os.path.join(TEST_DATA_DIR, 'Calcutta_Run_10k_2019.gpx'),       # 7     2019
-    os.path.join(TEST_DATA_DIR, 'cuilcagh_walk_2019.gpx'),          # 8     2019
-    os.path.join(TEST_DATA_DIR, 'fermanagh_walk_2019.gpx'),         # 9     2019
-    os.path.join(TEST_DATA_DIR, 'Frank_Duffy_10_Mile_2019.gpx'),    # 10    2019
-    os.path.join(TEST_DATA_DIR, 'Great_Ireland_Run_2019.gpx'),      # 11    2019
-    os.path.join(TEST_DATA_DIR, 'howth_walk_2019.gpx'),             # 12    2019
-    os.path.join(TEST_DATA_DIR, 'Irish_Runner_10_Mile_2019.gpx'),   # 13    2019
-    os.path.join(TEST_DATA_DIR, 'run_in_the_dark_10k_2019.gpx'),    # 14    2019
-]
-
-# ints here are index values in TEST_GPX_FILES
-LOOSE_MATCH = (
-    (2, 3),
-    (4, 5)
-)
-
-TIGHT_MATCH = (
-    (2, 3),
-)
-
-UNIQUE = (0, 1, 7, 8, 9, 10, 11, 12, 13, 14)
-
-_2019 = (0, 1, 6, 7, 8, 9, 10, 11, 12, 13, 14)
-_2020 = (2, 3, 4, 5)
-_2020_08 = (2, 3)
+TEST_RUN_DATA_DIR_1 = run_data_dir('1')
+TEST_RUN_DATA_DIR_2 = run_data_dir('2')
+TEST_RUN_DATA_DIR_3 = run_data_dir('3')
 
 
 class ActivityManagerTestCase(unittest.TestCase):
@@ -254,7 +212,7 @@ class ActivityManagerTestCase(unittest.TestCase):
     def test_08_search(self):
         # print(self.manager_1.get_activity_by_id(1))
         results = self.manager_1.search_activity_data(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
-        self.assertSetEqual({a.activity_id for a in results}, set(_2019))
+        self.assertSetEqual({a.activity_id for a in results}, set(ACTIVITIES_2019))
         # print(results)
         results = self.manager_1.search_activity_data(prototype=2)
         self.assertSetEqual({a.activity_id for a in results}, {2, 3})

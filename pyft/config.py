@@ -2,9 +2,10 @@
 
 TODO:  Implement proper configuration using ConfigParser.
 """
+import getpass
 import json
 import os
-import configparser
+from configparser import ConfigParser, Interpolation, BasicInterpolation
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
@@ -25,20 +26,39 @@ class Config:
     tight_match_threshold: float
     default_activity_name_format: str
     week_start: str
+    overview_activities_count: int
 
 
     def __init__(self, ini_fpath: str,
                  activity_graphs_fpath: Optional[str] = None,
                  overview_graphs_fpath: Optional[str] = None,
+                 interpolation: Optional[Interpolation] = BasicInterpolation(),
                  **kwargs):
-        parser = configparser.ConfigParser(interpolation=None)
+
+        self.interpolation = interpolation
+
+        self.ini_fpath = ini_fpath
+        self.activity_graphs_fpath = activity_graphs_fpath
+        self.overview_graphs_fpath = overview_graphs_fpath
+        self.kwargs = kwargs
+
+        self.load()
+
+
+    def read_file(self, ini_fpath: str):
+        parser = ConfigParser(interpolation=self.interpolation)
         parser.read(ini_fpath)
-        if parser['general']['data_dir'] is None:
+
+        if not parser['general']['user_name']:
+            self.user_name = getpass.getuser()
+        else:
+            self.user_name = parser['general']['user_name']
+
+        if not parser['general']['data_dir']:
             self.data_dir = appdirs.user_data_dir(appname='pyft')
         else:
             self.data_dir = parser['general']['data_dir']
 
-        self.user_name = parser['general']['user_name']
         self.distance_unit = parser['general']['distance_unit']
 
         self.match_center_threshold = parser['general'].getfloat('match_center_threshold')
@@ -47,33 +67,38 @@ class Config:
 
         self.default_activity_name_format = parser['general']['default_activity_name_format']
         self.week_start = parser['general']['week_start'].capitalize()
+        self.overview_activities_count = parser['general'].getint('overview_activities_count')
+        self.matched_activities_count = parser['general'].getint('matched_activities_count')
 
-        for k in kwargs:
-            setattr(self, k, kwargs[k])
+    def load(self):
+        """Load values from the given files and keyword arguments."""
+
+        self.read_file(self.ini_fpath)
+
+        for k in self.kwargs:
+            setattr(self, k, self.kwargs[k])
 
         for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir):
             if not os.path.exists(_dir):
                 os.makedirs(_dir)
 
-        if activity_graphs_fpath is not None:
+        if self.activity_graphs_fpath is not None:
             try:
-                with open(activity_graphs_fpath) as f:
+                with open(self.activity_graphs_fpath) as f:
                     self.activity_graphs = json.load(f)
             except (FileNotFoundError, json.decoder.JSONDecodeError):
                 self.activity_graphs = []
         else:
             self.activity_graphs = []
 
-        if overview_graphs_fpath is not None:
+        if self.overview_graphs_fpath is not None:
             try:
-                with open(overview_graphs_fpath) as f:
+                with open(self.overview_graphs_fpath) as f:
                     self.overview_graphs = json.load(f)
             except (FileNotFoundError, json.decoder.JSONDecodeError):
                 self.overview_graphs = []
         else:
             self.overview_graphs = []
-
-        # print(self.activity_graphs)
 
     @property
     def data_dir(self) -> str:
@@ -105,9 +130,16 @@ class Config:
     def to_file(self, fpath):
         """Save the current configuration options to `fpath` as a .ini file."""
 
-        parser = configparser.ConfigParser(interpolation=None)
+        parser = ConfigParser(interpolation=None)
         parser.add_section('general')
         for _field in self.__dataclass_fields__:
             parser['general'][_field] = str(getattr(self, _field))
         with open(fpath, 'w') as f:
             parser.write(f)
+
+    def raw(self) -> 'Config':
+        """Return a new Config object initialised with the same values as this
+        instance, but with no interpolation.
+        """
+        return Config(self.ini_fpath, self.activity_graphs_fpath, self.overview_graphs_fpath, interpolation=None,
+                      **self.kwargs)

@@ -52,8 +52,10 @@ class BaseDashComponentFactory:
         ],
     }
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, activity_manager: ActivityManager):
         self.config = config
+        self.activity_manager = activity_manager
+        self.summary = activity_manager.summarize_activity_data()
 
     def activity_name(self, metadata: ActivityMetaData) -> str:
         """Return an activity's name or, if the activity has no name,
@@ -269,17 +271,24 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 ))
         return fig
 
+    def matched_activities(self, activity: Activity) -> dbc.Row:
+        """Return a table listing the given activity's matched activities."""
+        return dbc.Row([
+                dbc.Col([
+                    self.activities_table(
+                        self.activity_manager.get_activity_matches(activity.metadata,
+                                                                   number=self.config.matched_activities_count),
+                        id='test'
+                    )
+                ])
+            ])
+
+
 
 class OverviewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to in an overview of all
     a user's activities.
     """
-
-    def __init__(self, config: Config, activity_manager: ActivityManager):
-        self.activity_manager = activity_manager
-        self.summary = activity_manager.summarize_activity_data()
-        super().__init__(config)
-
 
     def intro(self) -> dcc.Markdown:
         return dcc.Markdown(f'# Activity overview for {self.config.user_name}')
@@ -347,3 +356,9 @@ class OverviewComponentFactory(BaseDashComponentFactory):
                 )
             )
         return graphs
+
+    def recent_activities(self):
+        """Return a table of the most recent activities."""
+        metadata = [a.metadata for a in self.activity_manager.activities]
+        metadata.sort(key=lambda md: md.date_time, reverse=True)
+        return self.activities_table(metadata[:self.config.overview_activities_count])
