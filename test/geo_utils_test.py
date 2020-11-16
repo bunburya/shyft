@@ -23,7 +23,7 @@ TEST_GPX_FILES = [
 class GeoUtilsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.activities = [Activity.from_gpx_file(fpath) for fpath in TEST_GPX_FILES]
+        self.activities = [Activity.from_file(fpath) for fpath in TEST_GPX_FILES]
         self.gpx_df = []
         for fpath in TEST_GPX_FILES:
             with open(fpath) as f:

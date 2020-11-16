@@ -11,11 +11,7 @@ import gpxpy
 from pyft.multi_activity import ActivityManager
 from pyft.single_activity import Activity, ActivityMetaData
 from pyft.config import Config
-from test.test_data_vars import *
-
-TEST_RUN_DATA_DIR_1 = run_data_dir('1')
-TEST_RUN_DATA_DIR_2 = run_data_dir('2')
-TEST_RUN_DATA_DIR_3 = run_data_dir('3')
+from test.test_vars import *
 
 
 class ActivityManagerTestCase(unittest.TestCase):
@@ -23,28 +19,25 @@ class ActivityManagerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
 
-        if exists(TEST_RUN_DATA_DIR_1):
-            shutil.rmtree(TEST_RUN_DATA_DIR_1)
-        if exists(TEST_RUN_DATA_DIR_2):
-            shutil.rmtree(TEST_RUN_DATA_DIR_2)
-        if exists(TEST_RUN_DATA_DIR_3):
-            shutil.rmtree(TEST_RUN_DATA_DIR_3)
+        cls.TEST_RUN_DATA_DIR_1 = run_data_dir('1', replace=True)
+        cls.TEST_RUN_DATA_DIR_2 = run_data_dir('2', replace=True)
+        cls.TEST_RUN_DATA_DIR_3 = run_data_dir('3', replace=True)
 
-        cls.TEST_CONFIG_1 = Config(TEST_CONFIG_FILE,
-                                   data_dir=TEST_RUN_DATA_DIR_1)
+        cls.TEST_CONFIG_1 = Config(config_file(cls.TEST_RUN_DATA_DIR_1),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_1)
 
-        cls.TEST_CONFIG_2 = Config(TEST_CONFIG_FILE,
-                                   data_dir=TEST_RUN_DATA_DIR_2)
+        cls.TEST_CONFIG_2 = Config(config_file(cls.TEST_RUN_DATA_DIR_2),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_2)
 
-        cls.TEST_CONFIG_3 = Config(TEST_CONFIG_FILE,
-                                   data_dir=TEST_RUN_DATA_DIR_3)
+        cls.TEST_CONFIG_3 = Config(config_file(cls.TEST_RUN_DATA_DIR_3),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_3)
 
         cls.gpx = []
         cls.activities = []
         for i, fpath in enumerate(TEST_GPX_FILES):
             with open(fpath) as f:
                 cls.gpx.append(gpxpy.parse(f))
-            cls.activities.append(Activity.from_gpx_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
+            cls.activities.append(Activity.from_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
         cls.proto_ids = {}
         cls.fpath_ids = {}
         cls.manager_1 = ActivityManager(cls.TEST_CONFIG_1)  # Add Activities directly (populate in setUp and use as the
@@ -111,7 +104,7 @@ class ActivityManagerTestCase(unittest.TestCase):
         for i, fpath in enumerate(TEST_GPX_FILES):
             with open(fpath) as f:
                 self.gpx.append(gpxpy.parse(f))
-            activities.append(Activity.from_gpx_file(fpath, self.TEST_CONFIG_3, activity_id=i))
+            activities.append(Activity.from_file(fpath, self.TEST_CONFIG_3, activity_id=i))
 
 
         for a in activities:
@@ -130,7 +123,7 @@ class ActivityManagerTestCase(unittest.TestCase):
         """
 
         for fpath in TEST_GPX_FILES:
-            _id = self.manager_2.add_activity_from_gpx_file(fpath)
+            _id = self.manager_2.add_activity_from_file(fpath)
             self.fpath_ids[fpath] = _id
 
         for a1, a2 in zip(self.manager_1.activities, self.manager_2.activities):
@@ -220,7 +213,7 @@ class ActivityManagerTestCase(unittest.TestCase):
 
     def test_09_thumbnails(self):
         for i in self.manager_1.activity_ids:
-            benchmark = os.path.join(TEST_RUN_DATA_DIR_1, 'thumbnails', f'{i}.png')
+            benchmark = os.path.join(self.TEST_RUN_DATA_DIR_1, 'thumbnails', f'{i}.png')
             fpath = self.manager_1.get_activity_by_id(i).write_thumbnail()
             with open(fpath, 'rb') as f1, open(benchmark, 'rb') as f2:
                 self.assertEqual(f1.read(), f2.read())
@@ -269,7 +262,7 @@ class ActivityManagerTestCase(unittest.TestCase):
 
         self.assertTrue(self.TEST_CONFIG_1 == self.TEST_CONFIG_1)
         self.assertFalse(self.TEST_CONFIG_1 == self.TEST_CONFIG_2)
-        ini_fpath = os.path.join(TEST_RUN_DATA_DIR_1, 'test_config.ini')
+        ini_fpath = os.path.join(self.TEST_RUN_DATA_DIR_1, 'test_config.ini')
         self.TEST_CONFIG_1.to_file(ini_fpath)
         self.assertEqual(self.TEST_CONFIG_1, Config(ini_fpath))
 

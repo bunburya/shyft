@@ -12,10 +12,10 @@ import pytz
 
 import gpxpy
 from pyft.config import Config
-from pyft.database import DatabaseManager
 from pyft.geo_utils import intersect_points
-from pyft.parse_gpx import parse_gpx_file, MILE
+from pyft.parse.parsers import parser_factory
 
+MILE = 1609.344
 pd.options.plotting.backend = "plotly"
 
 
@@ -221,20 +221,16 @@ class Activity:
         return hashlib.sha1(json.dumps(vars(self.metadata)).encode('utf-8') + bytes(self.points.shape)).hexdigest()
 
     @staticmethod
-    def from_gpx_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
-                      activity_description: str = None, activity_type: str = None) -> 'Activity':
-        points, metadata = parse_gpx_file(fpath)
-        #_distance_2d_km = points['cumul_distance_2d'].iloc[-1]
-        #center = points[['latitude', 'longitude', 'elevation']].mean()
+    def from_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
+                  activity_description: str = None, activity_type: str = None) -> 'Activity':
+        parser = parser_factory(fpath)
         return Activity(
             config,
-            points,
+            parser.points,
             activity_id=activity_id,
-            activity_type=activity_type or metadata['activity_type'],
-            date_time=metadata['time'],
-            #distance_2d_km=_distance_2d_km,
-            #center=center,
+            activity_type=activity_type or parser.metadata['activity_type'],
+            date_time=parser.metadata['date_time'],
             data_file=os.path.abspath(fpath),
-            name=activity_name or metadata['name'],
-            description=activity_description or metadata['description']
+            name=activity_name or parser.metadata['name'],
+            description=activity_description or parser.metadata['description']
         )

@@ -10,7 +10,7 @@ from pyft.view.overview import Overview
 
 ### FOR TESTING ONLY
 
-from test.test_data_vars import *
+from test.test_vars import *
 
 from pyft.view.edit_config import ConfigForm
 from pyft.view.view_activity import ActivityView
@@ -18,10 +18,8 @@ from pyft.view.view_activity import ActivityView
 TEST_DATA_DIR = 'test/test_data'
 
 
-TEST_RUN_DATA_DIR = run_data_dir('view')
-if os.path.exists(TEST_RUN_DATA_DIR):
-    shutil.rmtree(TEST_RUN_DATA_DIR)
-
+TEST_RUN_DATA_DIR = run_data_dir('view', replace=True)
+TEST_CONFIG_FILE = config_file(TEST_RUN_DATA_DIR)
 
 TEST_CONFIG = Config(
     TEST_CONFIG_FILE,
@@ -32,7 +30,7 @@ TEST_CONFIG = Config(
 
 am = ActivityManager(TEST_CONFIG)
 for fpath in TEST_GPX_FILES:
-    am.add_activity_from_gpx_file(fpath)
+    am.add_activity_from_file(fpath)
 
 ### /TESTING
 

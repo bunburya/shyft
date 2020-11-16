@@ -59,16 +59,12 @@ class ActivityManager:
         self.activities.append(activity)
         return activity.metadata.activity_id
 
-    def add_activity_from_gpx_file(self, fpath: str, activity_name: str = None,
-                                   activity_description: str = None, activity_type: str = None) -> int:
-        # TODO:  Is any of the below necessary?
-        df, metadata = parse_gpx_file(fpath)
+    def add_activity_from_file(self, fpath: str, activity_name: str = None,
+                               activity_description: str = None, activity_type: str = None) -> int:
         _id = self.get_new_activity_id()
-        _distance_2d = df['cumul_distance_2d'].iloc[-1]
-        center = df[['latitude', 'longitude', 'elevation']].mean()
         return self.add_activity(
-            Activity.from_gpx_file(fpath, self.config, activity_id=_id, activity_name=activity_name,
-                                   activity_description=activity_description, activity_type=activity_type)
+            Activity.from_file(fpath, self.config, activity_id=_id, activity_name=activity_name,
+                               activity_description=activity_description, activity_type=activity_type)
         )
 
     def loose_match_routes(self, a1: Activity, a2: Activity) -> bool:
