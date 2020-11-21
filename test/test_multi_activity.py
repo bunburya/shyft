@@ -263,8 +263,21 @@ class ActivityManagerTestCase(unittest.TestCase):
         self.assertTrue(self.TEST_CONFIG_1 == self.TEST_CONFIG_1)
         self.assertFalse(self.TEST_CONFIG_1 == self.TEST_CONFIG_2)
         ini_fpath = os.path.join(self.TEST_RUN_DATA_DIR_1, 'test_config.ini')
-        self.TEST_CONFIG_1.to_file(ini_fpath)
+        self.TEST_CONFIG_1.to_file(ini_fpath, generate_raw=True)
         self.assertEqual(self.TEST_CONFIG_1, Config(ini_fpath))
+        raw1 = self.TEST_CONFIG_1.raw()
+        raw1.distance_unit = 'test'
+        raw1.default_activity_name_format = 'test {distance_2d_%(distance_unit)s}'
+        raw1.to_file(ini_fpath)
+        raw2 = self.TEST_CONFIG_1.raw()
+        raw2.load(ini_fpath)
+        interpolated = Config(ini_fpath)
+        self.assertEqual(raw1, raw2)
+        self.assertNotEqual(raw1, self.TEST_CONFIG_1)
+        self.assertNotEqual(raw1, interpolated)
+        self.assertEqual(interpolated.default_activity_name_format, 'test {distance_2d_test}')
+        self.assertEqual(raw1.default_activity_name_format, 'test {distance_2d_%(distance_unit)s}')
+
 
 
 if __name__ == '__main__':

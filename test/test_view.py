@@ -84,12 +84,13 @@ def get_gpx_file(id: str):
 @server.route('/config', methods=['GET', 'POST'])
 def config():
     # https://hackersandslackers.com/flask-wtforms-forms/
-    form = ConfigForm(obj=TEST_CONFIG.raw())
+    raw_config = TEST_CONFIG.raw()
+    form = ConfigForm(obj=raw_config)
     if form.validate_on_submit():
-        form.populate_obj(TEST_CONFIG)
-        TEST_CONFIG.to_file(TEST_CONFIG_FILE)
+        form.populate_obj(raw_config)
+        raw_config.to_file(TEST_CONFIG_FILE)
         # Have to load again to get the interpolation working right
-        TEST_CONFIG.load()
+        TEST_CONFIG.load(TEST_CONFIG_FILE)
         overview.update_layout()
         # return redirect(url_for('save_config'))
         flash('Configuration saved.')

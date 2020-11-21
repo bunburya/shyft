@@ -4,6 +4,8 @@ General:
 
 - Custom type definitions
 - Handle .FIT and .TCX files
+- Clean up and expand unit tests
+- Solve extreme speed problems (Kalman Filter?)
 
 View:
 

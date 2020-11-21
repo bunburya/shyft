@@ -1,5 +1,5 @@
 from abc import ABC
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, Callable, Tuple
 
 import lxml.etree
@@ -8,6 +8,7 @@ import pandas as pd
 import pytz
 import gpxpy
 from gpxpy import gpx
+from pyft.geo_utils import haversine_distance
 
 MILE = 1609.344
 
@@ -19,16 +20,22 @@ class BaseParser:
     INITIAL_COL_NAMES = (
         'point_no', 'track_no', 'segment_no',
         'latitude', 'longitude', 'elevation',
-        'time', 'hr', 'cadence', 'point'
+        'time', 'hr', 'cadence'
     )
 
-    def infer_points_data(self, df: pd.DataFrame, inplace=False) -> Optional[pd.DataFrame]:
+    def infer_points_data(self, df: pd.DataFrame) -> Optional[pd.DataFrame]:
         if missing := set(self.INITIAL_COL_NAMES).difference(df.columns):
             raise ValueError(f'DataFrame is missing the following columns: {missing}.')
-        if not inplace:
-            df = df.copy()
-        df['prev_point'] = df['point'].shift()
-        df['step_length_2d'] = self.distance_2d(df['point'], df['prev_point'])
+        df = df.copy()
+        #df = df.resample(timedelta(seconds=5), on='time').mean()#.fillna(method='ffill')
+        #df.dropna(inplace=True)
+        #print(df[['latitude', 'longitude']])
+        #df['time'] = df.index
+        #df['prev_point'] = df['point'].shift()
+        #df['step_length_2d'] = self.distance_2d(df['point'], df['prev_point'])
+        df['prev_lat'] = df['latitude'].shift()
+        df['prev_lon'] = df['longitude'].shift()
+        df['step_length_2d'] = self.distance_2d(df['latitude'], df['longitude'], df['prev_lat'], df['prev_lon'])
         df['cumul_distance_2d'] = df['step_length_2d'].fillna(0).cumsum()
         df['km'] = (df['cumul_distance_2d'] // 1000).astype(int)
         df['mile'] = (df['cumul_distance_2d'] // MILE).astype(int)
@@ -38,17 +45,17 @@ class BaseParser:
         mean_pace = df['km_pace'].mean()
         zscore = (df['km_pace'] - df['km_pace'].mean()) / df['km_pace'].std()
         rolling_mean = (df['km_pace'].shift(fill_value=mean_pace) + df['km_pace'].shift(-1, fill_value=mean_pace)) / 2
-        df['km_pace'] = df['km_pace'].where(np.abs(zscore) < 2, rolling_mean)
+        df['km_pace'] = df['km_pace'].where(np.abs(zscore) < 1, rolling_mean)
+        df.dropna(inplace=True)
         df['mile_pace'] = (MILE / df['step_length_2d']) * (df['time'] - df['prev_time'])
         df['kmph'] = (3600 / df['km_pace'].dt.total_seconds()).fillna(0)
         df['mph'] = df['kmph'] / (MILE / 1000)
         df['run_time'] = df['time'] - df.iloc[0]['time']
-        df.drop(['point', 'prev_point', 'prev_time'], axis=1, inplace=True)
-        if not inplace:
-            return df
+        df.drop(['prev_lat', 'prev_lon', 'prev_time'], axis=1, inplace=True)
+        return df
 
-    def distance_2d(self, p1: pd.Series, p2: pd.Series) -> pd.Series:
-        raise NotImplementedError('Child of BaseParser must implement a distance_2d method.')
+    def distance_2d(self, lat1: pd.Series, lon1: pd.Series, lat2: pd.Series, lon2: pd.Series) -> pd.Series:
+        return haversine_distance(lat1, lon1, lat2, lon2)
 
     @property
     def points(self) -> pd.DataFrame:
@@ -87,8 +94,6 @@ class GPXParser(BaseParser):
     def __init__(self, fpath: str):
         with open(fpath) as f:
             self.gpx = gpxpy.parse(f)
-        self.distance_2d = np.vectorize(self._get_try_func(lambda p1, p2: p1.distance_2d(p2)))
-        self.distance_3d = np.vectorize(self._get_try_func(lambda p1, p2: p1.distance_3d(p2)))
 
     def _get_try_func(self, func: Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], float]) \
             -> Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], Optional[float]]:
@@ -129,7 +134,7 @@ class GPXParser(BaseParser):
             yield (
                 point_no, track_no, segment_no,
                 point.latitude, point.longitude, point.elevation,
-                time, hr, cad, point
+                time, hr, cad
             )
 
     @property
@@ -139,7 +144,7 @@ class GPXParser(BaseParser):
         called on the resulting DataFrame to generate more data.
         """
         df = pd.DataFrame(self._iter_points(self.gpx), columns=self.INITIAL_COL_NAMES)
-        self.infer_points_data(df, inplace=True)
+        df = self.infer_points_data(df)
         return df
 
     @property

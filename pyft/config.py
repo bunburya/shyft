@@ -47,7 +47,9 @@ class Config:
 
     def read_file(self, ini_fpath: str):
         parser = ConfigParser(interpolation=self.interpolation)
+        self.raw_config = ConfigParser(interpolation=None)
         parser.read(ini_fpath)
+        self.raw_config.read(ini_fpath)
 
         if not parser['general']['user_name']:
             self.user_name = getpass.getuser()
@@ -70,10 +72,11 @@ class Config:
         self.overview_activities_count = parser['general'].getint('overview_activities_count')
         self.matched_activities_count = parser['general'].getint('matched_activities_count')
 
-    def load(self):
+    def load(self, fpath: Optional[str] = None):
         """Load values from the given files and keyword arguments."""
 
-        self.read_file(self.ini_fpath)
+        fpath = fpath or self.ini_fpath
+        self.read_file(fpath)
 
         for k in self.kwargs:
             setattr(self, k, self.kwargs[k])
@@ -127,19 +130,33 @@ class Config:
         week_start_i = DAYS_OF_WEEK.index(new)
         self.days_of_week = DAYS_OF_WEEK[week_start_i:] + DAYS_OF_WEEK[:week_start_i]
 
-    def to_file(self, fpath):
-        """Save the current configuration options to `fpath` as a .ini file."""
+    def to_file(self, fpath, generate_raw: bool = False):
+        """Save the current configuration options to `fpath` as a .ini file.
+
+        If generate_raw is True, save a new Config instance using the raw()
+        method, which will have raw (uninterpolated) versions of the values
+        that this instance was initialised with (NOT necessarily its current
+        values).
+        """
+
+        if generate_raw:
+            to_save = self.raw()
+        else:
+            to_save = self
 
         parser = ConfigParser(interpolation=None)
         parser.add_section('general')
-        for _field in self.__dataclass_fields__:
-            parser['general'][_field] = str(getattr(self, _field))
+        for _field in to_save.__dataclass_fields__:
+            print(f'adding to {_field}:')
+            print(str(getattr(to_save, _field)))
+            parser['general'][_field] = str(getattr(to_save, _field))
         with open(fpath, 'w') as f:
             parser.write(f)
 
     def raw(self) -> 'Config':
         """Return a new Config object initialised with the same values as this
-        instance, but with no interpolation.
+        instance, but with no interpolation. It is this raw version that should
+        generally be used when loading and saving configuration settings.
         """
         return Config(self.ini_fpath, self.activity_graphs_fpath, self.overview_graphs_fpath, interpolation=None,
                       **self.kwargs)
