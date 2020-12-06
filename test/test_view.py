@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 
@@ -31,6 +32,8 @@ TEST_CONFIG = Config(
 am = ActivityManager(TEST_CONFIG)
 for fpath in TEST_GPX_FILES:
     am.add_activity_from_file(fpath)
+
+logging.getLogger().setLevel(logging.INFO)
 
 ### /TESTING
 

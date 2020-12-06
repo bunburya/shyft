@@ -8,9 +8,13 @@ import pandas as pd
 import pytz
 import gpxpy
 from gpxpy import gpx
+from pyft.config import Config
 from pyft.geo_utils import haversine_distance
+import logging
 
-MILE = 1609.344
+#logging.getLogger().setLevel(logging.INFO)
+
+MILE = 1609.344  # metres in a mile
 
 
 class BaseParser:
@@ -23,39 +27,41 @@ class BaseParser:
         'time', 'hr', 'cadence'
     )
 
+    def __init__(self, fpath: str, config: Config):
+        logging.debug(f'Parsing {fpath} using {type(self).__name__}.')
+        self.config = config
+        self._parse(fpath)
+
     def infer_points_data(self, df: pd.DataFrame) -> Optional[pd.DataFrame]:
         if missing := set(self.INITIAL_COL_NAMES).difference(df.columns):
             raise ValueError(f'DataFrame is missing the following columns: {missing}.')
         df = df.copy()
-        #df = df.resample(timedelta(seconds=5), on='time').mean()#.fillna(method='ffill')
-        #df.dropna(inplace=True)
-        #print(df[['latitude', 'longitude']])
-        #df['time'] = df.index
-        #df['prev_point'] = df['point'].shift()
-        #df['step_length_2d'] = self.distance_2d(df['point'], df['prev_point'])
-        df['prev_lat'] = df['latitude'].shift()
-        df['prev_lon'] = df['longitude'].shift()
-        df['step_length_2d'] = self.distance_2d(df['latitude'], df['longitude'], df['prev_lat'], df['prev_lon'])
+        prev_lat = df['latitude'].shift()
+        prev_lon = df['longitude'].shift()
+        df['step_length_2d'] = self.distance_2d(df['latitude'], df['longitude'], prev_lat, prev_lon)
         df['cumul_distance_2d'] = df['step_length_2d'].fillna(0).cumsum()
         df['km'] = (df['cumul_distance_2d'] // 1000).astype(int)
         df['mile'] = (df['cumul_distance_2d'] // MILE).astype(int)
-        df['prev_time'] = df['time'].shift()
-        df['km_pace'] = (1000 / df['step_length_2d']) * (df['time'] - df['prev_time'])
-        # Basic handling of outliers (sometimes the raw data reports a very fast pace for a short period)
-        mean_pace = df['km_pace'].mean()
-        zscore = (df['km_pace'] - df['km_pace'].mean()) / df['km_pace'].std()
-        rolling_mean = (df['km_pace'].shift(fill_value=mean_pace) + df['km_pace'].shift(-1, fill_value=mean_pace)) / 2
-        df['km_pace'] = df['km_pace'].where(np.abs(zscore) < 1, rolling_mean)
-        df.dropna(inplace=True)
-        df['mile_pace'] = (MILE / df['step_length_2d']) * (df['time'] - df['prev_time'])
-        df['kmph'] = (3600 / df['km_pace'].dt.total_seconds()).fillna(0)
-        df['mph'] = df['kmph'] / (MILE / 1000)
         df['run_time'] = df['time'] - df.iloc[0]['time']
-        df.drop(['prev_lat', 'prev_lon', 'prev_time'], axis=1, inplace=True)
+        logging.debug(f'Average step length (distance): {df["step_length_2d"].mean()}')
+        #step_time = df['time'] - df['time'].shift()
+        #logging.info(f'Average step length (time): {step_time.mean()}s')
+
+        # Calculate speed / pace
+        prev_time = df['time'].shift(self.config.speed_measure_interval)
+        prev_cumul_distance = df['cumul_distance_2d'].shift(self.config.speed_measure_interval)
+        interval_distance = df['cumul_distance_2d'] - prev_cumul_distance
+        df['km_pace'] = (1000 / interval_distance) * (df['time'] - prev_time)
+        df['mile_pace'] = (MILE / df['step_length_2d']) * (df['time'] - prev_time)
+        df['kmph'] = (3600 / df['km_pace'].dt.total_seconds())
+        df['mph'] = df['kmph'] / (MILE / 1000)
         return df
 
     def distance_2d(self, lat1: pd.Series, lon1: pd.Series, lat2: pd.Series, lon2: pd.Series) -> pd.Series:
         return haversine_distance(lat1, lon1, lat2, lon2)
+
+    def _parse(self, fpath: str):
+        raise NotImplementedError('Child of BaseParser must implement a parse method.')
 
     @property
     def points(self) -> pd.DataFrame:
@@ -91,7 +97,7 @@ class GPXParser(BaseParser):
         'walking': 'walk'
     }
 
-    def __init__(self, fpath: str):
+    def _parse(self, fpath: str):
         with open(fpath) as f:
             self.gpx = gpxpy.parse(f)
 
@@ -177,8 +183,9 @@ class GPXParser(BaseParser):
         return activity_type
 
 
-def parser_factory(fpath: str) -> BaseParser:
+def parser_factory(fpath: str, config: Config) -> BaseParser:
     if fpath.endswith('.gpx'):
-        return GPXParser(fpath)
+        parser = GPXParser(fpath, config)
     else:
         raise ValueError(f'No suitable parser found for file "{fpath}".')
+    return parser

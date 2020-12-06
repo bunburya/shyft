@@ -223,7 +223,7 @@ class Activity:
     @staticmethod
     def from_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
                   activity_description: str = None, activity_type: str = None) -> 'Activity':
-        parser = parser_factory(fpath)
+        parser = parser_factory(fpath, config)
         return Activity(
             config,
             parser.points,

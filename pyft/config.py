@@ -27,6 +27,7 @@ class Config:
     default_activity_name_format: str
     week_start: str
     overview_activities_count: int
+    speed_measure_interval: int
 
 
     def __init__(self, ini_fpath: str,
@@ -71,6 +72,7 @@ class Config:
         self.week_start = parser['general']['week_start'].capitalize()
         self.overview_activities_count = parser['general'].getint('overview_activities_count')
         self.matched_activities_count = parser['general'].getint('matched_activities_count')
+        self.speed_measure_interval = parser['general'].getint('speed_measure_interval')
 
     def load(self, fpath: Optional[str] = None):
         """Load values from the given files and keyword arguments."""

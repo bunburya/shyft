@@ -14,7 +14,6 @@ fastdtw = "*"
 scipy = "*"
 geopandas = "*"
 fiona = "*"
-sqlalchemy = "*"
 dash = "*"
 flask = "*"
 dash-bootstrap-components = "*"
@@ -23,5 +22,3 @@ appdirs = "*"
 fitdecode = "*"
 flask-wtf = "*"
 
-[requires]
-python_version = "3.8"
