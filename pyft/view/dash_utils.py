@@ -4,8 +4,7 @@ Most of these are implemented as factory methods which return Dash
 objects, which can be included in the layout of the Dash app.
 """
 
-import copy
-from typing import Sequence, Any, Optional, Iterable, List
+from typing import Optional, Iterable, List
 
 import pandas as pd
 import plotly.express as px
@@ -282,7 +281,6 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                     )
                 ])
             ])
-
 
 
 class OverviewComponentFactory(BaseDashComponentFactory):

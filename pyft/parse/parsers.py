@@ -1,7 +1,8 @@
 from abc import ABC
 from datetime import datetime, timedelta
-from typing import Optional, Callable, Tuple
+from typing import Optional, Callable, Tuple, Generator
 
+import fitdecode
 import lxml.etree
 import numpy as np
 import pandas as pd
@@ -12,9 +13,17 @@ from pyft.config import Config
 from pyft.geo_utils import haversine_distance
 import logging
 
-#logging.getLogger().setLevel(logging.INFO)
+# logging.getLogger().setLevel(logging.INFO)
 
 MILE = 1609.344  # metres in a mile
+
+
+class GarminMixin:
+    GARMIN_TYPES = {
+        'hiking': 'hike',
+        'running': 'run',
+        'walking': 'walk'
+    }
 
 
 class BaseParser:
@@ -44,8 +53,8 @@ class BaseParser:
         df['mile'] = (df['cumul_distance_2d'] // MILE).astype(int)
         df['run_time'] = df['time'] - df.iloc[0]['time']
         logging.debug(f'Average step length (distance): {df["step_length_2d"].mean()}')
-        #step_time = df['time'] - df['time'].shift()
-        #logging.info(f'Average step length (time): {step_time.mean()}s')
+        # step_time = df['time'] - df['time'].shift()
+        # logging.info(f'Average step length (time): {step_time.mean()}s')
 
         # Calculate speed / pace
         prev_time = df['time'].shift(self.config.speed_measure_interval)
@@ -57,15 +66,19 @@ class BaseParser:
         df['mph'] = df['kmph'] / (MILE / 1000)
         return df
 
-    def distance_2d(self, lat1: pd.Series, lon1: pd.Series, lat2: pd.Series, lon2: pd.Series) -> pd.Series:
+    def distance_2d(self, lat1: pd.Series, lon1: pd.Series, lat2: pd.Series, lon2: pd.Series) -> np.ndarray:
         return haversine_distance(lat1, lon1, lat2, lon2)
 
     def _parse(self, fpath: str):
-        raise NotImplementedError('Child of BaseParser must implement a parse method.')
+        raise NotImplementedError('Child of BaseParser must implement a _parse method.')
 
     @property
     def points(self) -> pd.DataFrame:
-        raise NotImplementedError('Child of BaseParser must implement a points_df property.')
+        """Return a DataFrame with limited information on points (as
+        described in INITIAL_COL_NAMES). The infer_points_data can be
+        called on the resulting DataFrame to generate more data.
+        """
+        raise NotImplementedError('Child of BaseParser must implement a points property.')
 
     @property
     def date_time(self) -> datetime:
@@ -80,7 +93,7 @@ class BaseParser:
         raise NotImplementedError('Child of BaseParser must implement an activity_type property.')
 
 
-class GPXParser(BaseParser):
+class GPXParser(BaseParser, GarminMixin):
     NAMESPACES = {'garmin_tpe': 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'}
 
     # TODO: Move these to a separate file.
@@ -90,11 +103,6 @@ class GPXParser(BaseParser):
         '4': 'hike',
         '9': 'run',
         '10': 'walk',
-    }
-    GARMIN_TYPES = {
-        'hiking': 'hike',
-        'running': 'run',
-        'walking': 'walk'
     }
 
     def _parse(self, fpath: str):
@@ -129,8 +137,17 @@ class GPXParser(BaseParser):
             if ext.tag.startswith(f'{{{self.NAMESPACES["garmin_tpe"]}}}'):
                 return ext
 
-    def _iter_points(self, g: gpx.GPX):
-        for point, track_no, segment_no, point_no in g.walk():
+    def _iter_points(self) -> Generator[Tuple[
+                                            int,
+                                            int,
+                                            int,
+                                            float,
+                                            float, Optional[float],
+                                            datetime,
+                                            Optional[int],
+                                            Optional[int]
+                                        ], None, None]:
+        for point, track_no, segment_no, point_no in self.gpx.walk():
             ext = self._get_garmin_tpe(point)
             hr = self._get_hr(ext)
             cad = self._get_cad(ext)
@@ -149,7 +166,7 @@ class GPXParser(BaseParser):
         described in INITIAL_COL_NAMES). The infer_points_data can be
         called on the resulting DataFrame to generate more data.
         """
-        df = pd.DataFrame(self._iter_points(self.gpx), columns=self.INITIAL_COL_NAMES)
+        df = pd.DataFrame(self._iter_points(), columns=self.INITIAL_COL_NAMES)
         df = self.infer_points_data(df)
         return df
 
@@ -183,9 +200,81 @@ class GPXParser(BaseParser):
         return activity_type
 
 
+class FITParser(BaseParser, GarminMixin):
+    MANDATORY_FIELDS = (
+        'position_lat',
+        'position_long',
+        'timestamp'
+    )
+
+    OPTIONAL_FIELDS = (
+        'altitude',
+        'heart_rate',
+        'cadence'
+    )
+
+    def __init__(self, *args, **kwargs):
+        self._point = -1
+        super().__init__(*args, **kwargs)
+
+    def get_point_no(self) -> int:
+        self._point += 1
+        return self._point
+
+    def _parse(self, fpath: str):
+        self._metadata = {
+            'name': None,
+            'date_time': None,
+            'description': None,
+            'activity_type': None
+        }
+        points = []
+        with fitdecode.FitReader(fpath) as fit:
+            for frame in fit:
+                if isinstance(frame, fitdecode.FitDataMessage):
+                    if (self._metadata['date_time'] is None) and frame.has_field('timestamp'):
+                        self._metadata['date_time'] = frame.get_value('timestamp')
+                    if (self._metadata['name'] is None) and frame.has_field('name'):
+                        self._metadata['name'] = frame.get_value('name')
+                    if (self._metadata['activity_type'] is None) and frame.has_field('sport'):
+                        self._activity_type = self.GARMIN_TYPES.get(frame.get_value('sport'))
+                    if all([frame.has_field(f) for f in self.MANDATORY_FIELDS]):
+                        points.append((
+                            self.get_point_no(),
+                            0,
+                            0,
+                            frame.get_value('position_lat'),
+                            frame.get_value('position_long'),
+                            frame.get_value('elevation', fallback=None),
+                            frame.get_value('timestamp'),
+                            frame.get_value('heart_rate', fallback=None),
+                            frame.get_value('cadence', fallback=None)
+                        ))
+        self._points = pd.DataFrame(points, columns=self.INITIAL_COL_NAMES)
+
+    @property
+    def metadata(self) -> dict:
+        return self._metadata
+
+    @property
+    def activity_type(self) -> str:
+        return self._metadata['activity_type']
+
+    @property
+    def points(self) -> pd.DataFrame:
+        return self._points
+
+    @property
+    def date_time(self) -> datetime:
+        return self._metadata['date_time']
+
+
 def parser_factory(fpath: str, config: Config) -> BaseParser:
-    if fpath.endswith('.gpx'):
+    lower = fpath.lower()
+    if lower.endswith('.gpx'):
         parser = GPXParser(fpath, config)
+    elif lower.endswith('.fit'):
+        parser = FITParser(fpath, config)
     else:
         raise ValueError(f'No suitable parser found for file "{fpath}".')
     return parser

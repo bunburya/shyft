@@ -19,8 +19,10 @@ EARTH_RADIUS = 6378.137 * 1000
 ONE_DEGREE = (2 * np.pi * EARTH_RADIUS) / 360  # ==> 111.319 km
 
 
-def haversine_distance(latitude_1: np.ndarray, longitude_1: np.ndarray,
-                       latitude_2: np.ndarray, longitude_2: np.ndarray) -> np.ndarray:
+def haversine_distance(latitude_1: Union[np.ndarray, pd.Series],
+                       longitude_1: Union[np.ndarray, pd.Series],
+                       latitude_2: Union[np.ndarray, pd.Series],
+                       longitude_2: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """
     Haversine distance between two points, expressed in meters.
     Implemented from http://www.movable-type.co.uk/scripts/latlong.html

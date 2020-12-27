@@ -12,11 +12,8 @@ View:
 
   - Tidy up
   - Improve graph
+  - Get auto-scaled map
 
-- Overview
-
-  - Recent activities
-
-- Config page
+- Improve config page
 
 - Calendar (fullCalendar?)

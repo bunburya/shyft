@@ -8,6 +8,7 @@ from shutil import copyfile
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')
+TEST_FIT_FILES_DIR = os.path.join(TEST_DATA_DIR, 'fit_files')
 TEST_CONFIG_FILE_BASE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
 TEST_RUN_DATA_DIR_BASE = os.path.join(TEST_DATA_DIR, 'run')
 TEST_ACTIVITY_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_activity_graphs.json')
