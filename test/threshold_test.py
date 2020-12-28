@@ -7,7 +7,7 @@ from pyft.config import Config
 from pyft.geo_utils import norm_length_diff, norm_center_diff, norm_dtw
 from pyft.multi_activity import ActivityManager
 from pyft.single_activity import Activity
-from test.test_vars import *
+from test.test_base import *
 
 TEST_RUN_DATA_DIR = run_data_dir('threshold', replace=True)
 TEST_CONFIG_FILE = config_file(TEST_RUN_DATA_DIR)

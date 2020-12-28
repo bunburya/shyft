@@ -11,10 +11,10 @@ import gpxpy
 from pyft.multi_activity import ActivityManager
 from pyft.single_activity import Activity, ActivityMetaData
 from pyft.config import Config
-from test.test_vars import *
+from test.test_base import *
 
 
-class ActivityManagerTestCase(unittest.TestCase):
+class ActivityManagerTestCase(BaseTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -57,32 +57,6 @@ class ActivityManagerTestCase(unittest.TestCase):
         # if exists(TEST_CONFIG_2.db_file):
         #    os.remove(TEST_CONFIG_2.db_file)
         pass
-
-    def _assert_timedeltas_almost_equal(self, td1: timedelta, td2: timedelta):
-        self.assertAlmostEqual(td1.total_seconds(), td2.total_seconds(), 4)
-
-    def _assert_files_equal(self, fpath1: str, fpath2: str):
-        self.assertTrue(filecmp.cmp(fpath1, fpath2), f'{fpath1} is not equal to {fpath2}.')
-
-    def _assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData):
-        self.assertEqual(md1.activity_id, md2.activity_id)
-        self.assertEqual(md1.activity_type, md2.activity_type)
-        self.assertEqual(md1.date_time, md2.date_time)
-        self.assertEqual(md1.distance_2d_km, md2.distance_2d_km)
-        np.testing.assert_array_equal(md1.center, md2.center)
-        np.testing.assert_array_equal(md1.points_std, md2.points_std)
-        self._assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean)
-        self._assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean)
-        self._assert_timedeltas_almost_equal(md1.duration, md2.duration)
-        self.assertEqual(md1.prototype_id, md2.prototype_id)
-        self.assertEqual(md1.name, md2.name)
-        self.assertEqual(md1.description, md2.description)
-        self._assert_files_equal(md1.thumbnail_file, md2.thumbnail_file)
-        self._assert_files_equal(md1.data_file, md2.data_file)
-
-    def _assert_activities_equal(self, a1: Activity, a2: Activity):
-        self._assert_metadata_equal(a1.metadata, a2.metadata)
-        pd.testing.assert_frame_equal(a1.points, a2.points, check_like=True)
 
     def test_01_setup(self):
         """Perform some basic checks to ensure the test is set up properly."""
@@ -235,7 +209,7 @@ class ActivityManagerTestCase(unittest.TestCase):
         """Test that the GPX object and the associated Activity have (almost) the same 2d length."""
 
         for a, g in zip(self.activities, self.gpx):
-            self.assertAlmostEqual(a.metadata.distance_2d_km * 1000, g.length_2d())
+            self.assertAlmostEqual(a.metadata.distance_2d_km * 1000, g.length_2d(), places=2)
 
     def test_13_load_metadata(self):
         """Test searching for Activity metadata by activity_id.

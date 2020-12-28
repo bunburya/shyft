@@ -11,7 +11,7 @@ from pyft.view.overview import Overview
 
 ### FOR TESTING ONLY
 
-from test.test_vars import *
+from test.test_base import *
 
 from pyft.view.edit_config import ConfigForm
 from pyft.view.view_activity import ActivityView

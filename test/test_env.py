@@ -2,8 +2,8 @@ import shutil
 
 from pyft.multi_activity import ActivityManager
 from pyft.config import Config
-from test import test_vars
-from test.test_vars import *
+from test import test_base
+from test.test_base import *
 
 """Set up a basic test environment, so that running `python -i test_env.py`
 allows us to explore the data and objects interactively.

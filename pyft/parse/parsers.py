@@ -201,6 +201,7 @@ class GPXParser(BaseParser, GarminMixin):
 
 
 class FITParser(BaseParser, GarminMixin):
+
     MANDATORY_FIELDS = (
         'position_lat',
         'position_long',
@@ -213,13 +214,57 @@ class FITParser(BaseParser, GarminMixin):
         'cadence'
     )
 
+    LATLON_TO_DECIMAL = (2 ** 32) / 360
+
     def __init__(self, *args, **kwargs):
         self._point = -1
+        self._points_data = []
+        self._backfill = []
         super().__init__(*args, **kwargs)
 
     def get_point_no(self) -> int:
         self._point += 1
         return self._point
+
+    def _add_point(
+        self,
+        lat: Optional[float],
+        lon: Optional[float],
+        elev: Optional[float],
+        timestamp: Optional[datetime],
+        heart_rate: Optional[int],
+        cadence: Optional[int]
+    ):
+        data = {
+            'point_no': self.get_point_no(),
+            'track_no': 0,
+            'segment_no': 0,
+            'latitude': None,
+            'longitude': None,
+            'elevation': elev,
+            'time': timestamp,
+            'hr': heart_rate,
+            'cadence': cadence
+        }
+        # https://gis.stackexchange.com/questions/122186/convert-garmin-or-iphone-weird-gps-coordinates
+        if (lat is not None):
+            data['latitude'] = lat / self.LATLON_TO_DECIMAL
+        if (lon is not None):
+            data['longitude'] = lon / self.LATLON_TO_DECIMAL
+
+        # Sometimes, the .FIT file will report elevation without reporting lat/lon data. In this case, we store
+        # whatever data we find, and once we subsequently receive lat/lon data we "backfill" the missing data with that.
+        if (lat is None) or (lon is None):
+            self._backfill.append(data)
+        else:
+            if self._backfill:
+                for to_add in self._backfill:
+                    for k in data:
+                        if (to_add[k] is None) and (data[k] is not None):
+                            to_add[k] = data[k]
+                    self._points_data.append(to_add)
+                self._backfill = []
+            self._points_data.append(data)
 
     def _parse(self, fpath: str):
         self._metadata = {
@@ -228,29 +273,36 @@ class FITParser(BaseParser, GarminMixin):
             'description': None,
             'activity_type': None
         }
-        points = []
         with fitdecode.FitReader(fpath) as fit:
             for frame in fit:
                 if isinstance(frame, fitdecode.FitDataMessage):
                     if (self._metadata['date_time'] is None) and frame.has_field('timestamp'):
                         self._metadata['date_time'] = frame.get_value('timestamp')
-                    if (self._metadata['name'] is None) and frame.has_field('name'):
-                        self._metadata['name'] = frame.get_value('name')
+                    #if (self._metadata['name'] is None) and frame.has_field('name'):
+                    #    self._metadata['name'] = frame.get_value('name')
                     if (self._metadata['activity_type'] is None) and frame.has_field('sport'):
-                        self._activity_type = self.GARMIN_TYPES.get(frame.get_value('sport'))
-                    if all([frame.has_field(f) for f in self.MANDATORY_FIELDS]):
-                        points.append((
-                            self.get_point_no(),
-                            0,
-                            0,
-                            frame.get_value('position_lat'),
-                            frame.get_value('position_long'),
-                            frame.get_value('elevation', fallback=None),
+                        self._metadata['activity_type'] = self.GARMIN_TYPES.get(frame.get_value('sport'))
+                    if frame.has_field('timestamp') and frame.has_field('altitude'):
+                        self._add_point(
+                            frame.get_value('position_lat', fallback=None),
+                            frame.get_value('position_long', fallback=None),
+                            frame.get_value('altitude'),
                             frame.get_value('timestamp'),
                             frame.get_value('heart_rate', fallback=None),
                             frame.get_value('cadence', fallback=None)
-                        ))
-        self._points = pd.DataFrame(points, columns=self.INITIAL_COL_NAMES)
+                        )
+                    elif frame.has_field('timestamp') and frame.has_field('altitude'):
+                        # Sometimes the .FIT file seems to report the altitude only, not lat/lon.
+                        # In these cases, we wait to receive the position data in the next frame and
+                        # "backfill" it.
+                        to_backfill = (
+                            frame.get_value('timestamp', fallback=None),
+                            frame.get_value('altitude', fallback=None),
+                            frame.get_value('heart_rate', fallback=None),
+                            frame.get_value('cadence', fallback=None)
+                        )
+        self._points = self.infer_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES))
+        #print(self._points.iloc[0])
 
     @property
     def metadata(self) -> dict:
