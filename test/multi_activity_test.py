@@ -16,48 +16,6 @@ from test.test_base import *
 
 class ActivityManagerTestCase(BaseTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-
-        cls.TEST_RUN_DATA_DIR_1 = run_data_dir('1', replace=True)
-        cls.TEST_RUN_DATA_DIR_2 = run_data_dir('2', replace=True)
-        cls.TEST_RUN_DATA_DIR_3 = run_data_dir('3', replace=True)
-
-        cls.TEST_CONFIG_1 = Config(config_file(cls.TEST_RUN_DATA_DIR_1),
-                                   data_dir=cls.TEST_RUN_DATA_DIR_1)
-
-        cls.TEST_CONFIG_2 = Config(config_file(cls.TEST_RUN_DATA_DIR_2),
-                                   data_dir=cls.TEST_RUN_DATA_DIR_2)
-
-        cls.TEST_CONFIG_3 = Config(config_file(cls.TEST_RUN_DATA_DIR_3),
-                                   data_dir=cls.TEST_RUN_DATA_DIR_3)
-
-        cls.gpx = []
-        cls.activities = []
-        for i, fpath in enumerate(TEST_GPX_FILES):
-            with open(fpath) as f:
-                cls.gpx.append(gpxpy.parse(f))
-            cls.activities.append(Activity.from_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
-        cls.proto_ids = {}
-        cls.fpath_ids = {}
-        cls.manager_1 = ActivityManager(cls.TEST_CONFIG_1)  # Add Activities directly (populate in setUp and use as the
-                                                            # base for most tests)
-        cls.manager_2 = ActivityManager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
-        cls.manager_3 = ActivityManager(cls.TEST_CONFIG_3)  # Add Activities directly (just to test adding)
-
-        for a in cls.activities:
-            cls.manager_1.add_activity(a)
-
-        # cls.manager_1.dbm.connection.set_trace_callback(print)
-
-    @classmethod
-    def tearDownClass(cls):
-        # if exists(TEST_CONFIG_1.db_file):
-        #    os.remove(TEST_CONFIG_1.db_file)
-        # if exists(TEST_CONFIG_2.db_file):
-        #    os.remove(TEST_CONFIG_2.db_file)
-        pass
-
     def test_01_setup(self):
         """Perform some basic checks to ensure the test is set up properly."""
 

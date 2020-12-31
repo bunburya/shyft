@@ -2,7 +2,7 @@ import os
 import unittest
 
 from pyft.config import Config
-from pyft.parse.parsers import parser_factory, GPXParser, FITParser
+from pyft.serialize.parse import parser_factory, GPXParser, FITParser
 from test.test_base import *
 
 RUN_DIR = run_data_dir('parsers', True)

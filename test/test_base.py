@@ -8,8 +8,11 @@ import unittest
 from datetime import timedelta
 from shutil import copyfile
 
+import gpxpy
 import numpy as np
 import pandas as pd
+from pyft.config import Config
+from pyft.multi_activity import ActivityManager
 
 from pyft.single_activity import ActivityMetaData, Activity
 
@@ -91,6 +94,48 @@ def config_file(run_dir: str) -> str:
 
 class BaseTestCase(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+
+        cls.TEST_RUN_DATA_DIR_1 = run_data_dir('1', replace=True)
+        cls.TEST_RUN_DATA_DIR_2 = run_data_dir('2', replace=True)
+        cls.TEST_RUN_DATA_DIR_3 = run_data_dir('3', replace=True)
+
+        cls.TEST_CONFIG_1 = Config(config_file(cls.TEST_RUN_DATA_DIR_1),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_1)
+
+        cls.TEST_CONFIG_2 = Config(config_file(cls.TEST_RUN_DATA_DIR_2),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_2)
+
+        cls.TEST_CONFIG_3 = Config(config_file(cls.TEST_RUN_DATA_DIR_3),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_3)
+
+        cls.gpx = []
+        cls.activities = []
+        for i, fpath in enumerate(TEST_GPX_FILES):
+            with open(fpath) as f:
+                cls.gpx.append(gpxpy.parse(f))
+            cls.activities.append(Activity.from_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
+        cls.proto_ids = {}
+        cls.fpath_ids = {}
+        cls.manager_1 = ActivityManager(cls.TEST_CONFIG_1)  # Add Activities directly (populate in setUp and use as the
+        # base for most tests)
+        cls.manager_2 = ActivityManager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
+        cls.manager_3 = ActivityManager(cls.TEST_CONFIG_3)  # Add Activities directly (just to test adding)
+
+        for a in cls.activities:
+            cls.manager_1.add_activity(a)
+
+        # cls.manager_1.dbm.connection.set_trace_callback(print)
+
+    @classmethod
+    def tearDownClass(cls):
+        # if exists(TEST_CONFIG_1.db_file):
+        #    os.remove(TEST_CONFIG_1.db_file)
+        # if exists(TEST_CONFIG_2.db_file):
+        #    os.remove(TEST_CONFIG_2.db_file)
+        pass
+
     def _assert_timedeltas_almost_equal(self, td1: timedelta, td2: timedelta, places: int = 4):
         self.assertAlmostEqual(td1.total_seconds(), td2.total_seconds(), places)
 
@@ -135,6 +180,9 @@ class BaseTestCase(unittest.TestCase):
             self._assert_files_equal(md1.data_file, md2.data_file)
 
     def _assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True):
+        # NOTE: If almost is True, comparisons will have a pretty high tolerance of errors. This is mainly to allow
+        # rough comparisons between activities generated from different data sources (eg, GPX files vs .FIT files)
+        # where differences in precision can lead to differences in distances, etc.
         self._assert_metadata_equal(a1.metadata, a2.metadata, almost, check_data_files)
         if almost:
             # Some columns can't really be compared for "almost" equality in the way that we want.

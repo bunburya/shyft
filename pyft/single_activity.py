@@ -13,7 +13,8 @@ import pytz
 import gpxpy
 from pyft.config import Config
 from pyft.geo_utils import intersect_points
-from pyft.parse.parsers import parser_factory
+from pyft.serialize.create import activity_to_gpx_file
+from pyft.serialize.parse import parser_factory
 
 MILE = 1609.344
 pd.options.plotting.backend = "plotly"
@@ -234,3 +235,6 @@ class Activity:
             name=activity_name or parser.metadata['name'],
             description=activity_description or parser.metadata['description']
         )
+
+    def to_gpx_file(self):
+        activity_to_gpx_file(self)

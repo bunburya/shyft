@@ -51,7 +51,7 @@ activity_view = ActivityView(am, TEST_CONFIG, __name__, server=server, external_
 def id_to_int(id: str) -> int:
     """Convert a string activity id to an integer, performing some
     basic verification and raising a ValueError is the given id is
-    note valid.
+    not valid.
     """
     try:
         activity_id = int(id)
