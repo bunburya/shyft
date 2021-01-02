@@ -110,6 +110,7 @@ class DatabaseManager:
         description TEXT,
         thumbnail_file TEXT,
         data_file TEXT,
+        source_file TEXT,
         FOREIGN KEY(prototype_id) REFERENCES prototypes(id)
     )"""
 
@@ -145,8 +146,8 @@ class DatabaseManager:
 
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
         (activity_id, activity_type, date_time, distance_2d_km, center_lat, center_lon, center_elev, std_lat, std_lon,
-        std_elev, km_pace_mean, duration, prototype_id, name, description, thumbnail_file, data_file)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        std_elev, km_pace_mean, duration, prototype_id, name, description, thumbnail_file, data_file, source_file)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     SAVE_PROTOTYPE = """INSERT INTO \"prototypes\"
@@ -197,7 +198,8 @@ class DatabaseManager:
             metadata.name,
             metadata.description,
             metadata.thumbnail_file,
-            metadata.data_file
+            metadata.data_file,
+            metadata.source_file
         ))
         if commit:
             self.connection.commit()

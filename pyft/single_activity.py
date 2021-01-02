@@ -1,6 +1,7 @@
 import os
 import hashlib
 import json
+import shutil
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Tuple, Callable, Optional, Any
@@ -40,6 +41,7 @@ class ActivityMetaData:
     name: Optional[str] = None
     description: Optional[str] = None
     data_file: Optional[str] = None
+    source_file: Optional[str] = None
 
     # The following will be auto-generated when the associated Activity is instantiated, if not explicitly provided
     distance_2d_km: float = None
@@ -76,7 +78,7 @@ class ActivityMetaData:
         if self.month is None:
             self.month = self.date_time.strftime('%M')
 
-
+@dataclass(init=False)
 class Activity:
     """ A dataclass representing a single activity.  Stores the points (as a pd.DataFrame),
     as well as some metadata about the activity.  We only separately store data about
@@ -104,7 +106,12 @@ class Activity:
                 kwargs['duration'] = self.points.iloc[-1]['time'] - kwargs['date_time']
             if (kwargs.get('thumbnail_file') is None) and config.thumbnail_dir:
                 kwargs['thumbnail_file'] = self.write_thumbnail(activity_id=kwargs['activity_id'])
+            if ((activity_id := kwargs.get('activity_id')) is not None) and (kwargs.get('data_file') is None):
+                kwargs['data_file'] = os.path.join(config.gpx_file_dir, f'{activity_id}.gpx')
+
             self.metadata = ActivityMetaData(**kwargs)
+            if (self.metadata.data_file is not None) and (not os.path.exists(self.metadata.data_file)):
+                self.to_gpx_file(self.metadata.data_file)
 
     def get_split_markers(self, split_col: str) -> pd.DataFrame:
         """Takes a DataFrame, calculates the points that lie directly on
@@ -224,17 +231,23 @@ class Activity:
     @staticmethod
     def from_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
                   activity_description: str = None, activity_type: str = None) -> 'Activity':
+        fname, ext = os.path.splitext(fpath)
         parser = parser_factory(fpath, config)
+        source_file = os.path.join(config.source_file_dir, f'{activity_id}{ext}')
+        if not os.path.exists(source_file):
+            shutil.copyfile(fpath, source_file)
         return Activity(
             config,
             parser.points,
             activity_id=activity_id,
             activity_type=activity_type or parser.metadata['activity_type'],
             date_time=parser.metadata['date_time'],
-            data_file=os.path.abspath(fpath),
+            source_file=source_file,
             name=activity_name or parser.metadata['name'],
             description=activity_description or parser.metadata['description']
         )
+
+
 
     def to_gpx_file(self, fpath: str):
         activity_to_gpx_file(self, fpath)

@@ -58,7 +58,7 @@ class SerializeTestCase(BaseTestCase):
             fpath = os.path.join(NEW_GPX_DIR, f'{activity_id}.gpx')
             activity.to_gpx_file(fpath)
             manager_pyftgpx.add_activity_from_file(fpath)
-        self._assert_managers_equal(self.manager_stravagpx, manager_pyftgpx, check_data_files=False)
+        self._assert_managers_equal(self.manager_stravagpx, manager_pyftgpx)
 
     def test_03_fit_gpx_parser_equal(self):
         """Test that the Activity generated from the GPX file and the
