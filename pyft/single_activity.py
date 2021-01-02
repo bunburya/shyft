@@ -236,5 +236,5 @@ class Activity:
             description=activity_description or parser.metadata['description']
         )
 
-    def to_gpx_file(self):
-        activity_to_gpx_file(self)
+    def to_gpx_file(self, fpath: str):
+        activity_to_gpx_file(self, fpath)

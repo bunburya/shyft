@@ -1,20 +1,52 @@
-import filecmp
-import os
-import shutil
-import unittest
 from datetime import datetime, timedelta
-from os.path import exists
 
-import numpy as np
-import pandas as pd
-import gpxpy
-from pyft.multi_activity import ActivityManager
-from pyft.single_activity import Activity, ActivityMetaData
-from pyft.config import Config
 from test.test_base import *
 
 
 class ActivityManagerTestCase(BaseTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+
+        cls.TEST_RUN_DATA_DIR_1 = run_data_dir('1', replace=True)
+        cls.TEST_RUN_DATA_DIR_2 = run_data_dir('2', replace=True)
+        cls.TEST_RUN_DATA_DIR_3 = run_data_dir('3', replace=True)
+
+        cls.TEST_CONFIG_1 = Config(config_file(cls.TEST_RUN_DATA_DIR_1),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_1)
+
+        cls.TEST_CONFIG_2 = Config(config_file(cls.TEST_RUN_DATA_DIR_2),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_2)
+
+        cls.TEST_CONFIG_3 = Config(config_file(cls.TEST_RUN_DATA_DIR_3),
+                                   data_dir=cls.TEST_RUN_DATA_DIR_3)
+
+        cls.gpx = []
+        cls.activities = []
+        for i, fpath in enumerate(TEST_GPX_FILES):
+            with open(fpath) as f:
+                cls.gpx.append(gpxpy.parse(f))
+            cls.activities.append(Activity.from_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
+        cls.proto_ids = {}
+        cls.fpath_ids = {}
+        cls.manager_1 = cls.get_manager(cls.TEST_CONFIG_1)  # Add Activities directly (populate in setUp and use as the
+                                                            # base for most tests)
+        cls.manager_2 = cls.get_manager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
+        cls.manager_3 = cls.get_manager(cls.TEST_CONFIG_3)  # Add Activities directly (just to test adding)
+
+        for a in cls.activities:
+            cls.manager_1.add_activity(a)
+
+        # cls.manager_1.dbm.connection.set_trace_callback(print)
+
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.exists(cls.TEST_RUN_DATA_DIR_1):
+            shutil.rmtree(cls.TEST_RUN_DATA_DIR_1)
+        if os.path.exists(cls.TEST_RUN_DATA_DIR_2):
+            shutil.rmtree(cls.TEST_RUN_DATA_DIR_2)
+        if os.path.exists(cls.TEST_RUN_DATA_DIR_3):
+            shutil.rmtree(cls.TEST_RUN_DATA_DIR_3)
 
     def test_01_setup(self):
         """Perform some basic checks to ensure the test is set up properly."""
@@ -58,18 +90,23 @@ class ActivityManagerTestCase(BaseTestCase):
             _id = self.manager_2.add_activity_from_file(fpath)
             self.fpath_ids[fpath] = _id
 
-        for a1, a2 in zip(self.manager_1.activities, self.manager_2.activities):
+        for a1, a2 in zip(self.manager_1, self.manager_2):
+            #print(a1, a2)
             self._assert_activities_equal(a1, a2)
 
         self.assertSequenceEqual(self.manager_1.prototypes, self.manager_2.prototypes)
 
     def test_04_test_loose_matching(self):
 
+        print(self.fpath_ids)
+
         for i1, i2 in LOOSE_MATCH:
             id1 = self.fpath_ids[TEST_GPX_FILES[i1]]
             id2 = self.fpath_ids[TEST_GPX_FILES[i2]]
             a1 = self.manager_1.get_activity_by_id(id1)
             a2 = self.manager_1.get_activity_by_id(id2)
+            print(f'a1 {i1} {self.fpath_ids[TEST_GPX_FILES[i1]]} {a1}')
+            print(f'a2 {i2} {self.fpath_ids[TEST_GPX_FILES[i2]]} {a2}')
             self.assertTrue(self.manager_1.loose_match_routes(a1, a2),
                             msg=f'{os.path.basename(TEST_GPX_FILES[i1])} and {os.path.basename(TEST_GPX_FILES[i2])}'
                                 ' do not loose match.')
@@ -130,7 +167,7 @@ class ActivityManagerTestCase(BaseTestCase):
             a2 = self.manager_1.get_activity_by_id(id2)
             self.assertEqual(a1.metadata.prototype_id, a2.metadata.prototype_id)
 
-        for a in self.manager_1.activities:
+        for a in self.manager_1:
             p = self.manager_1.get_activity_by_id(a.metadata.prototype_id)
             self.assertTrue(self.manager_1.tight_match_routes(a, p))
 
@@ -155,7 +192,7 @@ class ActivityManagerTestCase(BaseTestCase):
         for id in self.manager_1.activity_ids:
             a = self.manager_1.get_activity_by_id(id)
             self.assertEqual(id, a.metadata.activity_id)
-            self._assert_activities_equal(a, self.manager_1.activities[id])
+            self._assert_activities_equal(a, self.manager_1[id])
 
     def test_11_time(self):
         """Test that the GPX object and the associated Activity have the same time."""

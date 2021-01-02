@@ -149,8 +149,8 @@ class Config:
         parser = ConfigParser(interpolation=None)
         parser.add_section('general')
         for _field in to_save.__dataclass_fields__:
-            print(f'adding to {_field}:')
-            print(str(getattr(to_save, _field)))
+            #print(f'adding to {_field}:')
+            #print(str(getattr(to_save, _field)))
             parser['general'][_field] = str(getattr(to_save, _field))
         with open(fpath, 'w') as f:
             parser.write(f)

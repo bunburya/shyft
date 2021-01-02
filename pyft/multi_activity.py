@@ -15,8 +15,8 @@ class ActivityManager:
     def __init__(self, config: Config):
         self.config = config
         self.dbm = DatabaseManager(config)
-        self.activities: List[Activity] = []
-
+        self._cache: Dict[int, Activity] = {}
+        # self.activities = []
 
     @property
     def activity_ids(self):
@@ -28,36 +28,47 @@ class ActivityManager:
         return self.dbm.get_all_prototypes()
 
     def get_activity_by_id(self, activity_id: int) -> Optional[Activity]:
-        points = self.dbm.load_points(activity_id)
-        try:
-            return Activity(
-                self.config,
-                points,
-                **self.dbm.load_activity_data(activity_id)
-            )
-        except ValueError:
-            return None
+        if activity_id in self._cache:
+            return self._cache[activity_id]
+        else:
+            points = self.dbm.load_points(activity_id)
+            try:
+                activity = Activity(
+                    self.config,
+                    points,
+                    **self.dbm.load_activity_data(activity_id)
+                )
+                self._cache[activity_id] = activity
+                return activity
+            except ValueError:
+                return None
 
     def get_metadata_by_id(self, activity_id: int) -> Optional[ActivityMetaData]:
-        try:
-            return ActivityMetaData(**self.dbm.load_activity_data(activity_id))
-        except ValueError:
-            return None
+        if activity_id in self._cache:
+            return self._cache[activity_id].metadata
+        else:
+            try:
+                return ActivityMetaData(**self.dbm.load_activity_data(activity_id))
+            except ValueError:
+                return None
 
     def get_new_activity_id(self):
         return self.dbm.get_max_activity_id() + 1
 
-    def add_activity(self, activity: Activity) -> int:
+    def add_activity(self, activity: Activity, cache: bool = True) -> int:
         """Add an Activity instance, including finding and assigning its
-        matched prototype Activity.  Does not assign activity_id.  The
+        matched prototype Activity. Does not assign activity_id. The
         Activity should be instantiated correctly (including with an
         activity_id) before being passed to this method.
         """
         if activity.metadata.prototype_id is None:
             activity.metadata.prototype_id = self.find_route_match(activity)
         self.save_activity_to_db(activity)
-        self.activities.append(activity)
-        return activity.metadata.activity_id
+        #self.activities.append(activity)
+        _id = activity.metadata.activity_id
+        if cache:
+            self._cache[_id] = activity
+        return _id
 
     def add_activity_from_file(self, fpath: str, activity_name: str = None,
                                activity_description: str = None, activity_type: str = None) -> int:
@@ -134,3 +145,10 @@ class ActivityManager:
             return results
         else:
             return results[:number]
+
+    def __getitem__(self, key: int) -> Activity:
+        activity = self.get_activity_by_id(key)
+        if activity is None:
+            raise IndexError(f'No activity with ID {key}.')
+        else:
+            return activity

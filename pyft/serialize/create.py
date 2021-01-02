@@ -1,25 +1,36 @@
+"""Functions for creating files (eg, GPX files) from Activities."""
+
+# Handle circular import issue when using type hints
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from pyft.single_activity import Activity
+
 import pandas as pd
 import lxml.etree
 
 from gpxpy import gpx
-from pyft.single_activity import Activity
+
 
 # For now, we use Garmin's TrackPointExtension rather than rolling our own.
-NAMESPACES = {'gpxtpx': 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'}
+TPE_URL = 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'
+NAMESPACES = {'gpxtpx': TPE_URL}
 
 
 def _get_point_extensions(point_data: pd.Series) -> lxml.etree.Element:
-    ext_elem = lxml.etree.Element('gpxtpx:TrackPointExtension', nsmap=NAMESPACES)
-    hr_elem = lxml.etree.Element('gpxtpx:hr')
-    hr_elem.text = point_data['hr']
-    cad_elem = lxml.etree.Element('gpxtpx:cad')
-    cad_elem.text = point_data['cadence']
+    # gpxtpx namespace is defined at the global level in activity_to_gpx
+    ext_elem = lxml.etree.Element(f'{{{TPE_URL}}}TrackPointExtension')
+    hr_elem = lxml.etree.Element(f'{{{TPE_URL}}}hr')
+    hr_elem.text = str(point_data['hr'])
+    cad_elem = lxml.etree.Element(f'{{{TPE_URL}}}cad')
+    cad_elem.text = str(point_data['cadence'])
     ext_elem.append(hr_elem)
-    ext_elem.apend(cad_elem)
+    ext_elem.append(cad_elem)
     return ext_elem
 
 
 def _add_point_to_seg(point_data: pd.Series, seg: gpx.GPXTrackSegment):
+    #print(point_data)
     point = gpx.GPXTrackPoint(
         point_data['latitude'],
         point_data['longitude'],
@@ -37,6 +48,7 @@ def activity_to_gpx(activity: Activity) -> gpx.GPX:
     g.name = activity.metadata.name
     g.description = activity.metadata.description
     g.time = activity.metadata.date_time
+    g.nsmap |= NAMESPACES
     for track_no in points['track_no'].unique():
         track = gpx.GPXTrack()
         track.type = activity.metadata.activity_type
@@ -45,7 +57,7 @@ def activity_to_gpx(activity: Activity) -> gpx.GPX:
             seg = gpx.GPXTrackSegment()
             track.segments.append(seg)
             seg_points = track_points[track_points['segment_no'] == seg_no]
-            seg_points.apply(lambda row: _add_point_to_seg(row, seg))
+            seg_points.apply(lambda row: _add_point_to_seg(row, seg), axis=1)
         g.tracks.append(track)
     return g
 
