@@ -25,6 +25,7 @@ class Overview:
             id='overview_layout', children=[
                 html.H1(f'Activity overview for {self.config.user_name}'),
                 dcc.Markdown('[Configure](/config)'),
+                dcc.Markdown('[Upload](/upload)'),
                 html.H2('Recent activities'),
                 self.dc_factory.recent_activities(),
                 html.H2('Analysis'),

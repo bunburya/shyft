@@ -79,5 +79,13 @@ class SerializeTestCase(BaseTestCase):
             )
             _id += 1
 
+    def test_04_source_save(self):
+        """Test that source files are properly saved."""
+        for activity, gpx_file in zip(self.manager_stravagpx, TEST_GPX_FILES_2):
+            self._assert_files_equal(activity.metadata.source_file, gpx_file)
+        manager_fit = self.get_manager(CONFIG_FIT, TEST_FIT_FILES)
+        for activity, fit_file in zip(manager_fit, TEST_FIT_FILES):
+            self._assert_files_equal(activity.metadata.source_file, fit_file)
+
 if __name__ == '__main__':
     unittest.main()

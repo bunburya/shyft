@@ -121,7 +121,14 @@ class BaseDashComponentFactory:
         """Returns a (relative) link to the GPX file associated with the
         given activity.
         """
-        return f'/gpx_files/{metadata.activity_id}.gpx'
+        return f'/gpx_files/{metadata.activity_id}'
+
+    def source_file_link(self, metadata: ActivityMetaData) -> str:
+        """Returns a (relative) link to the source file associated with
+         the given activity (ie, the original data file from which the
+         Activity was created).
+         """
+        return f'/source_files/{metadata.activity_id}'
 
     def graph(self, data: pd.DataFrame, graph_type: str, **kwargs) -> go.Figure:
         """A generic function to create a graph object in respect of an Activity.
@@ -163,7 +170,9 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
 
                 **Average pace:**\t{mean_pace}
 
-                [Download GPX file]({self.gpx_file_link(metadata)})
+                [Export to GPX]({self.gpx_file_link(metadata)})
+
+                [Download source file]({self.source_file_link(metadata)})
             """)
         )
 
@@ -357,6 +366,6 @@ class OverviewComponentFactory(BaseDashComponentFactory):
 
     def recent_activities(self):
         """Return a table of the most recent activities."""
-        metadata = [a.metadata for a in self.activity_manager.activities]
+        metadata = [a.metadata for a in self.activity_manager]
         metadata.sort(key=lambda md: md.date_time, reverse=True)
         return self.activities_table(metadata[:self.config.overview_activities_count])

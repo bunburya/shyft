@@ -48,7 +48,7 @@ class ActivityManager:
             return self._cache[activity_id].metadata
         else:
             try:
-                return ActivityMetaData(**self.dbm.load_activity_data(activity_id))
+                return ActivityMetaData(self.config, **self.dbm.load_activity_data(activity_id))
             except ValueError:
                 return None
 
@@ -114,7 +114,7 @@ class ActivityManager:
                              number: Optional[int] = None
                              ) -> Sequence[ActivityMetaData]:
         results = self.dbm.search_activity_data(from_date, to_date, prototype, number)
-        return [ActivityMetaData(**kwargs) for kwargs in results]
+        return [ActivityMetaData(self.config, **kwargs) for kwargs in results]
 
     def summarize_activity_data(self,
                              from_date: Optional[datetime] = None,

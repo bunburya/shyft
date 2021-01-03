@@ -1,4 +1,4 @@
-from abc import ABC
+import os
 from datetime import datetime, timedelta
 from typing import Optional, Callable, Tuple, Generator
 
@@ -16,7 +16,6 @@ import logging
 # logging.getLogger().setLevel(logging.INFO)
 
 MILE = 1609.344  # metres in a mile
-
 
 class GarminMixin:
     GARMIN_TYPES = {
@@ -291,16 +290,7 @@ class FITParser(BaseParser, GarminMixin):
                             frame.get_value('heart_rate', fallback=None),
                             frame.get_value('cadence', fallback=None)
                         )
-                    elif frame.has_field('timestamp') and frame.has_field('altitude'):
-                        # Sometimes the .FIT file seems to report the altitude only, not lat/lon.
-                        # In these cases, we wait to receive the position data in the next frame and
-                        # "backfill" it.
-                        to_backfill = (
-                            frame.get_value('timestamp', fallback=None),
-                            frame.get_value('altitude', fallback=None),
-                            frame.get_value('heart_rate', fallback=None),
-                            frame.get_value('cadence', fallback=None)
-                        )
+
         self._points = self.infer_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES))
         #print(self._points.iloc[0])
 
@@ -320,13 +310,14 @@ class FITParser(BaseParser, GarminMixin):
     def date_time(self) -> datetime:
         return self._metadata['date_time']
 
-
+PARSERS = {
+    '.fit': FITParser,
+    '.gpx': GPXParser
+}
 def parser_factory(fpath: str, config: Config) -> BaseParser:
-    lower = fpath.lower()
-    if lower.endswith('.gpx'):
-        parser = GPXParser(fpath, config)
-    elif lower.endswith('.fit'):
-        parser = FITParser(fpath, config)
-    else:
+    _, ext = os.path.splitext(fpath.lower())
+    try:
+        parser = PARSERS[ext]
+    except KeyError:
         raise ValueError(f'No suitable parser found for file "{fpath}".')
-    return parser
+    return parser(fpath, config)
