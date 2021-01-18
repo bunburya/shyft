@@ -1,7 +1,7 @@
 import re
 import threading
 from datetime import timezone, timedelta, datetime
-from typing import Any, Iterable, Dict, Optional, Sequence
+from typing import Any, Iterable, Dict, Optional, Sequence, List
 
 import warnings
 warnings.simplefilter('ignore', UserWarning)
@@ -150,11 +150,6 @@ class DatabaseManager:
         VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
-    SAVE_PROTOTYPE = """INSERT INTO \"prototypes\"
-        (activity_id)
-        VALUES(?)
-    """
-
     def __init__(self, config: pyft.config.Config):
         self.lock = threading.Lock()
         self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES, check_same_thread=False)
@@ -168,6 +163,8 @@ class DatabaseManager:
 
         args and kwargs should be the arguments that would normally be
         passed to cursor.execute.
+
+        NOTE: Does not commit; this must be done separately.
         """
         try:
             self.lock.acquire(True)
@@ -175,13 +172,15 @@ class DatabaseManager:
         finally:
             self.lock.release()
 
+    def commit(self):
+        self.connection.commit()
 
     def create_tables(self, commit: bool = True):
         self.sql_execute(self.ACTIVITIES)
         self.sql_execute(self.POINTS)
         self.sql_execute(self.PROTOTYPES)
         if commit:
-            self.connection.commit()
+            self.commit()
 
     def save_activity_data(self, metadata: 'ActivityMetaData', commit: bool = True) -> int:
         self.cursor.execute(self.SAVE_ACTIVITY_DATA, (
@@ -202,7 +201,7 @@ class DatabaseManager:
             metadata.source_file
         ))
         if commit:
-            self.connection.commit()
+            self.commit()
         return self.cursor.lastrowid
 
     def save_points(self, points: pd.DataFrame, activity_id: int, commit: bool = True):
@@ -210,12 +209,23 @@ class DatabaseManager:
         points['activity_id'] = activity_id
         points.to_sql('points', self.connection, if_exists='append', index_label='id')
         if commit:
-            self.connection.commit()
+            self.commit()
 
     def save_prototype(self, prototype_id: int, commit: bool = True):
-        self.cursor.execute(self.SAVE_PROTOTYPE, (prototype_id,))
+        self.cursor.execute('INSERT INTO \"prototypes\" (activity_id) VALUES(?)', (prototype_id,))
         if commit:
-            self.connection.commit()
+            self.commit()
+
+    def delete_prototype(self, prototype_id: int, commit: bool = True):
+        self.cursor.execute('DELETE from "prototypes" WHERE activity_id=?', (prototype_id,))
+        if commit:
+            self.commit()
+
+    def change_prototype(self, old_id: int, new_id: int, commit: bool = True):
+        self.save_prototype(new_id, commit=False)
+        self.delete_prototype(old_id, commit=False)
+        if commit:
+            self.commit()
 
     def load_activity_data(self, activity_id: int) -> Dict[str, Any]:
         """Load metadata for the activity represented by activity_id and
@@ -284,16 +294,16 @@ class DatabaseManager:
             points[col] = pd.to_timedelta(points[col], unit='ns')
         return points
 
-    def load_prototype(self, prototype_id: int):
-        self.sql_execute('SELECT activity_id FROM "prototypes" WHERE id=?', (prototype_id,))
-        return self.cursor.fetchone()
+    #def load_prototype(self, prototype_id: int) -> sql.Row:
+    #    self.sql_execute('SELECT activity_id FROM "prototypes" WHERE id=?', (prototype_id,))
+    #    return self.cursor.fetchone()
 
-    def get_all_activity_ids(self):
+    def get_all_activity_ids(self) -> List[int]:
         self.sql_execute('SELECT activity_id from "activities"')
         # fetchall returns a sequence of Row objects
         return [r['activity_id'] for r in self.cursor.fetchall()]
 
-    def get_all_prototypes(self):
+    def get_all_prototypes(self) -> List[int]:
         self.sql_execute('SELECT activity_id FROM "prototypes"')
         return [r['activity_id'] for r in self.cursor.fetchall()]
 
@@ -307,3 +317,20 @@ class DatabaseManager:
             max_id = -1
         return max_id
 
+    def delete_points(self, activity_id: int, commit: bool = True):
+        self.sql_execute('DELETE FROM "points" WHERE activity_id=?', (activity_id,))
+        if commit:
+            self.commit()
+
+    def delete_metadata(self, activity_id: int, commit: bool = True):
+        self.sql_execute('DELETE FROM "activities" WHERE activity_id=?', (activity_id,))
+        if commit:
+            self.commit()
+
+    def delete_activity(self, activity_id: int, commit: bool = True):
+        # NOTE: This doesn't handle updating the prototype ID of the matched activities if the deleted activity
+        # is a prototype. That must be done elsewhere (eg, in ActivityManager).
+        self.delete_points(activity_id, commit=False)
+        self.delete_metadata(activity_id, commit=False)
+        if commit:
+            self.commit()

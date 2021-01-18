@@ -15,7 +15,7 @@ from pyft.serialize.parse import PARSERS
 
 ### FOR TESTING ONLY
 
-from test.test_base import *
+from test.test_common import *
 
 from pyft.view.edit_config import ConfigForm
 from pyft.view.view_activity import ActivityView
@@ -59,7 +59,7 @@ overview = Overview(am, CONFIG, __name__, server=server, external_stylesheets=ex
 activity_view = ActivityView(am, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets,
                              routes_pathname_prefix='/activity/')
 
-def id_to_int(id: str) -> int:
+def id_str_to_int(id: str) -> int:
     """Convert a string activity id to an integer, performing some
     basic verification and raising a ValueError is the given id is
     not valid.
@@ -79,7 +79,7 @@ def is_allowed_file(fname: str) -> bool:
 def get_thumbnail(id: str):
     # TODO:  Probably better if we just statically serve the thumbnails.
     try:
-        activity_id = id_to_int(id)
+        activity_id = id_str_to_int(id)
     except ValueError:
         return f'Invalid activity ID specified: "{id}".'
     # print(f'Activity with ID {activity_id}: {am.get_metadata_by_id(activity_id)}')
@@ -90,7 +90,7 @@ def get_thumbnail(id: str):
 @server.route('/gpx_files/<id>')
 def get_gpx_file(id: str):
     try:
-        activity_id = id_to_int(id)
+        activity_id = id_str_to_int(id)
     except ValueError:
         return f'Invalid activity ID specified: "{id}".'
     metadata = am.get_metadata_by_id(activity_id)
@@ -110,7 +110,7 @@ MIMETYPE_FALLBACK = 'application/octet-stream'
 @server.route('/source_files/<id>')
 def get_source_file(id: str):
     try:
-        activity_id = id_to_int(id)
+        activity_id = id_str_to_int(id)
     except ValueError:
         return f'Invalid activity ID specified: "{id}".'
     metadata = am.get_metadata_by_id(activity_id)
@@ -167,6 +167,22 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
+
+@server.route('/delete/<id>')
+def delete(id: str):
+    try:
+        activity_id = id_str_to_int(id)
+        am.delete_activity(activity_id)
+        overview.update_layout()
+        # FIXME: We can't flash message using Dash. Maybe implement some kind of MessageBus
+        # that the Overview and AcitivityView classes can use to display messages.
+        flash(f'Deleted activity with ID {activity_id}.')
+        return redirect('/')
+    except ValueError:
+        # This should catch ValueErrors raise by either id_str_to_int or am.delete_activity
+        return f'Invalid activity ID specified: "{id}".'
+
+
 
 if __name__ == '__main__':
     from sys import argv

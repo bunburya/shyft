@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from typing import Iterable, Tuple, Sequence, Optional, Dict, Any, List
 
@@ -16,7 +17,6 @@ class ActivityManager:
         self.config = config
         self.dbm = DatabaseManager(config)
         self._cache: Dict[int, Activity] = {}
-        # self.activities = []
 
     @property
     def activity_ids(self):
@@ -27,7 +27,7 @@ class ActivityManager:
         """Return a sequence of the activity_ids of all Activities which are prototypes."""
         return self.dbm.get_all_prototypes()
 
-    def get_activity_by_id(self, activity_id: int) -> Optional[Activity]:
+    def get_activity_by_id(self, activity_id: int, cache: bool = True) -> Optional[Activity]:
         if activity_id in self._cache:
             return self._cache[activity_id]
         else:
@@ -38,7 +38,8 @@ class ActivityManager:
                     points,
                     **self.dbm.load_activity_data(activity_id)
                 )
-                self._cache[activity_id] = activity
+                if cache:
+                    self._cache[activity_id] = activity
                 return activity
             except ValueError:
                 return None
@@ -136,19 +137,65 @@ class ActivityManager:
         self.dbm.save_activity_data(activity.metadata)
         self.dbm.save_points(activity.points, activity.metadata.activity_id)
 
-    def get_activity_matches(self, activity: ActivityMetaData, number=None) -> Iterable[ActivityMetaData]:
+    def get_activity_matches(self, metadata: ActivityMetaData,
+                             number: Optional[int] = None) -> Iterable[ActivityMetaData]:
         results = list(filter(
-            lambda a: a.activity_id != activity.activity_id,
-            self.search_activity_data(prototype=activity.prototype_id)
+            lambda a: a.activity_id != metadata.activity_id,
+            self.search_activity_data(prototype=metadata.prototype_id)
         ))
         if number is None:
             return results
         else:
             return results[:number]
 
+    def delete_activity(self, activity_id: int, delete_gpx_file: bool = True, delete_source_file: bool = True):
+        metadata = self.get_metadata_by_id(activity_id)
+        if metadata is None:
+            raise ValueError(f'Bad activity ID: {activity_id}')
+        self.dbm.delete_activity(activity_id)
+        if activity_id in self._cache:
+            self._cache.pop(activity_id)
+        if metadata.activity_id == metadata.prototype_id:
+            matches = self.get_activity_matches(metadata)
+            if matches:
+                next_match_id = matches[0].activity_id
+                self.replace_prototype(metadata.activity_id, next_match_id)
+            else:
+                self.dbm.delete_prototype(metadata.activity_id)
+        if delete_gpx_file and metadata.data_file:
+            os.remove(metadata.data_file)
+        if delete_source_file and metadata.source_file:
+            os.remove(metadata.source_file)
+
+    def replace_prototype(self, old_id: int, new_id: int):
+        matches = self.search_activity_data(prototype=old_id)
+        for metadata in matches:
+            if metadata.activity_id in self._cache:
+                self._cache.pop(metadata.activity_id)
+            metadata.prototype_id = new_id
+            self.dbm.save_activity_data(metadata, commit=False)
+        self.dbm.change_prototype(old_id, new_id, commit=False)
+        self.dbm.commit()
+
+
     def __getitem__(self, key: int) -> Activity:
         activity = self.get_activity_by_id(key)
         if activity is None:
-            raise IndexError(f'No activity with ID {key}.')
+            raise KeyError(f'No activity with ID {key}.')
         else:
             return activity
+
+    def __iter__(self):
+        self._ids = self.activity_ids
+        self._i = -1
+        return self
+
+    def __next__(self) -> Activity:
+        self._i += 1
+        try:
+            return self[self._ids[self._i]]
+        except IndexError:
+            raise StopIteration
+
+    def __len__(self) -> int:
+        return len(self.activity_ids)

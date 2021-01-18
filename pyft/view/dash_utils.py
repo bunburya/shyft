@@ -130,6 +130,10 @@ class BaseDashComponentFactory:
          """
         return f'/source_files/{metadata.activity_id}'
 
+    def delete_link(self, metadata: ActivityMetaData) -> str:
+        """Returns a (relative) link to delete the relevant activity."""
+        return f'/delete/{metadata.activity_id}'
+
     def graph(self, data: pd.DataFrame, graph_type: str, **kwargs) -> go.Figure:
         """A generic function to create a graph object in respect of an Activity.
 
@@ -173,6 +177,8 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 [Export to GPX]({self.gpx_file_link(metadata)})
 
                 [Download source file]({self.source_file_link(metadata)})
+
+                [Delete]({self.delete_link(metadata)})
             """)
         )
 

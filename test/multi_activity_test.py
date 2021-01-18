@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from test.test_base import *
+from test.test_common import *
 
 
 class ActivityManagerTestCase(BaseTestCase):
@@ -247,7 +247,49 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assertEqual(interpolated.default_activity_name_format, 'test {distance_2d_test}')
         self.assertEqual(raw1.default_activity_name_format, 'test {distance_2d_%(distance_unit)s}')
 
+    def test_16_iter(self):
+        """Test iterating through ActivityManager."""
+        self.assertEqual(len(self.manager_1), len(self.activities))
+        count = 0
+        for a1, a2 in zip(self.manager_1, self.activities):
+            self.assertIsInstance(a1, Activity)
+            self.assertEquals(a1.metadata.activity_id, a2.metadata.activity_id)
+            count += 1
+        self.assertEquals(count, len(self.manager_1))
 
+    def test_17_delete(self):
+        """Test deleting an activity."""
+        reduced_activities = self.activities[:]
+
+        # Test assumptions
+        self.assertEqual(self.manager_1[3].metadata.prototype_id, 2)
+        self.assertIn(0, self.manager_1.prototypes)
+        self.assertIn(2, self.manager_1.prototypes)
+
+        # Remove activity 2; activity 3 should become its own prototype.
+        reduced_activities.pop(2)
+        self.manager_1.delete_activity(2)
+        self.assertRaises(KeyError, lambda: self.manager_1[2])
+        #print(self.manager_1[2])
+        self.assertEqual(len(self.manager_1), len(reduced_activities))
+        for a1, a2 in zip(self.manager_1, reduced_activities):
+            self.assertEqual(a1.metadata.activity_id, a2.metadata.activity_id)
+        self.assertEqual(self.manager_1[3].metadata.prototype_id, 3)
+        self.assertNotIn(2, self.manager_1.prototypes)
+        self.assertIn(3, self.manager_1.prototypes)
+
+        # Remove activity 0; it is already its own prototype (and there are no matches),
+        # so it should cease to be a prototype.
+        reduced_activities.pop(0)
+        self.manager_1.delete_activity(0)
+        self.assertRaises(KeyError, lambda: self.manager_1[0])
+        self.assertEqual(len(self.manager_1), len(reduced_activities))
+        for a1, a2 in zip(self.manager_1, reduced_activities):
+            self.assertEqual(a1.metadata.activity_id, a2.metadata.activity_id)
+        self.assertNotIn(0, self.manager_1.prototypes)
+
+        # Try remove an activity that is not present
+        self.assertRaises(ValueError, lambda: self.manager_1.delete_activity(444))
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,7 +3,7 @@ import unittest
 
 from pyft.config import Config
 from pyft.serialize.parse import parser_factory, GPXParser, FITParser
-from test.test_base import *
+from test.test_common import *
 
 RUN_DIR_BASE = 'serialize'
 
