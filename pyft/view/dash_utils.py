@@ -26,10 +26,12 @@ class BaseDashComponentFactory:
     common to all such factory classes.
     """
 
-    ACTIVITY_TABLE_COLS = (
+    # The basic columns to display in an activity table.
+    # These may be supplemented in the activities_table method.
+    ACTIVITY_TABLE_BASIC_COLS = [
         {'id': 'thumb', 'name': '', 'presentation': 'markdown'},
-        {'id': 'name', 'name': 'Activity', 'presentation': 'markdown'},
-    )
+        {'id': 'name', 'name': 'Activity', 'presentation': 'markdown'}
+    ]
 
     COMMON_DATATABLE_OPTIONS = {
         'style_cell': {
@@ -93,14 +95,23 @@ class BaseDashComponentFactory:
             )
         ])
 
-    def activities_table(self, metadata_list: Iterable[ActivityMetaData], **kwargs) -> dt.DataTable:
+    def activities_table(self, metadata_list: Iterable[ActivityMetaData], options_col: bool = False,
+                         **kwargs) -> dt.DataTable:
         """A generic function to return a DataTable containing a list of activities."""
+        cols = self.ACTIVITY_TABLE_BASIC_COLS[:]
         data = [{
             'thumb': f'![{md.activity_id}]({self.thumbnail_link(md)})',
             'name': f'[{self.activity_name(md)}]({self.activity_link(md)})',
         } for md in metadata_list]
+        if options_col:
+            cols.append(
+                {'id': 'options', 'name': 'Options', 'presentation': 'markdown'}
+            )
+            for md, row in zip(metadata_list, data):
+                # TODO: Make this open in same tab (not sure if possible)
+                row['options'] = f'[Delete]({self.delete_link(md)})'
         return dt.DataTable(
-            columns=self.ACTIVITY_TABLE_COLS,
+            columns=cols,
             data=data,
             **self.COMMON_DATATABLE_OPTIONS,
             **kwargs
@@ -374,4 +385,4 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """Return a table of the most recent activities."""
         metadata = [a.metadata for a in self.activity_manager]
         metadata.sort(key=lambda md: md.date_time, reverse=True)
-        return self.activities_table(metadata[:self.config.overview_activities_count])
+        return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True)
