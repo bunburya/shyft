@@ -56,7 +56,7 @@ class ActivityManagerTestCase(BaseTestCase):
         db1 = self.manager_1.dbm
         db1.cursor.execute('SELECT name from sqlite_master where type= "table"')
         tables = {i[0] for i in db1.cursor.fetchall()}
-        self.assertSetEqual(tables, {'prototypes', 'activities', 'points'})
+        self.assertSetEqual(tables, {'prototypes', 'activities', 'points', 'laps'})
         db2 = self.manager_2.dbm
         db2.cursor.execute('SELECT name from sqlite_master where type= "table"')
         self.assertSetEqual({i[0] for i in db2.cursor.fetchall()}, tables)

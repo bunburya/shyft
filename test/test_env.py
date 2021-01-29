@@ -1,6 +1,6 @@
 import shutil
 
-from pyft.multi_activity import ActivityManager
+from pyft.activity_manager import ActivityManager
 from pyft.config import Config
 from test import test_common
 from test.test_common import *

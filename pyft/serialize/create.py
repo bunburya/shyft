@@ -4,7 +4,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from pyft.single_activity import Activity
+    from pyft.activity import Activity
 
 import pandas as pd
 import lxml.etree
@@ -44,7 +44,7 @@ def _add_point_to_seg(point_data: pd.Series, seg: gpx.GPXTrackSegment):
 def activity_to_gpx(activity: Activity) -> gpx.GPX:
     points = activity.points
     g = gpx.GPX()
-    g.creator = 'PyftGPX'
+    g.creator = 'Pyft'
     g.name = activity.metadata.name
     g.description = activity.metadata.description
     g.time = activity.metadata.date_time

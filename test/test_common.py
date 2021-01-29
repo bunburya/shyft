@@ -13,9 +13,9 @@ import gpxpy
 import numpy as np
 import pandas as pd
 from pyft.config import Config
-from pyft.multi_activity import ActivityManager
+from pyft.activity_manager import ActivityManager
 
-from pyft.single_activity import ActivityMetaData, Activity
+from pyft.activity import ActivityMetaData, Activity
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')

@@ -14,8 +14,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from pyft.config import Config
-from pyft.multi_activity import ActivityManager
-from pyft.single_activity import ActivityMetaData, Activity
+from pyft.activity_manager import ActivityManager
+from pyft.activity import ActivityMetaData, Activity
 
 
 class BaseDashComponentFactory:

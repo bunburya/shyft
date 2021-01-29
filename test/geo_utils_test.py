@@ -6,7 +6,7 @@ import gpxpy
 import numpy as np
 from pyft.geo_utils import distance, naive_distance
 from pyft.parse_gpx import distance_2d, _iter_points, INITIAL_COL_NAMES
-from pyft.single_activity import Activity
+from pyft.activity import Activity
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 

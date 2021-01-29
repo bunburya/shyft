@@ -117,10 +117,13 @@ class Activity:
 
     metadata: ActivityMetaData
     points: pd.DataFrame
+    laps: Optional[pd.DataFrame] = None
 
-    def __init__(self, config: Config, points: pd.DataFrame, metadata: Optional[ActivityMetaData] = None, **kwargs):
+    def __init__(self, config: Config, points: pd.DataFrame, laps: Optional[pd.DataFrame] = None,
+                 metadata: Optional[ActivityMetaData] = None, **kwargs):
         self.config = config
         self.points = points
+        self.laps = laps
         if metadata is not None:
             self.metadata = metadata
         else:

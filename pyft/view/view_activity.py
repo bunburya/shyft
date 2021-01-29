@@ -8,8 +8,8 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input, State
 from pyft.config import Config
-from pyft.multi_activity import ActivityManager
-from pyft.single_activity import Activity
+from pyft.activity_manager import ActivityManager
+from pyft.activity import Activity
 from pyft.view.dash_utils import ActivityViewComponentFactory
 
 

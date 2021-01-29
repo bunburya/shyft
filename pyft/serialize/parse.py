@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from typing import Optional, Callable, Tuple, Generator
+from typing import Optional, Callable, Tuple, Generator, Dict, Union
 
 import fitdecode
 import lxml.etree
@@ -29,10 +29,14 @@ class BaseParser:
     ACTIVITY_TYPES = {'run', 'walk', 'hike'}
 
     # The DataFrame that is passed to infer_points_data must contain all of these columns
-    INITIAL_COL_NAMES = (
+    INITIAL_COL_NAMES_POINTS = (
         'point_no', 'track_no', 'segment_no',
         'latitude', 'longitude', 'elevation',
         'time', 'hr', 'cadence'
+    )
+
+    INITIAL_COL_NAMES_LAPS = (
+        'lap_no', 'start_time', 'distance', 'duration', 'calories'
     )
 
     def __init__(self, fpath: str, config: Config):
@@ -41,7 +45,7 @@ class BaseParser:
         self._parse(fpath)
 
     def infer_points_data(self, df: pd.DataFrame) -> Optional[pd.DataFrame]:
-        if missing := set(self.INITIAL_COL_NAMES).difference(df.columns):
+        if missing := set(self.INITIAL_COL_NAMES_POINTS).difference(df.columns):
             raise ValueError(f'DataFrame is missing the following columns: {missing}.')
         df = df.copy()
         prev_lat = df['latitude'].shift()
@@ -74,10 +78,18 @@ class BaseParser:
     @property
     def points(self) -> pd.DataFrame:
         """Return a DataFrame with limited information on points (as
-        described in INITIAL_COL_NAMES). The infer_points_data can be
+        described in INITIAL_COL_NAMES_POINTS). The infer_points_data can be
         called on the resulting DataFrame to generate more data.
         """
         raise NotImplementedError('Child of BaseParser must implement a points property.')
+
+    @property
+    def laps(self) -> Optional[pd.DataFrame]:
+        """Return a DataFrame with limited information on laps (as
+        described in INITIAL_COL_NAMES_LAPS), if available (or None
+        otherwise).
+        """
+        raise NotImplementedError('Child of BaseParser must implement a laps property.')
 
     @property
     def date_time(self) -> datetime:
@@ -162,12 +174,17 @@ class GPXParser(BaseParser, GarminMixin):
     @property
     def points(self) -> pd.DataFrame:
         """Return a DataFrame with limited information on points (as
-        described in INITIAL_COL_NAMES). The infer_points_data can be
+        described in INITIAL_COL_NAMES_POINTS). The infer_points_data can be
         called on the resulting DataFrame to generate more data.
         """
-        df = pd.DataFrame(self._iter_points(), columns=self.INITIAL_COL_NAMES)
+        df = pd.DataFrame(self._iter_points(), columns=self.INITIAL_COL_NAMES_POINTS)
         df = self.infer_points_data(df)
         return df
+
+    @property
+    def laps(self) -> Optional[pd.DataFrame]:
+        """GPX files don't contain lap data, so we always return None."""
+        return None
 
     @property
     def date_time(self) -> datetime:
@@ -201,29 +218,46 @@ class GPXParser(BaseParser, GarminMixin):
 
 class FITParser(BaseParser, GarminMixin):
 
-    MANDATORY_FIELDS = (
+    MANDATORY_POINT_FIELDS = (
         'position_lat',
         'position_long',
         'timestamp'
     )
 
-    OPTIONAL_FIELDS = (
+    OPTIONAL_POINT_FIELDS = (
         'altitude',
         'heart_rate',
         'cadence'
+    )
+
+    MANDATORY_LAP_FIELDS = (
+        'start_time',
+        'total_distance',
+        'total_elapsed_time'
+    )
+
+    OPTIONAL_LAP_FIELDS = (
+        'total_calories'
     )
 
     LATLON_TO_DECIMAL = (2 ** 32) / 360
 
     def __init__(self, *args, **kwargs):
         self._point = -1
+        self._lap = 0
+        self._metadata = {}
         self._points_data = []
+        self._laps_data = []
         self._backfill = []
         super().__init__(*args, **kwargs)
 
-    def get_point_no(self) -> int:
+    def _get_point_no(self) -> int:
         self._point += 1
         return self._point
+
+    def _get_lap_no(self) -> int:
+        self._lap += 1
+        return self._lap
 
     def _add_point(
         self,
@@ -235,7 +269,7 @@ class FITParser(BaseParser, GarminMixin):
         cadence: Optional[int]
     ):
         data = {
-            'point_no': self.get_point_no(),
+            'point_no': self._get_point_no(),
             'track_no': 0,
             'segment_no': 0,
             'latitude': None,
@@ -265,34 +299,52 @@ class FITParser(BaseParser, GarminMixin):
                 self._backfill = []
             self._points_data.append(data)
 
+    def _parse_record(self, frame: fitdecode.FitDataMessage):
+        """Parse a FitDataMessage of type `record`, which contains
+        information about a single point.
+        """
+        if frame.has_field('timestamp') and frame.has_field('altitude'):
+            self._add_point(
+                frame.get_value('position_lat', fallback=None),
+                frame.get_value('position_long', fallback=None),
+                frame.get_value('altitude'),
+                frame.get_value('timestamp'),
+                frame.get_value('heart_rate', fallback=None),
+                frame.get_value('cadence', fallback=None)
+            )
+
+    def _parse_lap(self, frame: fitdecode.FitDataMessage):
+        """Parse a FitDataMessage of type `lap`, which contains
+        information about a lap.
+        """
+        self._laps_data.append({
+            'lap_no': self._get_lap_no(),
+            'start_time': frame.get_value('start_time'),
+            'distance': frame.get_value('total_distance'),
+            'duration': frame.get_value('total_elapsed_time'),
+            'calories': frame.get_value('total_calories', fallback=None)
+        })
+
+    def _parse_session(self, frame: fitdecode.FitDataMessage):
+        """Parse a FitDataMessage of type `session`, which contains
+        information about an activity.
+        """
+        self._metadata['date_time'] = frame.get_value('timestamp')
+        self._metadata['activity_type'] = self.GARMIN_TYPES.get(frame.get_value('sport'))
+
     def _parse(self, fpath: str):
-        self._metadata = {
-            'name': None,
-            'date_time': None,
-            'description': None,
-            'activity_type': None
-        }
         with fitdecode.FitReader(fpath) as fit:
             for frame in fit:
                 if isinstance(frame, fitdecode.FitDataMessage):
-                    if (self._metadata['date_time'] is None) and frame.has_field('timestamp'):
-                        self._metadata['date_time'] = frame.get_value('timestamp')
-                    #if (self._metadata['name'] is None) and frame.has_field('name'):
-                    #    self._metadata['name'] = frame.get_value('name')
-                    if (self._metadata['activity_type'] is None) and frame.has_field('sport'):
-                        self._metadata['activity_type'] = self.GARMIN_TYPES.get(frame.get_value('sport'))
-                    if frame.has_field('timestamp') and frame.has_field('altitude'):
-                        self._add_point(
-                            frame.get_value('position_lat', fallback=None),
-                            frame.get_value('position_long', fallback=None),
-                            frame.get_value('altitude'),
-                            frame.get_value('timestamp'),
-                            frame.get_value('heart_rate', fallback=None),
-                            frame.get_value('cadence', fallback=None)
-                        )
+                    if frame.name == 'record':
+                        self._parse_record(frame)
+                    elif frame.name == 'lap':
+                        self._parse_lap(frame)
+                    elif frame.name == 'session':
+                        self._parse_session(frame)
 
-        self._points = self.infer_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES))
-        #print(self._points.iloc[0])
+        self._points = self.infer_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES_POINTS))
+        self._laps = pd.DataFrame(self._laps_data, columns=self.INITIAL_COL_NAMES_LAPS)
 
     @property
     def metadata(self) -> dict:

@@ -135,6 +135,7 @@ class DatabaseManager:
         kmph FLOAT,
         mph FLOAT,
         run_time FLOAT NOT NULL,
+        lap INTEGER,
         FOREIGN KEY(activity_id) REFERENCES activities(id),
         PRIMARY KEY(id, activity_id)
     )"""
@@ -142,6 +143,18 @@ class DatabaseManager:
     PROTOTYPES = """CREATE TABLE IF NOT EXISTS \"prototypes\" (
         activity_id INTEGER PRIMARY KEY,
         FOREIGN KEY(activity_id) REFERENCES activities(id)
+    )"""
+
+    LAPS = """CREATE TABLE IF NOT EXISTS \"laps\" (
+        id INTEGER NOT NULL,
+        activity_id INTEGER NOT NULL,
+        lap_no INTEGER NOT NULL,
+        start_time TIMESTAMP NOT NULL,
+        distance FLOAT NOT NULL,
+        duration FLOAT NOT NULL,
+        calories INTEGER,
+        FOREIGN KEY(activity_id) REFERENCES activities(id),
+        PRIMARY KEY(id, activity_id, lap_no)
     )"""
 
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
@@ -178,6 +191,7 @@ class DatabaseManager:
     def create_tables(self, commit: bool = True):
         self.sql_execute(self.ACTIVITIES)
         self.sql_execute(self.POINTS)
+        self.sql_execute(self.LAPS)
         self.sql_execute(self.PROTOTYPES)
         if commit:
             self.commit()
@@ -204,10 +218,14 @@ class DatabaseManager:
             self.commit()
         return self.cursor.lastrowid
 
-    def save_points(self, points: pd.DataFrame, activity_id: int, commit: bool = True):
-        points = points.copy()
-        points['activity_id'] = activity_id
-        points.to_sql('points', self.connection, if_exists='append', index_label='id')
+    def save_dataframe(self, table_name: str, data: pd.DataFrame, activity_id: int, commit: bool = True):
+        """Generic method to save a DataFrame to the database. Can be
+        used for points or laps. DataFrame must have index column named
+        `id`.
+        """
+        data = data.copy()
+        data['activity_id'] = activity_id
+        data.to_sql(table_name, self.connection, if_exists='append', index_label='id')
         if commit:
             self.commit()
 
@@ -285,7 +303,6 @@ class DatabaseManager:
         results = self.cursor.fetchall()
         return [activity_row_to_dict(r) for r in results[:number]]
 
-
     def load_points(self, activity_id: int) -> pd.DataFrame:
         points = pd.read_sql_query('SELECT * FROM "points" WHERE activity_id=?', self.connection,
                                    params=(activity_id,)).drop(['id', 'activity_id'], axis=1)
@@ -293,6 +310,15 @@ class DatabaseManager:
         for col in ('km_pace', 'mile_pace', 'run_time'):
             points[col] = pd.to_timedelta(points[col], unit='ns')
         return points
+
+    def load_laps(self, activity_id: int) -> Optional[pd.DataFrame]:
+        laps = pd.read_sql_query('SELECT * FROM "laps" WHERE activity_id=?', self.connection,
+                                 params=(activity_id,)).drop(['id', 'activity_id'], axis=1)
+        if laps.empty:
+            return None
+        else:
+            laps['duration'] = pd.to_timedelta(laps['duration'], unit='ns')
+            return laps
 
     #def load_prototype(self, prototype_id: int) -> sql.Row:
     #    self.sql_execute('SELECT activity_id FROM "prototypes" WHERE id=?', (prototype_id,))
@@ -322,6 +348,11 @@ class DatabaseManager:
         if commit:
             self.commit()
 
+    def delete_laps(self, activity_id: int, commit: bool = True):
+        self.sql_execute('DELETE FROM "laps" WHERE activity_id=?', (activity_id,))
+        if commit:
+            self.commit()
+
     def delete_metadata(self, activity_id: int, commit: bool = True):
         self.sql_execute('DELETE FROM "activities" WHERE activity_id=?', (activity_id,))
         if commit:
@@ -331,6 +362,7 @@ class DatabaseManager:
         # NOTE: This doesn't handle updating the prototype ID of the matched activities if the deleted activity
         # is a prototype. That must be done elsewhere (eg, in ActivityManager).
         self.delete_points(activity_id, commit=False)
+        self.delete_laps(activity_id, commit=False)
         self.delete_metadata(activity_id, commit=False)
         if commit:
             self.commit()

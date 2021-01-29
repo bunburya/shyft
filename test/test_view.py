@@ -6,7 +6,7 @@ from typing import Callable
 from flask import Flask, url_for, render_template, redirect, send_file, flash, request
 import dash_bootstrap_components as dbc
 from pyft.config import Config
-from pyft.multi_activity import ActivityManager
+from pyft.activity_manager import ActivityManager
 from pyft.view import view_activity
 from pyft.view.overview import Overview
 

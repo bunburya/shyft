@@ -8,7 +8,7 @@ from pyft.config import Config
 from pyft.database import DatabaseManager, str_to_timedelta
 from pyft.geo_utils import distance, norm_dtw, norm_length_diff, norm_center_diff
 from pyft.parse_gpx import distance_2d, parse_gpx_file
-from pyft.single_activity import Activity, ActivityMetaData
+from pyft.activity import Activity, ActivityMetaData
 
 
 class ActivityManager:
@@ -32,10 +32,12 @@ class ActivityManager:
             return self._cache[activity_id]
         else:
             points = self.dbm.load_points(activity_id)
+            laps = self.dbm.load_laps(activity_id)
             try:
                 activity = Activity(
                     self.config,
                     points,
+                    laps,
                     **self.dbm.load_activity_data(activity_id)
                 )
                 if cache:
@@ -135,7 +137,9 @@ class ActivityManager:
 
     def save_activity_to_db(self, activity: Activity):
         self.dbm.save_activity_data(activity.metadata)
-        self.dbm.save_points(activity.points, activity.metadata.activity_id)
+        self.dbm.save_dataframe('points', activity.points, activity.metadata.activity_id)
+        if activity.laps is not None:
+            self.dbm.save_dataframe('laps', activity.laps, activity.metadata.activity_id)
 
     def get_activity_matches(self, metadata: ActivityMetaData,
                              number: Optional[int] = None) -> Iterable[ActivityMetaData]:
