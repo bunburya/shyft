@@ -45,6 +45,7 @@ class ActivityMetaData:
     source_file: Optional[str] = None
 
     # The following will be auto-generated when the associated Activity is instantiated, if not explicitly provided
+    # (because they rely on points data)
     distance_2d_km: float = None
     center: np.ndarray = None
     points_std: np.ndarray = None
@@ -266,14 +267,20 @@ class Activity:
         fname, ext = os.path.splitext(fpath)
         parser = parser_factory(fpath, config)
 
+        metadata = parser.metadata
+        if activity_type is not None:
+            metadata['activity_type'] = activity_type
+        if activity_name is not None:
+            metadata['activity_name'] = activity_name
+        if activity_description is not None:
+            metadata['description'] = activity_description
+
         activity = Activity(
             config,
             parser.points,
+            parser.laps,
             activity_id=activity_id,
-            activity_type=activity_type or parser.metadata['activity_type'],
-            date_time=parser.metadata['date_time'],
-            name=activity_name or parser.metadata['name'],
-            description=activity_description or parser.metadata['description']
+            **metadata
         )
         source_file = os.path.join(config.source_file_dir, f'{activity.metadata.file_name}{ext}')
         if not os.path.exists(source_file):

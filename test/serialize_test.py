@@ -31,6 +31,11 @@ class SerializeTestCase(BaseTestCase):
     @classmethod
     def setUpClass(cls):
         cls.manager_stravagpx = cls.get_manager(CONFIG_STRAVAGPX, files=TEST_GPX_FILES_2)
+        cls.manager_fit = cls.get_manager(CONFIG_FIT, files=TEST_FIT_FILES)
+        cls.strava_gpx = []
+        for i, fpath in enumerate(TEST_GPX_FILES_2):
+            with open(fpath) as f:
+                cls.strava_gpx.append(gpxpy.parse(f))
         print(cls.manager_stravagpx.activity_ids)
 
     #@classmethod
@@ -86,6 +91,26 @@ class SerializeTestCase(BaseTestCase):
         manager_fit = self.get_manager(CONFIG_FIT, TEST_FIT_FILES)
         for activity, fit_file in zip(manager_fit, TEST_FIT_FILES):
             self._assert_files_equal(activity.metadata.source_file, fit_file)
+
+    def test_05_gpx_length(self):
+        """Test that the length we calculate for activities generated
+        from GPX files is the same as the length calculated by gpxpy.
+        """
+        for activity, gpx in zip(self.manager_stravagpx, self.strava_gpx):
+            self.assertAlmostEqual(activity.metadata.distance_2d_km * 1000, gpx.length_2d(), places=3)
+
+    def test_06_laps(self):
+        """Test that laps have been created correctly."""
+        for activity in self.manager_stravagpx:
+            self.assertIsNone(activity.laps)
+        for activity in self.manager_fit:
+            laps = activity.laps
+            self.assertIsInstance(laps, pd.DataFrame)
+            print(laps)
+            print(f'sum: {laps["distance"].sum()}')
+            print(f'total: {activity.metadata.distance_2d_km}')
+            self.assertAlmostEqual(laps['distance'].sum(), activity.metadata.distance_2d_km * 1000, places=3)
+            self.assertAlmostEqual(laps['duration'].sum(), activity.metadata.duration)
 
 if __name__ == '__main__':
     unittest.main()

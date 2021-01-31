@@ -125,7 +125,11 @@ class BaseTestCase(unittest.TestCase):
         self.assertEqual(md1.date_time, md2.date_time,
                          msg=f'Activity times are not the same ({md1.date_time} vs {md2.date_time}).')
         if almost:
-            self.assertAlmostEqual(md1.distance_2d_km, md2.distance_2d_km, 1,
+            # NOTE: Tests equality to within 0.5km. Obviously not very satisfactory, but unfortunately the difference
+            # between the distance reported by a device and that measured by adding up the haversine distances between
+            # points can often by out by as much as a few hundred metres. Possible because of some proprietary
+            # adjustment algorithm used by the device.
+            self.assertAlmostEqual(md1.distance_2d_km, md2.distance_2d_km, delta=0.5,
                                    msg=f'Activity distances are not the same ({md1.distance_2d_km} vs {md2.distance_2d_km}).')
             np.testing.assert_array_almost_equal(md1.center, md2.center, decimal=2)
             np.testing.assert_array_almost_equal(md1.points_std, md2.points_std, decimal=2)
