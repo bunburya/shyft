@@ -21,4 +21,4 @@ kaleido = "*"
 appdirs = "*"
 fitdecode = "*"
 flask-wtf = "*"
-
+python-dateutil = "*"
