@@ -72,7 +72,7 @@ class ActivityManagerTestCase(BaseTestCase):
 
 
         for a in activities:
-            # print(a.metadata.data_file, a.metadata.date_time)
+            # print(a.metadata.gpx_file, a.metadata.date_time)
             self.assertIsNotNone(a.metadata.activity_id)
             self.assertIsNone(a.metadata.prototype_id)
             self.manager_3.add_activity(a)
@@ -258,7 +258,7 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assertEquals(count, len(self.manager_1))
 
     def test_17_delete(self):
-        """Test deleting an activity."""
+        """Test deleting an _activity_elem."""
         reduced_activities = self.activities[:]
 
         # Test assumptions
@@ -266,7 +266,7 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assertIn(0, self.manager_1.prototypes)
         self.assertIn(2, self.manager_1.prototypes)
 
-        # Remove activity 2; activity 3 should become its own prototype.
+        # Remove _activity_elem 2; _activity_elem 3 should become its own prototype.
         reduced_activities.pop(2)
         self.manager_1.delete_activity(2)
         self.assertRaises(KeyError, lambda: self.manager_1[2])
@@ -278,7 +278,7 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assertNotIn(2, self.manager_1.prototypes)
         self.assertIn(3, self.manager_1.prototypes)
 
-        # Remove activity 0; it is already its own prototype (and there are no matches),
+        # Remove _activity_elem 0; it is already its own prototype (and there are no matches),
         # so it should cease to be a prototype.
         reduced_activities.pop(0)
         self.manager_1.delete_activity(0)
@@ -288,7 +288,7 @@ class ActivityManagerTestCase(BaseTestCase):
             self.assertEqual(a1.metadata.activity_id, a2.metadata.activity_id)
         self.assertNotIn(0, self.manager_1.prototypes)
 
-        # Try remove an activity that is not present
+        # Try remove an _activity_elem that is not present
         self.assertRaises(ValueError, lambda: self.manager_1.delete_activity(444))
 
 if __name__ == '__main__':

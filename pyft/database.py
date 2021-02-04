@@ -80,7 +80,7 @@ def str_to_timedelta(s: str) -> timedelta:
 
 
 def activity_row_to_dict(row: sql.Row) -> Dict[str, Any]:
-    """Convert a Row object representing a query on activity data
+    """Convert a Row object representing a query on _activity_elem data
     into a dict.
     """
     results = dict(row)
@@ -109,7 +109,7 @@ class DatabaseManager:
         name TEXT,
         description TEXT,
         thumbnail_file TEXT,
-        data_file TEXT,
+        gpx_file TEXT,
         source_file TEXT,
         FOREIGN KEY(prototype_id) REFERENCES prototypes(id)
     )"""
@@ -159,7 +159,7 @@ class DatabaseManager:
 
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
         (activity_id, activity_type, date_time, distance_2d_km, center_lat, center_lon, center_elev, std_lat, std_lon,
-        std_elev, km_pace_mean, duration, prototype_id, name, description, thumbnail_file, data_file, source_file)
+        std_elev, km_pace_mean, duration, prototype_id, name, description, thumbnail_file, gpx_file, source_file)
         VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
@@ -211,7 +211,7 @@ class DatabaseManager:
             metadata.name,
             metadata.description,
             metadata.thumbnail_file,
-            metadata.data_file,
+            metadata.gpx_file,
             metadata.source_file
         ))
         if commit:
@@ -246,14 +246,14 @@ class DatabaseManager:
             self.commit()
 
     def load_activity_data(self, activity_id: int) -> Dict[str, Any]:
-        """Load metadata for the activity represented by activity_id and
+        """Load metadata for the _activity_elem represented by activity_id and
         return it as a dict.  Raises a ValueError if activity_id is not
         valid.
         """
         self.sql_execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
         result = self.cursor.fetchone()
         if not result:
-            raise ValueError(f'No activity found with activity_id {activity_id}.')
+            raise ValueError(f'No _activity_elem found with activity_id {activity_id}.')
         return activity_row_to_dict(result)
 
     def search_activity_data(self,
@@ -359,7 +359,7 @@ class DatabaseManager:
             self.commit()
 
     def delete_activity(self, activity_id: int, commit: bool = True):
-        # NOTE: This doesn't handle updating the prototype ID of the matched activities if the deleted activity
+        # NOTE: This doesn't handle updating the prototype ID of the matched activities if the deleted _activity_elem
         # is a prototype. That must be done elsewhere (eg, in ActivityManager).
         self.delete_points(activity_id, commit=False)
         self.delete_laps(activity_id, commit=False)

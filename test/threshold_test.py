@@ -14,7 +14,7 @@ TEST_CONFIG_FILE = config_file(TEST_RUN_DATA_DIR)
 
 def main():
 
-    # TODO: Change so that all activities are added to the manager, and then iterate through activity IDs.
+    # TODO: Change so that all activities are added to the manager, and then iterate through _activity_elem IDs.
 
     config = Config(TEST_CONFIG_FILE)
     am = ActivityManager(config)

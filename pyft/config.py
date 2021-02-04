@@ -63,6 +63,7 @@ class Config:
             self.data_dir = parser['general']['data_dir']
 
         self.distance_unit = parser['general']['distance_unit']
+        self.default_activity_type = parser['general']['default_activity_type']
 
         self.match_center_threshold = parser['general'].getfloat('match_center_threshold')
         self.match_length_threshold = parser['general'].getfloat('match_length_threshold')

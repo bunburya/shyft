@@ -57,10 +57,10 @@ server.secret_key = 'TEST_KEY'
 overview = Overview(am, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets)
 
 activity_view = ActivityView(am, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets,
-                             routes_pathname_prefix='/activity/')
+                             routes_pathname_prefix='/_activity_elem/')
 
 def id_str_to_int(id: str) -> int:
-    """Convert a string activity id to an integer, performing some
+    """Convert a string _activity_elem id to an integer, performing some
     basic verification and raising a ValueError is the given id is
     not valid.
     """
@@ -69,7 +69,7 @@ def id_str_to_int(id: str) -> int:
     except (ValueError, TypeError):
         activity_id = None
     if activity_id is None:
-        raise ValueError(f'Bad activity id: "{id}".')
+        raise ValueError(f'Bad _activity_elem id: "{id}".')
     return activity_id
 
 def is_allowed_file(fname: str) -> bool:
@@ -81,7 +81,7 @@ def get_thumbnail(id: str):
     try:
         activity_id = id_str_to_int(id)
     except ValueError:
-        return f'Invalid activity ID specified: "{id}".'
+        return f'Invalid _activity_elem ID specified: "{id}".'
     # print(f'Activity with ID {activity_id}: {am.get_metadata_by_id(activity_id)}')
     metadata = am.get_metadata_by_id(activity_id)
     return send_file(metadata.thumbnail_file, mimetype='image/png')
@@ -92,14 +92,14 @@ def get_gpx_file(id: str):
     try:
         activity_id = id_str_to_int(id)
     except ValueError:
-        return f'Invalid activity ID specified: "{id}".'
+        return f'Invalid _activity_elem ID specified: "{id}".'
     metadata = am.get_metadata_by_id(activity_id)
-    data_file = metadata.data_file
+    data_file = metadata.gpx_file
     if data_file:
         return send_file(data_file, mimetype='application/gpx+xml', as_attachment=True,
                          attachment_filename=os.path.basename(data_file))
     else:
-        return (f'No data file found for activity ID "{id}".')
+        return (f'No data file found for _activity_elem ID "{id}".')
 
 MIMETYPES = {
     '.gpx': 'application/gpx+xml',
@@ -112,7 +112,7 @@ def get_source_file(id: str):
     try:
         activity_id = id_str_to_int(id)
     except ValueError:
-        return f'Invalid activity ID specified: "{id}".'
+        return f'Invalid _activity_elem ID specified: "{id}".'
     metadata = am.get_metadata_by_id(activity_id)
     source_file = metadata.source_file
     if source_file:
@@ -121,7 +121,7 @@ def get_source_file(id: str):
         return send_file(source_file, mimetype=mimetype, as_attachment=True,
                          attachment_filename=os.path.basename(source_file))
     else:
-        return (f'No source file found for activity ID "{id}".')
+        return (f'No source file found for _activity_elem ID "{id}".')
 
 @server.route('/config', methods=['GET', 'POST'])
 def config():
@@ -157,7 +157,7 @@ def upload_file():
             file.save(fpath)
             id = am.add_activity_from_file(fpath)
             overview.update_layout()
-            return redirect(f'/activity/{id}')
+            return redirect(f'/_activity_elem/{id}')
     return '''
     <!doctype html>
     <title>Upload new File</title>
@@ -176,11 +176,11 @@ def delete(id: str):
         overview.update_layout()
         # FIXME: We can't flash message using Dash. Maybe implement some kind of MessageBus
         # that the Overview and AcitivityView classes can use to display messages.
-        flash(f'Deleted activity with ID {activity_id}.')
+        flash(f'Deleted _activity_elem with ID {activity_id}.')
         return redirect('/')
     except ValueError:
         # This should catch ValueErrors raise by either id_str_to_int or am.delete_activity
-        return f'Invalid activity ID specified: "{id}".'
+        return f'Invalid _activity_elem ID specified: "{id}".'
 
 
 

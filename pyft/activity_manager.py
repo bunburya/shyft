@@ -67,7 +67,7 @@ class ActivityManager:
         if activity.metadata.prototype_id is None:
             activity.metadata.prototype_id = self.find_route_match(activity)
         self.save_activity_to_db(activity)
-        #self.activities.append(activity)
+        #self.activities.append(_activity_elem)
         _id = activity.metadata.activity_id
         if cache:
             self._cache[_id] = activity
@@ -102,7 +102,7 @@ class ActivityManager:
             if match:
                 tight_matches.append((p.metadata.activity_id, dist))
         if not tight_matches:
-            # No matches; make this activity a prototype
+            # No matches; make this _activity_elem a prototype
             self.dbm.save_prototype(a.metadata.activity_id)
             return a.metadata.activity_id
         elif len(tight_matches) == 1:
@@ -155,7 +155,7 @@ class ActivityManager:
     def delete_activity(self, activity_id: int, delete_gpx_file: bool = True, delete_source_file: bool = True):
         metadata = self.get_metadata_by_id(activity_id)
         if metadata is None:
-            raise ValueError(f'Bad activity ID: {activity_id}')
+            raise ValueError(f'Bad _activity_elem ID: {activity_id}')
         self.dbm.delete_activity(activity_id)
         if activity_id in self._cache:
             self._cache.pop(activity_id)
@@ -166,8 +166,8 @@ class ActivityManager:
                 self.replace_prototype(metadata.activity_id, next_match_id)
             else:
                 self.dbm.delete_prototype(metadata.activity_id)
-        if delete_gpx_file and metadata.data_file:
-            os.remove(metadata.data_file)
+        if delete_gpx_file and metadata.gpx_file:
+            os.remove(metadata.gpx_file)
         if delete_source_file and metadata.source_file:
             os.remove(metadata.source_file)
 
@@ -185,7 +185,7 @@ class ActivityManager:
     def __getitem__(self, key: int) -> Activity:
         activity = self.get_activity_by_id(key)
         if activity is None:
-            raise KeyError(f'No activity with ID {key}.')
+            raise KeyError(f'No _activity_elem with ID {key}.')
         else:
             return activity
 

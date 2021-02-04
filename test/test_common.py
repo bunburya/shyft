@@ -20,13 +20,14 @@ from pyft.activity import ActivityMetaData, Activity
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')
 TEST_FIT_FILES_DIR = os.path.join(TEST_DATA_DIR, 'fit_files')
+TEST_TCX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'tcx_files')
 TEST_CONFIG_FILE_BASE = os.path.join(TEST_DATA_DIR, 'test_config.ini')
 TEST_RUN_DATA_DIR_BASE = os.path.join(TEST_DATA_DIR, 'run')
 TEST_ACTIVITY_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_activity_graphs.json')
 TEST_OVERVIEW_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_overview_graphs.json')
 
 # Test GPX files.
-# Neither 0 nor 1 should loose- or tight-match any other activity.
+# Neither 0 nor 1 should loose- or tight-match any other _activity_elem.
 # 2 and 3 should loose- and tight-match each other but not match any others.
 # 4 and 5 should loose- but not tight-match each other.
 # TBC if 6 should match 4 or 5.
@@ -51,7 +52,7 @@ TEST_GPX_FILES = [
 ]
 
 # These have both .gpx and .fit files
-FIT_AND_GPX = (
+FIT_TCX_GPX = (
     '2020_10_03_pp_7k_ccw',
     '2020_11_01_pp_6.84k_ccw',
     '2020_11_07_pp_7.23k_cw',
@@ -62,8 +63,9 @@ FIT_AND_GPX = (
     'path_of_gods_walk_2020'
 )
 
-TEST_GPX_FILES_2 = [os.path.join(TEST_GPX_FILES_DIR, f'{fname}.gpx') for fname in FIT_AND_GPX]
-TEST_FIT_FILES = [os.path.join(TEST_FIT_FILES_DIR, f'{fname}.fit') for fname in FIT_AND_GPX]
+TEST_GPX_FILES_2 = [os.path.join(TEST_GPX_FILES_DIR, f'{fname}.gpx') for fname in FIT_TCX_GPX]
+TEST_FIT_FILES = [os.path.join(TEST_FIT_FILES_DIR, f'{fname}.fit') for fname in FIT_TCX_GPX]
+TEST_TCX_FILES = [os.path.join(TEST_TCX_FILES_DIR, f'{fname}.tcx') for fname in FIT_TCX_GPX]
 
 # ints here are index values in TEST_GPX_FILES
 LOOSE_MATCH = (
@@ -116,18 +118,20 @@ class BaseTestCase(unittest.TestCase):
         self.assertTrue(filecmp.cmp(fpath1, fpath2), f'{fpath1} is not equal to {fpath2}.')
 
     def _assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData,
-                               almost: bool = False, check_data_files: bool = True):
+                               almost: bool = False, check_data_files: bool = True,
+                               check_types: bool = True):
 
         self.assertEqual(md1.activity_id, md2.activity_id,
                          msg=f'Activity IDs are not the same ({md1.activity_id} vs {md2.activity_id}).')
-        self.assertEqual(md1.activity_type, md2.activity_type,
-                         msg=f'Activity types are not the same ({md1.activity_type} vs {md2.activity_type}).')
+        if check_types:
+            self.assertEqual(md1.activity_type, md2.activity_type,
+                             msg=f'Activity types are not the same ({md1.activity_type} vs {md2.activity_type}).')
         self.assertEqual(md1.date_time, md2.date_time,
                          msg=f'Activity times are not the same ({md1.date_time} vs {md2.date_time}).')
         if almost:
             # NOTE: Tests equality to within 0.5km. Obviously not very satisfactory, but unfortunately the difference
             # between the distance reported by a device and that measured by adding up the haversine distances between
-            # points can often by out by as much as a few hundred metres. Possible because of some proprietary
+            # points can often be out by as much as a few hundred metres. Possible because of some proprietary
             # adjustment algorithm used by the device.
             self.assertAlmostEqual(md1.distance_2d_km, md2.distance_2d_km, delta=0.5,
                                    msg=f'Activity distances are not the same ({md1.distance_2d_km} vs {md2.distance_2d_km}).')
@@ -155,30 +159,42 @@ class BaseTestCase(unittest.TestCase):
         if not almost:
             self._assert_files_equal(md1.thumbnail_file, md2.thumbnail_file)
         if check_data_files:
-            self._assert_files_equal(md1.data_file, md2.data_file)
+            self._assert_files_equal(md1.gpx_file, md2.gpx_file)
 
-    def _assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True):
+    def _assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True,
+                                 check_types: bool = True, check_laps: bool = True):
         # NOTE: If almost is True, comparisons will have a pretty high tolerance of errors. This is mainly to allow
         # rough comparisons between activities generated from different data sources (eg, GPX files vs .FIT files)
         # where differences in precision can lead to differences in distances, etc.
-        self._assert_metadata_equal(a1.metadata, a2.metadata, almost, check_data_files)
+        self._assert_metadata_equal(a1.metadata, a2.metadata, almost, check_data_files, check_types)
+        if check_laps:
+            pd.testing.assert_frame_equal(
+                a1.laps,
+                a2.laps,
+                check_like=True
+            )
+            points1 = a1.points
+            points2 = a2.points
+        else:
+            points1 = a1.points.drop('lap', axis=1)
+            points2 = a2.points.drop('lap', axis=1)
         if almost:
             # Some columns can't really be compared for "almost" equality in the way that we want.
             # So we have to drop these.
             # TODO: Find other ways to compare the dropped columns.
             rtol = 5
-            # print(a1.points[a1.points['mile'] != a2.points['mile']])
-            # print(a1.points.iloc[421])
-            # print(a2.points.iloc[421])
+            #print(a1.points['lap'])
+            #print(a2.points['lap'])
             pd.testing.assert_frame_equal(
-                a1.points.drop(['km_pace', 'mile_pace', 'mile', 'km'], axis=1),
-                a2.points.drop(['km_pace', 'mile_pace', 'mile', 'km'], axis=1),
+                points1.drop(['km_pace', 'mile_pace', 'mile', 'km', 'kmph', 'mph'], axis=1),
+                points2.drop(['km_pace', 'mile_pace', 'mile', 'km', 'kmph', 'mph'], axis=1),
                 check_like=True, rtol=rtol
             )
         else:
             pd.testing.assert_frame_equal(a1.points, a2.points, check_like=True)
 
     def _assert_managers_equal(self, manager1: ActivityManager, manager2: ActivityManager, almost: bool = False,
-                               check_data_files: bool = True):
+                               check_data_files: bool = True, check_types: bool = True, check_laps: bool = True):
         for a1, a2 in zip(manager1, manager2):
-            self._assert_activities_equal(a1, a2, almost, check_data_files)
+            self._assert_activities_equal(a1, a2, almost, check_data_files=check_data_files, check_types=check_types,
+                                          check_laps=check_laps)

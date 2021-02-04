@@ -10,7 +10,7 @@ class ConfigForm(FlaskForm):
     match_center_threshold = FloatField('Threshold for centre-matching of routes')
     match_length_threshold = FloatField('Threshold for length-matching of routes')
     tight_match_threshold = FloatField('Threshold for tight-matching of routes')
-    default_activity_name_format = StringField('Format for displaying an activity name', [DataRequired()])
+    default_activity_name_format = StringField('Format for displaying an _activity_elem name', [DataRequired()])
     week_start = SelectField('The first day of the week',
                              choices=('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'))
     submit = SubmitField('Save')

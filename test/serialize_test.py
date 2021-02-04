@@ -18,6 +18,9 @@ CONFIG_STRAVAGPX = get_config(RUN_DIR_STRAVAGPX)
 RUN_DIR_FIT = run_data_dir(RUN_DIR_BASE + '_FIT', replace=True)  # For .FIT-generated activities
 CONFIG_FIT = get_config(RUN_DIR_FIT)
 
+RUN_DIR_GARMINTCX = run_data_dir(RUN_DIR_BASE + '_GarminTCX', replace=True)  # For Garmin TCX-generated activities
+CONFIG_GARMINTCX = get_config(RUN_DIR_GARMINTCX)
+
 RUN_DIR_PYFTGPX = run_data_dir(RUN_DIR_BASE + '_PyftGPX', replace=True)  # For PyftGPX-generated activities
 CONFIG_PYFTGPX = get_config(RUN_DIR_PYFTGPX)
 
@@ -32,6 +35,7 @@ class SerializeTestCase(BaseTestCase):
     def setUpClass(cls):
         cls.manager_stravagpx = cls.get_manager(CONFIG_STRAVAGPX, files=TEST_GPX_FILES_2)
         cls.manager_fit = cls.get_manager(CONFIG_FIT, files=TEST_FIT_FILES)
+        cls.manager_garmintcx = cls.get_manager(CONFIG_GARMINTCX, files=TEST_FIT_FILES)
         cls.strava_gpx = []
         for i, fpath in enumerate(TEST_GPX_FILES_2):
             with open(fpath) as f:
@@ -59,11 +63,11 @@ class SerializeTestCase(BaseTestCase):
         manager_pyftgpx = self.get_manager(CONFIG_PYFTGPX)
         for activity in self.manager_stravagpx:
             activity_id = activity.metadata.activity_id
-            #print(f'activity: {activity_id}')
+            #print(f'_activity_elem: {activity_id}')
             fpath = os.path.join(NEW_GPX_DIR, f'{activity_id}.gpx')
             activity.to_gpx_file(fpath)
             manager_pyftgpx.add_activity_from_file(fpath)
-        self._assert_managers_equal(self.manager_stravagpx, manager_pyftgpx)
+        self._assert_managers_equal(self.manager_stravagpx, manager_pyftgpx, check_laps=False)
 
     def test_03_fit_gpx_parser_equal(self):
         """Test that the Activity generated from the GPX file and the
@@ -71,7 +75,7 @@ class SerializeTestCase(BaseTestCase):
         """
         _id = 0
         for g, f in zip(TEST_GPX_FILES_2, TEST_FIT_FILES):
-            print(f'Testing {g} against {f}.')
+            #print(f'Testing {g} against {f}.')
             gpx_activity = Activity.from_file(g, CONFIG_STRAVAGPX, activity_id=_id)
             fit_activity = Activity.from_file(f, CONFIG_FIT, activity_id=_id)
             #gpx_activity.points.to_csv(g+'.csv')
@@ -80,11 +84,36 @@ class SerializeTestCase(BaseTestCase):
                 gpx_activity,
                 fit_activity,
                 almost=True,
-                check_data_files=False
+                check_data_files=False,
+                check_laps=False
             )
             _id += 1
 
-    def test_04_source_save(self):
+    def test_04_fit_tcx_parser_equal(self):
+        """Test that the Activity generated from the TCX file and the
+        FIT file are equivalent.
+        """
+        _id = 0
+        for t, f in zip(TEST_TCX_FILES, TEST_FIT_FILES):
+            tcx_activity = Activity.from_file(t, CONFIG_GARMINTCX, activity_id=_id)
+            fit_activity = Activity.from_file(f, CONFIG_FIT, activity_id=_id)
+            if fit_activity.metadata.activity_type != 'run':
+                # For some reason, the TCX files we get from Garmin or Strava list non-running activities as being of
+                # type "Other", even when the underlying data correctly reportings them as "walking", etc.
+                self.assertEqual(tcx_activity.metadata.activity_type, CONFIG_GARMINTCX.default_activity_type)
+                check_types = False
+            else:
+                check_types = True
+            self._assert_activities_equal(
+                tcx_activity,
+                fit_activity,
+                almost=True,
+                check_data_files=False,
+                check_types=check_types
+            )
+            _id += 1
+
+    def test_05_source_save(self):
         """Test that source files are properly saved."""
         for activity, gpx_file in zip(self.manager_stravagpx, TEST_GPX_FILES_2):
             self._assert_files_equal(activity.metadata.source_file, gpx_file)
@@ -92,14 +121,16 @@ class SerializeTestCase(BaseTestCase):
         for activity, fit_file in zip(manager_fit, TEST_FIT_FILES):
             self._assert_files_equal(activity.metadata.source_file, fit_file)
 
-    def test_05_gpx_length(self):
+    def test_06_gpx_length(self):
         """Test that the length we calculate for activities generated
         from GPX files is the same as the length calculated by gpxpy.
+        There is some tolerance of small discrepancies as there may be
+        rounding differences.
         """
         for activity, gpx in zip(self.manager_stravagpx, self.strava_gpx):
             self.assertAlmostEqual(activity.metadata.distance_2d_km * 1000, gpx.length_2d(), places=3)
 
-    def test_06_laps(self):
+    def test_07_laps(self):
         """Test that laps have been created correctly."""
         for activity in self.manager_stravagpx:
             self.assertIsNone(activity.laps)

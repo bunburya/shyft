@@ -20,13 +20,13 @@ from pyft.activity import ActivityMetaData, Activity
 
 class BaseDashComponentFactory:
     """A base for classes that generate Dash various components
-    depending on the configuration and the given activity data.
+    depending on the configuration and the given _activity_elem data.
 
     This base class contains methods and data which are expected to be
     common to all such factory classes.
     """
 
-    # The basic columns to display in an activity table.
+    # The basic columns to display in an _activity_elem table.
     # These may be supplemented in the activities_table method.
     ACTIVITY_TABLE_BASIC_COLS = [
         {'id': 'thumb', 'name': '', 'presentation': 'markdown'},
@@ -59,8 +59,8 @@ class BaseDashComponentFactory:
         self.summary = activity_manager.summarize_activity_data()
 
     def activity_name(self, metadata: ActivityMetaData) -> str:
-        """Return an activity's name or, if the activity has no name,
-        generate one using the activity's other metadata.
+        """Return an _activity_elem's name or, if the _activity_elem has no name,
+        generate one using the _activity_elem's other metadata.
         """
         name = metadata.name
         if name is None:
@@ -69,7 +69,7 @@ class BaseDashComponentFactory:
 
     def activity_row(self, metadata: ActivityMetaData, base_id: str) -> dbc.Row:
         """A generic function to return a Row containing a thumbnail,
-        description and link in respect of a particular activity.
+        description and link in respect of a particular _activity_elem.
         """
         # TODO:  Is this used?
         return dbc.Row([
@@ -88,7 +88,7 @@ class BaseDashComponentFactory:
                     html.A(
                         [f'{self.activity_name(metadata)}'],  # TODO:  Get default name
                         id=f'{base_id}_link_{metadata.activity_id}',
-                        href='TODO'  # TODO:  Get relative link to display activity
+                        href='TODO'  # TODO:  Get relative link to display _activity_elem
                     )
                 ],
                 width=10
@@ -118,31 +118,31 @@ class BaseDashComponentFactory:
         )
 
     def activity_link(self, metadata: ActivityMetaData) -> str:
-        """Returns a (relative) link to the given activity."""
-        return f'/activity/{metadata.activity_id}'
+        """Returns a (relative) link to the given _activity_elem."""
+        return f'/_activity_elem/{metadata.activity_id}'
 
     def thumbnail_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to to the thumbnail image of the
-        given activity.
+        given _activity_elem.
         """
         # NOTE:  Not currently used; we just pull metadata.thumbnail_file.
         return f'/thumbnails/{metadata.activity_id}.png'
 
     def gpx_file_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to the GPX file associated with the
-        given activity.
+        given _activity_elem.
         """
         return f'/gpx_files/{metadata.activity_id}'
 
     def source_file_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to the source file associated with
-         the given activity (ie, the original data file from which the
+         the given _activity_elem (ie, the original data file from which the
          Activity was created).
          """
         return f'/source_files/{metadata.activity_id}'
 
     def delete_link(self, metadata: ActivityMetaData) -> str:
-        """Returns a (relative) link to delete the relevant activity."""
+        """Returns a (relative) link to delete the relevant _activity_elem."""
         return f'/delete/{metadata.activity_id}'
 
     def graph(self, data: pd.DataFrame, graph_type: str, **kwargs) -> go.Figure:
@@ -163,11 +163,11 @@ class BaseDashComponentFactory:
 
 
 class ActivityViewComponentFactory(BaseDashComponentFactory):
-    """Methods to generate Dash components used to view a single activity."""
+    """Methods to generate Dash components used to view a single _activity_elem."""
 
     def activity_overview(self, metadata: ActivityMetaData) -> html.Div:
         """Return markdown containing a summary of some key metrics
-        about the given activity.
+        about the given _activity_elem.
         """
         if self.config.distance_unit == 'km':
             distance = metadata.distance_2d_km
@@ -194,7 +194,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         )
 
     def splits_table(self, id: str, splits_df: pd.DataFrame, **kwargs) -> dt.DataTable:
-        """Return a DataTable with information about an activity broken
+        """Return a DataTable with information about an _activity_elem broken
         down by split.
         """
         split_col = self.config.distance_unit
@@ -221,7 +221,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
 
     def activity_graph(self, activity: Activity, **kwargs) -> go.Figure:
         """Return a graph with various bits of information relating
-        to the given activity.
+        to the given _activity_elem.
         """
         fig = px.line(activity.points, x='time', y='kmph')
         return fig
@@ -297,7 +297,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         return fig
 
     def matched_activities(self, activity: Activity) -> dbc.Row:
-        """Return a table listing the given activity's matched activities."""
+        """Return a table listing the given _activity_elem's matched activities."""
         return dbc.Row([
                 dbc.Col([
                     self.activities_table(
