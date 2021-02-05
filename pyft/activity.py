@@ -64,14 +64,17 @@ class ActivityMetaData:
     month: str = None
 
     def __post_init__(self):
+        #print(f'kmph_mean {self.kmph_mean}, distance {self.distance_2d_km}')
+        #print(f'km_pace_mean {self.km_pace_mean}')
         if self.distance_2d_mile is None:
             self.distance_2d_mile = self.distance_2d_km * 1000 / MILE
         if self.kmph_mean is None:
             self.kmph_mean = 3600 / self.km_pace_mean.seconds
+            #print(f'kmph_mean {self.kmph_mean}')
         if self.mph_mean is None:
             self.mph_mean = self.kmph_mean / MILE
         if self.mile_pace_mean is None:
-            self.mile_pace_mean = timedelta(seconds=60/self.mph_mean)
+            self.mile_pace_mean = pd.to_timedelta((60/self.mph_mean), unit='s')
         if self.day is None:
             self.day = self.date_time.strftime('%A')
         if self.hour is None:
@@ -256,14 +259,6 @@ class Activity:
         #print(f'thumbnail fpath is {fpath}')
         return fpath
 
-    @property
-    def activity_hash(self):
-        """Generate a unique (enough) hash for the Activity by hashing the combination of the ActivityMetaData
-        variables and the shape (rows and cols) of the points.
-        """
-        # TODO:  Check if this is used
-        return hashlib.sha1(json.dumps(vars(self.metadata)).encode('utf-8') + bytes(self.points.shape)).hexdigest()
-
     @staticmethod
     def from_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
                   activity_description: str = None, activity_type: str = None) -> 'Activity':
@@ -290,8 +285,6 @@ class Activity:
             shutil.copyfile(fpath, source_file)
         activity.metadata.source_file = source_file
         return activity
-
-
 
     def to_gpx_file(self, fpath: str):
         activity_to_gpx_file(self, fpath)

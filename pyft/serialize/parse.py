@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Callable, Tuple, Generator, Dict, Union, List
 
 import fitdecode
@@ -71,16 +71,14 @@ class BaseParser:
         self.config = config
         self._parse(fpath)
 
-    def convert_speed(self, meters_per_sec: Optional[Union[float, pd.Series]]) -> Optional[Union[float, pd.Series]]:
+    def _convert_speed(self, meters_per_sec: Optional[Union[float, pd.Series]]) -> Optional[Union[float, pd.Series]]:
         """Converts meters/second to km/hour."""
         if meters_per_sec is not None:
             return meters_per_sec * 3.6
         else:
             return None
 
-    def infer_points_data(self, df: pd.DataFrame) -> Optional[pd.DataFrame]:
-        if missing := set(self.INITIAL_COL_NAMES_POINTS).difference(df.columns):
-            raise ValueError(f'DataFrame is missing the following columns: {missing}.')
+    def _infer_points_data(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.copy()
         prev_lat = df['latitude'].shift()
         prev_lon = df['longitude'].shift()
@@ -101,10 +99,9 @@ class BaseParser:
         interval_distance = df['cumul_distance_2d'] - prev_cumul_distance
         interval_time = df['time'] - prev_time
         if not df['kmph'].any():
-            df['kmph'] = self.convert_speed(interval_distance / interval_time.dt.seconds)
-
-        df['km_pace'] = (1000 / interval_distance) * (interval_time)
-        df['mile_pace'] = (MILE / df['step_length_2d']) * (df['time'] - prev_time)
+            df['kmph'] = self._convert_speed(interval_distance / interval_time.dt.seconds)
+        df['km_pace'] = (1000 / interval_distance) * interval_time
+        df['mile_pace'] = (MILE / interval_distance) * interval_time
         df['mph'] = (1000 * df['kmph']) / MILE
         #df['km_pace'] = 3600 / df['kmph']
         #df['mile_pace'] = 3600 / df['mph']
@@ -113,6 +110,18 @@ class BaseParser:
         # df['mph'] = df['kmph'] / (MILE / 1000)
 
         return df
+
+    def _clean_points_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Do some basic cleaning of the points data."""
+        df = df.copy()
+        df.set_index('point_no', inplace=True)
+        df.drop_duplicates('time', ignore_index=True, inplace=True)
+        return df
+
+    def _handle_points_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        if missing := set(self.INITIAL_COL_NAMES_POINTS).difference(df.columns):
+            raise ValueError(f'DataFrame is missing the following columns: {missing}.')
+        return self._infer_points_data(self._clean_points_data(df))
 
     def distance_2d(self, lat1: pd.Series, lon1: pd.Series, lat2: pd.Series, lon2: pd.Series) -> np.ndarray:
         return haversine_distance(lat1, lon1, lat2, lon2)
@@ -230,7 +239,7 @@ class GPXParser(BaseParser, GarminMixin, StravaMixin):
         """
         if self._points_df is None:
             df = pd.DataFrame(self._iter_points(), columns=self.INITIAL_COL_NAMES_POINTS)
-            self._points_df = self.infer_points_data(df)
+            self._points_df = self._handle_points_data(df)
         return self._points_df
 
     @property
@@ -297,11 +306,15 @@ class BaseActivityParser(BaseParser):
             if self._backfill:
                 for to_add in self._backfill:
                     for k in point_data:
-                        if (to_add[k] is None) and (point_data[k] is not None):
+                        if (to_add.get(k) is None) and (point_data[k] is not None):
                             to_add[k] = point_data[k]
                     all_points_data.append(to_add)
                 self._backfill = []
+            #if isinstance(self, TCXParser):
+            #    print(f'adding {point_data["elevation"]}')
             all_points_data.append(point_data)
+            #if isinstance(self, TCXParser):
+            #    raise ValueError
 
 
 class TCXParser(BaseActivityParser, GarminMixin, StravaMixin):
@@ -320,18 +333,18 @@ class TCXParser(BaseActivityParser, GarminMixin, StravaMixin):
     def _parse(self, fpath: str):
         self._xml_root: lxml.etree._Element = lxml.etree.parse(fpath).getroot()
         self._activity_elem: lxml.etree._Element = self._xml_root.find('ns:Activities', self.NAMESPACES)[0]
-        self._iter_laps(self._activity_elem)
+        self._iter_laps()
         self._parse_metadata()
 
-    def _iter_laps(self, activity_elem: lxml.etree._Element):
+    def _iter_laps(self):
         """Iterate through an Activity element and handle each Lap."""
         laps_data = []
         points_data = []
-        for lap in activity_elem.findall('ns:Lap', self.NAMESPACES):
+        for lap in self._activity_elem.findall('ns:Lap', self.NAMESPACES):
             lap_no = self._get_lap_no()
             lap_data = {'lap_no': lap_no}
             if 'StartTime' in lap.attrib:
-                lap_data['start_time'] = dp.parse(lap.attrib['StartTime'])
+                lap_data['start_time'] = dp.parse(lap.attrib['StartTime']).astimezone(timezone.utc)
             if (dist_elem := lap.find('ns:DistanceMeters', self.NAMESPACES)) is not None:
                 lap_data['distance'] = float(dist_elem.text)
             if (time_elem := lap.find('ns:TotalTimeSeconds', self.NAMESPACES)) is not None:
@@ -342,36 +355,45 @@ class TCXParser(BaseActivityParser, GarminMixin, StravaMixin):
             self._iter_points(lap, points_data, lap_no)
         self._laps_df = pd.DataFrame(laps_data, columns=self.INITIAL_COL_NAMES_LAPS)
         points_df = pd.DataFrame(points_data, columns=self.INITIAL_COL_NAMES_POINTS)
-        self._points_df = self.infer_points_data(points_df)
+        self._points_df = self._handle_points_data(points_df)
 
     def _iter_points(self, lap_elem: lxml.etree._Element, points_data: List[dict], lap_no: int):
         track = lap_elem.find('ns:Track', self.NAMESPACES)
-        data = {
-            'lap': lap_no,
-            'track_no': 0,
-            'segment_no': 0,
-            'point_no': self._get_point_no()
-        }
         for point_elem in track.findall('ns:Trackpoint', self.NAMESPACES):
+            data = {
+                'lap': lap_no,
+                'track_no': 0,
+                'segment_no': 0,
+                'point_no': self._get_point_no()
+            }
             lat = lon = None
             if (position_elem := point_elem.find('ns:Position', self.NAMESPACES)) is not None:
                 if (lat_elem := position_elem.find('ns:LatitudeDegrees', self.NAMESPACES)) is not None:
-                    lat = float(lat_elem.text)
+                    lat = data['latitude'] = float(lat_elem.text)
                 if (lon_elem := position_elem.find('ns:LongitudeDegrees', self.NAMESPACES)) is not None:
-                    lon = float(lon_elem.text)
-
-            # TODO: Cadence and speed seem to be recorded differently in different TCX files, so we need to handle both.
+                    lon = data['longitude'] = float(lon_elem.text)
 
             if (time_elem := point_elem.find('ns:Time', self.NAMESPACES)) is not None:
-                data['time'] = dp.parse(time_elem.text)
+                data['time'] = dp.parse(time_elem.text).astimezone(timezone.utc)
             if (elev_elem := point_elem.find('ns:AltitudeMeters', self.NAMESPACES)) is not None:
                 data['elevation'] = float(elev_elem.text)
             if (hr_elem := point_elem.find('ns:HeartRateBpm', self.NAMESPACES)) is not None:
                 data['hr'] = float(hr_elem.find('ns:Value', self.NAMESPACES).text)
+
+            # Cadence and speed can be recorded differently in different files:
+            # - sometimes as direct children of the Trackpoint element (as Cadence and Speed);
+            # - sometimes as children of the Extensions element (as activity_ns:RunCadence and activity_ns:Speed)
             if (cad_elem := point_elem.find('ns:Cadence', self.NAMESPACES)) is not None:
                 data['cadence'] = float(cad_elem.text)
             if (speed_elem := point_elem.find('.//activity_ns:Speed', self.NAMESPACES)) is not None:
-                data['kmph'] = self.convert_speed(float(speed_elem.text))
+                data['kmph'] = self._convert_speed(float(speed_elem.text))
+            if cad_elem is None:
+                if (cad_ext_elem := point_elem.find('.//activity_ns:RunCadence', self.NAMESPACES)) is not None:
+                    data['cadence'] = float(cad_ext_elem.text)
+            if speed_elem is None:
+                if (speed_ext_elem := point_elem.find('.//activity_ns:Speed', self.NAMESPACES)) is not None:
+                    data['kmph'] = self._convert_speed(float(speed_ext_elem.text))
+
 
             self._handle_backfill(data, points_data, lat, lon)
 
@@ -381,8 +403,8 @@ class TCXParser(BaseActivityParser, GarminMixin, StravaMixin):
         _iter_laps.
         """
         if (id_elem := self._activity_elem.find('ns:Id', self.NAMESPACES)) is not None:
-            self._metadata['date_time'] = dp.parse(id_elem.text)
-        self._metadata['distance_2d_km'] = self._laps_df['distance'].sum()
+            self._metadata['date_time'] = dp.parse(id_elem.text).astimezone(timezone.utc)
+        self._metadata['distance_2d_km'] = self._laps_df['distance'].sum() / 1000
         self._metadata['duration'] = self._laps_df['duration'].sum()
         # Strangely, non-running activities seem to just have a Sport value of "Other", even if the underlying FIT
         # data reports a more specific activity type (eg, walking).
@@ -464,7 +486,7 @@ class FITParser(BaseActivityParser, GarminMixin):
             'hr': heart_rate,
             'cadence': cadence,
             'lap': self._lap,
-            'kmph': self.convert_speed(speed)
+            'kmph': self._convert_speed(speed)
         }
 
         # https://gis.stackexchange.com/questions/122186/convert-garmin-or-iphone-weird-gps-coordinates
@@ -524,7 +546,7 @@ class FITParser(BaseActivityParser, GarminMixin):
                     elif frame.name == 'session':
                         self._parse_session(frame)
 
-        self._points = self.infer_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES_POINTS))
+        self._points = self._handle_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES_POINTS))
         self._laps = pd.DataFrame(self._laps_data, columns=self.INITIAL_COL_NAMES_LAPS)
 
     @property

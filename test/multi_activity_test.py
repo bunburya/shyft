@@ -12,14 +12,9 @@ class ActivityManagerTestCase(BaseTestCase):
         cls.TEST_RUN_DATA_DIR_2 = run_data_dir('2', replace=True)
         cls.TEST_RUN_DATA_DIR_3 = run_data_dir('3', replace=True)
 
-        cls.TEST_CONFIG_1 = Config(config_file(cls.TEST_RUN_DATA_DIR_1),
-                                   data_dir=cls.TEST_RUN_DATA_DIR_1)
-
-        cls.TEST_CONFIG_2 = Config(config_file(cls.TEST_RUN_DATA_DIR_2),
-                                   data_dir=cls.TEST_RUN_DATA_DIR_2)
-
-        cls.TEST_CONFIG_3 = Config(config_file(cls.TEST_RUN_DATA_DIR_3),
-                                   data_dir=cls.TEST_RUN_DATA_DIR_3)
+        cls.TEST_CONFIG_1 = get_config(cls.TEST_RUN_DATA_DIR_1)
+        cls.TEST_CONFIG_2 = get_config(cls.TEST_RUN_DATA_DIR_2)
+        cls.TEST_CONFIG_3 = get_config(cls.TEST_RUN_DATA_DIR_3)
 
         cls.gpx = []
         cls.activities = []
@@ -200,13 +195,7 @@ class ActivityManagerTestCase(BaseTestCase):
         for a, g in zip(self.activities, self.gpx):
             self.assertEqual(a.metadata.date_time, g.time)
 
-    def test_12_distance(self):
-        """Test that the GPX object and the associated Activity have (almost) the same 2d length."""
-
-        for a, g in zip(self.activities, self.gpx):
-            self.assertAlmostEqual(a.metadata.distance_2d_km * 1000, g.length_2d(), places=2)
-
-    def test_13_load_metadata(self):
+    def test_12_load_metadata(self):
         """Test searching for Activity metadata by activity_id.
 
         As well as checking that metadata is retrieved correctly, we
@@ -219,14 +208,14 @@ class ActivityManagerTestCase(BaseTestCase):
                 self._assert_metadata_equal(md, _activity.metadata)
                 self.manager_1.get_activity_by_id(_id)
 
-    def test_14_summarize_activities(self):
+    def test_13_summarize_activities(self):
 
         df = self.manager_1.summarize_activity_data()
         #print(df)
         print(df.columns)
         print(df.shape)
 
-    def test_15_config(self):
+    def test_14_config(self):
         """Test equality, loading and saving of configurations."""
 
         self.assertTrue(self.TEST_CONFIG_1 == self.TEST_CONFIG_1)
@@ -247,7 +236,7 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assertEqual(interpolated.default_activity_name_format, 'test {distance_2d_test}')
         self.assertEqual(raw1.default_activity_name_format, 'test {distance_2d_%(distance_unit)s}')
 
-    def test_16_iter(self):
+    def test_15_iter(self):
         """Test iterating through ActivityManager."""
         self.assertEqual(len(self.manager_1), len(self.activities))
         count = 0
@@ -257,8 +246,8 @@ class ActivityManagerTestCase(BaseTestCase):
             count += 1
         self.assertEquals(count, len(self.manager_1))
 
-    def test_17_delete(self):
-        """Test deleting an _activity_elem."""
+    def test_16_delete(self):
+        """Test deleting an activity."""
         reduced_activities = self.activities[:]
 
         # Test assumptions

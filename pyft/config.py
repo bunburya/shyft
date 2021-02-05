@@ -21,6 +21,7 @@ class Config:
     data_dir: str
     user_name: str
     distance_unit: str
+    default_activity_type: str
     match_center_threshold: float
     match_length_threshold: float
     tight_match_threshold: float
