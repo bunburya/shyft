@@ -1,8 +1,9 @@
-"""Functions for creating files (eg, GPX files) from Activities."""
+"""Functions for creating GPX files from Activities."""
 
 # Handle circular import issue when using type hints
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 if TYPE_CHECKING:
     from pyft.activity import Activity
 
@@ -17,16 +18,22 @@ TPE_URL = 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'
 NAMESPACES = {'gpxtpx': TPE_URL}
 
 
-def _get_point_extensions(point_data: pd.Series) -> lxml.etree.Element:
+def _get_point_extensions(point_data: pd.Series) -> Optional[lxml.etree.Element]:
     # gpxtpx namespace is defined at the global level in activity_to_gpx
     ext_elem = lxml.etree.Element(f'{{{TPE_URL}}}TrackPointExtension')
-    hr_elem = lxml.etree.Element(f'{{{TPE_URL}}}hr')
-    hr_elem.text = str(point_data['hr'])
-    cad_elem = lxml.etree.Element(f'{{{TPE_URL}}}cad')
-    cad_elem.text = str(point_data['cadence'])
-    ext_elem.append(hr_elem)
-    ext_elem.append(cad_elem)
-    return ext_elem
+    has_ext = False
+    if not pd.isnull(point_data['hr']):
+        has_ext = True
+        hr_elem = lxml.etree.Element(f'{{{TPE_URL}}}hr')
+        hr_elem.text = str(point_data['hr'])
+        ext_elem.append(hr_elem)
+    if not pd.isnull(point_data['cadence']):
+        has_ext = True
+        cad_elem = lxml.etree.Element(f'{{{TPE_URL}}}cad')
+        cad_elem.text = str(point_data['cadence'])
+        ext_elem.append(cad_elem)
+
+    return ext_elem if has_ext else None
 
 
 def _add_point_to_seg(point_data: pd.Series, seg: gpx.GPXTrackSegment):
@@ -37,7 +44,9 @@ def _add_point_to_seg(point_data: pd.Series, seg: gpx.GPXTrackSegment):
         point_data['elevation'],
         point_data['time']
     )
-    point.extensions.append(_get_point_extensions(point_data))
+    ext = _get_point_extensions(point_data)
+    if ext is not None:
+        point.extensions.append(ext)
     seg.points.append(point)
 
 

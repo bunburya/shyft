@@ -86,6 +86,7 @@ class SerializeTestCase(BaseTestCase):
                 fit_activity,
                 almost=True,
                 check_data_files=False,
+                check_laps=False
             )
             _id += 1
 
@@ -95,7 +96,6 @@ class SerializeTestCase(BaseTestCase):
         """
         #print('BEGINNING TCX TEST')
         for tcx_activity, fit_activity in zip(self.manager_garmintcx, self.manager_fit):
-            print(f'testing {tcx_activity.metadata.source_file}')
             if tcx_activity.metadata.activity_type == CONFIG_GARMINTCX.default_activity_type:
                 # For some reason, Garmin-generated TCX files for non-running activities do not include cadence for me,
                 # even though the associated FIT file does.
@@ -135,9 +135,6 @@ class SerializeTestCase(BaseTestCase):
         for activity in self.manager_fit:
             laps = activity.laps
             self.assertIsInstance(laps, pd.DataFrame)
-            print(laps)
-            print(f'sum: {laps["distance"].sum()}')
-            print(f'total: {activity.metadata.distance_2d_km}')
             self.assertAlmostEqual(laps['distance'].sum(), activity.metadata.distance_2d_km * 1000, places=3)
             self.assertAlmostEqual(laps['duration'].sum(), activity.metadata.duration)
 

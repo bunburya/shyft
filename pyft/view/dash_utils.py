@@ -194,7 +194,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         )
 
     def splits_table(self, id: str, splits_df: pd.DataFrame, **kwargs) -> dt.DataTable:
-        """Return a DataTable with information about an _activity_elem broken
+        """Return a DataTable with information about an activity broken
         down by split.
         """
         split_col = self.config.distance_unit

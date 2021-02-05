@@ -69,10 +69,10 @@ class ActivityView:
     def page_content(self, activity: Optional[Activity] = None) -> list:
 
         if activity is None:
-            return [dcc.Markdown('No _activity_elem specified, or no such _activity_elem exists.')]
+            return [dcc.Markdown('No activity specified, or no such activity exists.')]
 
         return [
-            html.H1(f'View _activity_elem: {self.dc_factory.activity_name(activity.metadata)}'),
+            html.H1(f'View activity: {self.dc_factory.activity_name(activity.metadata)}'),
             html.H2('Activity overview'),
             html.Div([self.dc_factory.activity_overview(activity.metadata)]),
             html.H2('Route'),

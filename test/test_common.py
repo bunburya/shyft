@@ -162,24 +162,30 @@ class BaseTestCase(unittest.TestCase):
             self._assert_files_equal(md1.gpx_file, md2.gpx_file)
 
     def _assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True,
-                                 check_types: bool = True, ignore_points_cols: Optional[List[str]] = None):
+                                 check_types: bool = True, ignore_points_cols: Optional[List[str]] = None,
+                                 check_laps: bool = True):
         # NOTE: If almost is True, comparisons will have a pretty high tolerance of errors. This is mainly to allow
         # rough comparisons between activities generated from different data sources (eg, GPX files vs .FIT files)
         # where differences in precision can lead to differences in distances, etc.
         self._assert_metadata_equal(a1.metadata, a2.metadata, almost, check_data_files, check_types)
-        if (a1.laps is None) or (a2.laps is None):
-            self.assertIs(a1.laps, a2.laps)
+
+        if check_laps:
+            if (a1.laps is None) or (a2.laps is None):
+                self.assertIs(a1.laps, a2.laps)
+                points1 = a1.points.drop('lap', axis=1)
+                points2 = a2.points.drop('lap', axis=1)
+            else:
+                pd.testing.assert_frame_equal(
+                    a1.laps,
+                    a2.laps,
+                    check_like=True,
+                    check_dtype=check_types
+                )
+                points1 = a1.points
+                points2 = a2.points
+        else:
             points1 = a1.points.drop('lap', axis=1)
             points2 = a2.points.drop('lap', axis=1)
-        else:
-            pd.testing.assert_frame_equal(
-                a1.laps,
-                a2.laps,
-                check_like=True,
-                check_dtype=check_types
-            )
-            points1 = a1.points
-            points2 = a2.points
 
         if ignore_points_cols:
             points1 = points1.drop(ignore_points_cols, axis=1)
@@ -202,7 +208,7 @@ class BaseTestCase(unittest.TestCase):
 
     def _assert_managers_equal(self, manager1: ActivityManager, manager2: ActivityManager, almost: bool = False,
                                check_data_files: bool = True, check_types: bool = True,
-                               ignore_points_cols: Optional[List[str]] = None):
+                               ignore_points_cols: Optional[List[str]] = None, check_laps: bool = True):
         for a1, a2 in zip(manager1, manager2):
             self._assert_activities_equal(a1, a2, almost, check_data_files=check_data_files, check_types=check_types,
-                                          ignore_points_cols=ignore_points_cols)
+                                          ignore_points_cols=ignore_points_cols, check_laps=check_laps)
