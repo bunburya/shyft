@@ -13,9 +13,8 @@ Activity:
 - Handle waypoints
 - Data editor
 - Laps
-  - Tests
   - View
-- TCX parser
+- TCX writer
 
 View:
 

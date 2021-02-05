@@ -6,8 +6,7 @@ import pandas as pd
 
 from pyft.config import Config
 from pyft.database import DatabaseManager, str_to_timedelta
-from pyft.geo_utils import distance, norm_dtw, norm_length_diff, norm_center_diff
-from pyft.parse_gpx import distance_2d, parse_gpx_file
+from pyft.geo_utils import norm_dtw, norm_length_diff, norm_center_diff
 from pyft.activity import Activity, ActivityMetaData
 
 
