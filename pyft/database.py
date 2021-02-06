@@ -10,7 +10,7 @@ import pyft.config
 import sqlite3 as sql
 import numpy as np
 import pandas as pd
-import pytz
+#import pytz
 
 # The below code is taken from Django's codebase (with some minor
 # adjustments) and is intended to address the fact that sqlite3
@@ -49,7 +49,8 @@ def parse_datetime(value):
         kw['microsecond'] = kw['microsecond'] and kw['microsecond'].ljust(6, '0')
         tzinfo = kw.pop('tzinfo')
         if tzinfo == 'Z':
-            tzinfo = pytz.utc
+            #tzinfo = pytz.utc
+            tzinfo = timezone.utc
         elif tzinfo is not None:
             offset_mins = int(tzinfo[-2:]) if len(tzinfo) > 3 else 0
             offset = 60 * int(tzinfo[1:3]) + offset_mins

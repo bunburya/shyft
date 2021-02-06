@@ -1,14 +1,14 @@
 """Parser for GPX files."""
 
 from collections import Callable
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Generator, Tuple
 
 import numpy as np
 import pandas as pd
 import lxml.etree
 import gpxpy
-import pytz
+#import pytz
 from gpxpy import gpx
 from pyft.serialize.parse._base import PyftParserException, BaseParser, GarminMixin, StravaMixin
 
@@ -76,9 +76,8 @@ class GPXParser(BaseParser, GarminMixin, StravaMixin):
             hr = self._get_hr(ext)
             cad = self._get_cad(ext)
 
-            # Convert tz from "SimpleTZ" used by gpxpy)
-            # TODO: Replace with timezone from datatime or dateutil
-            time = point.time.replace(tzinfo=pytz.FixedOffset(point.time.tzinfo.offset))
+            # Convert tz from "SimpleTZ" (used by gpxpy)
+            time = point.time.replace(tzinfo=timezone(point.time.tzinfo.utcoffset(None)))
             yield (
                 point_no, track_no, segment_no,
                 point.latitude, point.longitude, point.elevation,
@@ -102,7 +101,8 @@ class GPXParser(BaseParser, GarminMixin, StravaMixin):
     @property
     def date_time(self) -> datetime:
         try:
-            return self.gpx.time.replace(tzinfo=pytz.FixedOffset(self.gpx.time.tzinfo.offset))
+            #return self.gpx.time.replace(tzinfo=pytz.FixedOffset(self.gpx.time.tzinfo.offset))
+            return self.gpx.time.replace(tzinfo=timezone(self.gpx.time.tzinfo.utcoffset(None)))
         except AttributeError:
             return self.gpx.time
 
