@@ -14,8 +14,8 @@ from gpxpy import gpx
 
 
 # For now, we use Garmin's TrackPointExtension rather than rolling our own.
-TPE_URL = 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'
-NAMESPACES = {'gpxtpx': TPE_URL}
+from pyft.serialize._xml_namespaces import GPX_NAMESPACES as NAMESPACES
+TPE_URL = NAMESPACES['garmin_tpe']
 
 
 def _get_point_extensions(point_data: pd.Series) -> Optional[lxml.etree.Element]:

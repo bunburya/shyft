@@ -1,17 +1,12 @@
 import os
-import hashlib
-import json
 import shutil
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Tuple, Callable, Optional, Any
 
-import lxml.etree
 import pandas as pd
 import numpy as np
-import pytz
 
-import gpxpy
 from pyft.config import Config
 from pyft.geo_utils import intersect_points
 from pyft.serialize.create import activity_to_gpx_file
@@ -188,18 +183,30 @@ class Activity:
         return self.get_split_markers('mile')
 
     def get_split_summary(self, split_col: str) -> pd.DataFrame:
+        """Returns a DataFrame with certain summary information about the
+        splits (km or mile).
+
+        The summary will have the following information:
+
+        -
+        """
         if split_col == 'km':
             pace_col = 'km_pace'
         elif split_col == 'mile':
             pace_col = 'mile_pace'
         else:
             raise ValueError(f'split_col must be "km" or "mile", not "{split_col}".')
-        splits = self.points[[split_col, pace_col, 'time', 'cadence', 'hr', 'elevation']]
+        splits = self.points[[split_col, pace_col, 'cadence', 'hr', 'elevation']]
         grouped = splits.groupby(split_col)
         summary = grouped.mean()
         split_times = self.get_split_markers(split_col)['time']
-        summary['time'] = split_times - split_times.shift(fill_value=self.points.iloc[0]['time'])
-        summary.loc[summary.index[-1], 'time'] = self.points.iloc[-1]['time'] - split_times.iloc[-1]
+        summary['start_time'] = split_times
+        summary['duration'] = split_times - split_times.shift(fill_value=self.points.iloc[0]['time'])
+        summary.loc[summary.index[-1], 'duration'] = self.points.iloc[-1]['duration'] - split_times.iloc[-1]
+        if split_col == 'km':
+            summary['distance'] = 1000
+        elif split_col == 'mile':
+            summary['distance'] = MILE
         return summary
 
     @property

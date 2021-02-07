@@ -5,13 +5,17 @@ from typing import Dict, Union, Optional
 
 import fitdecode
 import pandas as pd
-from pyft.serialize.parse._base import BaseActivityParser, GarminMixin, PyftParserException
+from pyft.serialize.parse._base import BaseActivityParser, PyftParserException
+from pyft.serialize._activity_types import GARMIN_GPX_TO_PYFT
 
 
 class TCXParserError(PyftParserException): pass
 
 
-class FITParser(BaseActivityParser, GarminMixin):
+class FITParser(BaseActivityParser):
+
+    GARMIN_TYPES = GARMIN_GPX_TO_PYFT
+
     MANDATORY_POINT_FIELDS = (
         'position_lat',
         'position_long',

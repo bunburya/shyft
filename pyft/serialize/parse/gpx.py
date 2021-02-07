@@ -8,19 +8,23 @@ import numpy as np
 import pandas as pd
 import lxml.etree
 import gpxpy
-#import pytz
 from gpxpy import gpx
-from pyft.serialize.parse._base import PyftParserException, BaseParser, GarminMixin, StravaMixin
+from pyft.serialize._xml_namespaces import GPX_NAMESPACES
+from pyft.serialize.parse._base import PyftParserException, BaseParser
+from pyft.serialize._activity_types import GARMIN_GPX_TO_PYFT, STRAVA_GPX_TO_PYFT
 
 
 class GPXParserError(PyftParserException): pass
 
+class GPXParser(BaseParser):
 
-class GPXParser(BaseParser, GarminMixin, StravaMixin):
+    STRAVA_TYPES = STRAVA_GPX_TO_PYFT
+    GARMIN_TYPES = GARMIN_GPX_TO_PYFT
+
     # Namespaces for extensions
     # (Even though these relate to Garmin we do not put them in the GarminMixin class because they are also
     # used by Strava-generated GPX files.)
-    NAMESPACES = {'garmin_tpe': 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'}
+    NAMESPACES = GPX_NAMESPACES
 
     def __init__(self, *args, **kwargs):
         self._points_df = None
@@ -101,7 +105,6 @@ class GPXParser(BaseParser, GarminMixin, StravaMixin):
     @property
     def date_time(self) -> datetime:
         try:
-            #return self.gpx.time.replace(tzinfo=pytz.FixedOffset(self.gpx.time.tzinfo.offset))
             return self.gpx.time.replace(tzinfo=timezone(self.gpx.time.tzinfo.utcoffset(None)))
         except AttributeError:
             return self.gpx.time
@@ -118,7 +121,7 @@ class GPXParser(BaseParser, GarminMixin, StravaMixin):
 
     @property
     def activity_type(self) -> str:
-        activity_type = 'unknown'
+        activity_type = 'activity'
         track_type = self.gpx.tracks[0].type
         if track_type in self.ACTIVITY_TYPES:
             activity_type = track_type
