@@ -74,7 +74,7 @@ class ActivityManagerTestCase(BaseTestCase):
             self.assertIsNotNone(a.metadata.activity_id)
             self.assertIsNotNone(a.metadata.prototype_id)
             self.proto_ids[a.metadata.activity_id] = a.metadata.prototype_id
-            self._assert_activities_equal(a, self.manager_3.get_activity_by_id(a.metadata.activity_id))
+            self.assert_activities_equal(a, self.manager_3.get_activity_by_id(a.metadata.activity_id))
 
     def test_03_add_activity_from_file(self):
         """Test basic adding of activities from filepaths, including
@@ -87,7 +87,7 @@ class ActivityManagerTestCase(BaseTestCase):
 
         for a1, a2 in zip(self.manager_1, self.manager_2):
             #print(a1, a2)
-            self._assert_activities_equal(a1, a2)
+            self.assert_activities_equal(a1, a2)
 
         self.assertSequenceEqual(self.manager_1.prototypes, self.manager_2.prototypes)
 
@@ -187,7 +187,7 @@ class ActivityManagerTestCase(BaseTestCase):
         for id in self.manager_1.activity_ids:
             a = self.manager_1.get_activity_by_id(id)
             self.assertEqual(id, a.metadata.activity_id)
-            self._assert_activities_equal(a, self.manager_1[id])
+            self.assert_activities_equal(a, self.manager_1[id])
 
     def test_11_time(self):
         """Test that the GPX object and the associated Activity have the same time."""
@@ -205,7 +205,7 @@ class ActivityManagerTestCase(BaseTestCase):
         for _ in range(3):
             for _id, _activity in enumerate(self.activities):
                 md = self.manager_1.get_activity_by_id(_id).metadata
-                self._assert_metadata_equal(md, _activity.metadata)
+                self.assert_metadata_equal(md, _activity.metadata)
                 self.manager_1.get_activity_by_id(_id)
 
     def test_13_summarize_activities(self):

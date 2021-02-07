@@ -10,7 +10,6 @@ import pyft.config
 import sqlite3 as sql
 import numpy as np
 import pandas as pd
-#import pytz
 
 # The below code is taken from Django's codebase (with some minor
 # adjustments) and is intended to address the fact that sqlite3
@@ -153,6 +152,8 @@ class DatabaseManager:
         start_time TIMESTAMP NOT NULL,
         distance FLOAT NOT NULL,
         duration FLOAT NOT NULL,
+        mean_cadence INTEGER,
+        mean_hr INTEGER,
         calories INTEGER,
         FOREIGN KEY(activity_id) REFERENCES activities(id),
         PRIMARY KEY(id, activity_id, lap_no)

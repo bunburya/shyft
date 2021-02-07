@@ -16,6 +16,7 @@ from pyft.config import Config
 from pyft.activity_manager import ActivityManager
 
 from pyft.activity import ActivityMetaData, Activity
+from pyft.df_utils.validate import DataFrameSchema
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')
@@ -101,7 +102,36 @@ def get_config(run_dir: str) -> Config:
     conf_file = config_file(run_dir)
     return Config(conf_file, data_dir=run_dir)
 
-class BaseTestCase(unittest.TestCase):
+class BaseDataFrameValidateTestCase(unittest.TestCase):
+
+    def assert_dataframe_valid(self, df: pd.DataFrame, schema: DataFrameSchema):
+        result = schema.validate_dataframe(df)
+        if not result.is_valid:
+            msg = ['DataFrame does not conform to schema.']
+            if result.missing_mandatory_cols:
+                col_names = [col.name for col in result.missing_mandatory_cols]
+                msg.append(f'Mandatory columns are missing: {", ".join(col_names)}.')
+            if result.type_mismatched_cols:
+                col_names = [col.name for col in result.type_mismatched_cols]
+                msg.append(f'Columns are of the wrong dtype: {", ".join(col_names)}.')
+            if result.bad_null_cols:
+                col_names = [col.name for col in result.bad_null_cols]
+                msg.append(f'Columns contain impermissible null values: {", ".join(col_names)}.')
+            if (not schema.extra_cols_ok) and result.extra_col_names:
+                msg.append(f'Impermissible extra columns were found: {", ".join(result.extra_col_names)}.')
+            if not result.index_name_ok:
+                msg.append(f'Bad index name: expected "{schema.index_name}", got "{df.index.name}".')
+            if not result.index_type_ok:
+                msg.append(f'Index dtype "{df.index.dtype}" is not of type "{schema.index_type}".')
+            raise AssertionError(' '.join(msg))
+
+    def assert_dataframe_invalid(self, df: pd.DataFrame, schema: DataFrameSchema):
+        self.assertRaises(
+            AssertionError,
+            lambda: self.assert_dataframe_valid(df, schema)
+        )
+
+class BaseTestCase(BaseDataFrameValidateTestCase):
 
     @classmethod
     def get_manager(cls, config: Config, files: Optional[List[str]] = None) -> ActivityManager:
@@ -111,15 +141,15 @@ class BaseTestCase(unittest.TestCase):
                 manager.add_activity_from_file(f)
         return manager
 
-    def _assert_timedeltas_almost_equal(self, td1: timedelta, td2: timedelta, places: int = 4):
+    def assert_timedeltas_almost_equal(self, td1: timedelta, td2: timedelta, places: int = 4):
         self.assertAlmostEqual(td1.total_seconds(), td2.total_seconds(), places)
 
-    def _assert_files_equal(self, fpath1: str, fpath2: str):
+    def assert_files_equal(self, fpath1: str, fpath2: str):
         self.assertTrue(filecmp.cmp(fpath1, fpath2), f'{fpath1} is not equal to {fpath2}.')
 
-    def _assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData,
-                               almost: bool = False, check_data_files: bool = True,
-                               check_types: bool = True):
+    def assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData,
+                              almost: bool = False, check_data_files: bool = True,
+                              check_types: bool = True):
 
         self.assertEqual(md1.activity_id, md2.activity_id,
                          msg=f'Activity IDs are not the same ({md1.activity_id} vs {md2.activity_id}).')
@@ -143,13 +173,13 @@ class BaseTestCase(unittest.TestCase):
             np.testing.assert_array_equal(md1.center, md2.center)
             np.testing.assert_array_equal(md1.points_std, md2.points_std)
         if almost:
-            self._assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean, -2)
-            self._assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean, -3)
-            self._assert_timedeltas_almost_equal(md1.duration, md2.duration, -3)
+            self.assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean, -2)
+            self.assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean, -3)
+            self.assert_timedeltas_almost_equal(md1.duration, md2.duration, -3)
         else:
-            self._assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean)
-            self._assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean)
-            self._assert_timedeltas_almost_equal(md1.duration, md2.duration)
+            self.assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean)
+            self.assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean)
+            self.assert_timedeltas_almost_equal(md1.duration, md2.duration)
         self.assertEqual(md1.prototype_id, md2.prototype_id,
                          msg=f'Prototype IDs are not the same ({md1.prototype_id} vs {md2.prototype_id}).')
         self.assertEqual(md1.name, md2.name,
@@ -157,17 +187,17 @@ class BaseTestCase(unittest.TestCase):
         self.assertEqual(md1.description, md2.description,
                          msg=f'Activity descriptions are not the same ({md1.description} vs {md2.description}).')
         if not almost:
-            self._assert_files_equal(md1.thumbnail_file, md2.thumbnail_file)
+            self.assert_files_equal(md1.thumbnail_file, md2.thumbnail_file)
         if check_data_files:
-            self._assert_files_equal(md1.gpx_file, md2.gpx_file)
+            self.assert_files_equal(md1.gpx_file, md2.gpx_file)
 
-    def _assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True,
-                                 check_types: bool = True, ignore_points_cols: Optional[List[str]] = None,
-                                 check_laps: bool = True):
+    def assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True,
+                                check_types: bool = True, ignore_points_cols: Optional[List[str]] = None,
+                                check_laps: bool = True):
         # NOTE: If almost is True, comparisons will have a pretty high tolerance of errors. This is mainly to allow
         # rough comparisons between activities generated from different data sources (eg, GPX files vs .FIT files)
         # where differences in precision can lead to differences in distances, etc.
-        self._assert_metadata_equal(a1.metadata, a2.metadata, almost, check_data_files, check_types)
+        self.assert_metadata_equal(a1.metadata, a2.metadata, almost, check_data_files, check_types)
 
         if check_laps:
             if (a1.laps is None) or (a2.laps is None):
@@ -206,9 +236,9 @@ class BaseTestCase(unittest.TestCase):
         else:
             pd.testing.assert_frame_equal(a1.points, a2.points, check_like=True, check_dtype=check_types)
 
-    def _assert_managers_equal(self, manager1: ActivityManager, manager2: ActivityManager, almost: bool = False,
-                               check_data_files: bool = True, check_types: bool = True,
-                               ignore_points_cols: Optional[List[str]] = None, check_laps: bool = True):
+    def assert_managers_equal(self, manager1: ActivityManager, manager2: ActivityManager, almost: bool = False,
+                              check_data_files: bool = True, check_types: bool = True,
+                              ignore_points_cols: Optional[List[str]] = None, check_laps: bool = True):
         for a1, a2 in zip(manager1, manager2):
-            self._assert_activities_equal(a1, a2, almost, check_data_files=check_data_files, check_types=check_types,
-                                          ignore_points_cols=ignore_points_cols, check_laps=check_laps)
+            self.assert_activities_equal(a1, a2, almost, check_data_files=check_data_files, check_types=check_types,
+                                         ignore_points_cols=ignore_points_cols, check_laps=check_laps)

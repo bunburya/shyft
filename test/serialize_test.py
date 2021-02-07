@@ -1,6 +1,7 @@
 import os
 import unittest
 
+import lxml.etree
 from pyft.config import Config
 from pyft.serialize.parse import parser_factory, GPXParser, FITParser, TCXParser
 from test.test_common import *
@@ -24,10 +25,20 @@ CONFIG_GARMINTCX = get_config(RUN_DIR_GARMINTCX)
 RUN_DIR_PYFTGPX = run_data_dir(RUN_DIR_BASE + '_PyftGPX', replace=True)  # For PyftGPX-generated activities
 CONFIG_PYFTGPX = get_config(RUN_DIR_PYFTGPX)
 
+RUN_DIR_PYFTTCX = run_data_dir(RUN_DIR_BASE + '_PyftTCX', replace=True)  # For PyftTCX-generated activities
+CONFIG_PYFTTCX = get_config(RUN_DIR_PYFTTCX)
+
 
 NEW_GPX_DIR = os.path.join(RUN_DIR_PYFTGPX, 'generated_gpx')
 if not os.path.exists(NEW_GPX_DIR):
     os.makedirs(NEW_GPX_DIR)
+
+NEW_TCX_DIR = os.path.join(RUN_DIR_PYFTTCX, 'generated_tcx')
+if not os.path.exists(NEW_TCX_DIR):
+    os.makedirs(NEW_TCX_DIR)
+
+TCX_SCHEMA = os.path.join(TEST_DATA_DIR, 'xml_schemas', 'TrainingCenterDatabasev2.xsd')
+
 
 class SerializeTestCase(BaseTestCase):
 
@@ -71,9 +82,21 @@ class SerializeTestCase(BaseTestCase):
             fpath = os.path.join(NEW_GPX_DIR, f'{activity_id}.gpx')
             activity.to_gpx_file(fpath)
             manager_pyftgpx.add_activity_from_file(fpath)
-        self._assert_managers_equal(self.manager_stravagpx, manager_pyftgpx)
+        self.assert_managers_equal(self.manager_stravagpx, manager_pyftgpx)
 
-    def test_03_fit_gpx_parser_equal(self):
+    def test_03_create_tcx(self):
+        """Test that we can create TCX files and load those files again.."""
+        manager_pyfttcx = self.get_manager(CONFIG_PYFTTCX)
+        validator = lxml.etree.XMLSchema(file=TCX_SCHEMA)
+        for activity in self.manager_garmintcx:
+            activity_id = activity.metadata.activity_id
+            fpath = os.path.join(NEW_TCX_DIR, f'{activity_id}.tcx')
+            activity.to_tcx_file(fpath)
+            validator.assert_(lxml.etree.parse(fpath))
+            manager_pyfttcx.add_activity_from_file(fpath)
+        self.assert_managers_equal(self.manager_garmintcx, manager_pyfttcx)
+
+    def test_04_fit_gpx_parser_equal(self):
         """Test that the Activity generated from the GPX file and the
         FIT file are (roughly) equivalent.
         """
@@ -81,7 +104,7 @@ class SerializeTestCase(BaseTestCase):
         for g, f in zip(TEST_GPX_FILES_2, TEST_FIT_FILES):
             gpx_activity = Activity.from_file(g, CONFIG_STRAVAGPX, activity_id=_id)
             fit_activity = Activity.from_file(f, CONFIG_FIT, activity_id=_id)
-            self._assert_activities_equal(
+            self.assert_activities_equal(
                 gpx_activity,
                 fit_activity,
                 almost=True,
@@ -90,7 +113,7 @@ class SerializeTestCase(BaseTestCase):
             )
             _id += 1
 
-    def test_04_fit_tcx_parser_equal(self):
+    def test_05_fit_tcx_parser_equal(self):
         """Test that the Activity generated from the TCX file and the
         FIT file are (roughly) equivalent.
         """
@@ -102,7 +125,7 @@ class SerializeTestCase(BaseTestCase):
                 ignore_points_cols = ['cadence']
             else:
                 ignore_points_cols = []
-            self._assert_activities_equal(
+            self.assert_activities_equal(
                 tcx_activity,
                 fit_activity,
                 almost=True,
@@ -111,15 +134,15 @@ class SerializeTestCase(BaseTestCase):
                 ignore_points_cols=ignore_points_cols
             )
 
-    def test_05_source_save(self):
+    def test_06_source_save(self):
         """Test that source files are properly saved."""
         for activity, gpx_file in zip(self.manager_stravagpx, TEST_GPX_FILES_2):
-            self._assert_files_equal(activity.metadata.source_file, gpx_file)
+            self.assert_files_equal(activity.metadata.source_file, gpx_file)
         manager_fit = self.get_manager(CONFIG_FIT, TEST_FIT_FILES)
         for activity, fit_file in zip(manager_fit, TEST_FIT_FILES):
-            self._assert_files_equal(activity.metadata.source_file, fit_file)
+            self.assert_files_equal(activity.metadata.source_file, fit_file)
 
-    def test_06_gpx_length(self):
+    def test_07_gpx_length(self):
         """Test that the length we calculate for activities generated
         from GPX files is the same as the length calculated by gpxpy.
         There is some tolerance of small discrepancies as there may be
@@ -128,7 +151,7 @@ class SerializeTestCase(BaseTestCase):
         for activity, gpx in zip(self.manager_stravagpx, self.strava_gpx):
             self.assertAlmostEqual(activity.metadata.distance_2d_km * 1000, gpx.length_2d(), places=3)
 
-    def test_07_laps(self):
+    def test_08_laps(self):
         """Test that laps have been created correctly."""
         for activity in self.manager_stravagpx:
             self.assertIsNone(activity.laps)

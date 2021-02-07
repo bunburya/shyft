@@ -105,7 +105,9 @@ class FITParser(BaseActivityParser):
             'start_time': frame.get_value('start_time'),
             'distance': frame.get_value('total_distance'),
             'duration': timedelta(seconds=frame.get_value('total_elapsed_time')),
-            'calories': frame.get_value('total_calories', fallback=None)
+            'calories': frame.get_value('total_calories', fallback=None),
+            'mean_hr': frame.get_value('avg_heart_rate', fallback=None),
+            'mean_cadence': frame.get_value('avg_running_cadence', fallback=None)
         })
 
     def _parse_session(self, frame: fitdecode.FitDataMessage):

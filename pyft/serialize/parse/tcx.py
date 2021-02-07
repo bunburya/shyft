@@ -39,8 +39,9 @@ class TCXParser(BaseActivityParser):
         for lap in self._activity_elem.findall('Lap', self.NAMESPACES):
             lap_no = self._get_lap_no()
             lap_data = {'lap_no': lap_no}
-            if 'StartTime' in lap.attrib:
-                lap_data['start_time'] = dp.parse(lap.attrib['StartTime']).astimezone(timezone.utc)
+            lap_data['start_time'] = dp.parse(lap.attrib['StartTime']).astimezone(timezone.utc)
+            # None of the below should actually be None as these are all require elements according to the TCX schema,
+            # but no harm to check in case we get slightly invalid data.
             if (dist_elem := lap.find('DistanceMeters', self.NAMESPACES)) is not None:
                 lap_data['distance'] = float(dist_elem.text)
             if (time_elem := lap.find('TotalTimeSeconds', self.NAMESPACES)) is not None:
@@ -90,7 +91,6 @@ class TCXParser(BaseActivityParser):
             if speed_elem is None:
                 if (speed_ext_elem := point_elem.find('.//activity_extension:Speed', self.NAMESPACES)) is not None:
                     data['kmph'] = self._convert_speed(float(speed_ext_elem.text))
-
 
             self._handle_backfill(data, points_data, lat, lon)
 

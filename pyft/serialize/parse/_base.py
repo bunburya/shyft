@@ -63,7 +63,7 @@ class BaseParser:
         prev_cumul_distance = df['cumul_distance_2d'].shift(self.config.speed_measure_interval)
         interval_distance = df['cumul_distance_2d'] - prev_cumul_distance
         interval_time = df['time'] - prev_time
-        if not df['kmph'].any():
+        if df['kmph'].isnull().all():
             df['kmph'] = self._convert_speed(interval_distance / interval_time.dt.seconds)
         df['km_pace'] = (1000 / interval_distance) * interval_time
         df['mile_pace'] = (MILE / interval_distance) * interval_time

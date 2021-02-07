@@ -10,6 +10,7 @@ import numpy as np
 from pyft.config import Config
 from pyft.geo_utils import intersect_points
 from pyft.serialize.create import activity_to_gpx_file
+from pyft.serialize.create.tcx import activity_to_tcx_file
 from pyft.serialize.parse import parser_factory
 
 MILE = 1609.344
@@ -185,18 +186,13 @@ class Activity:
     def get_split_summary(self, split_col: str) -> pd.DataFrame:
         """Returns a DataFrame with certain summary information about the
         splits (km or mile).
-
-        The summary will have the following information:
-
-        -
         """
-        if split_col == 'km':
-            pace_col = 'km_pace'
-        elif split_col == 'mile':
-            pace_col = 'mile_pace'
-        else:
-            raise ValueError(f'split_col must be "km" or "mile", not "{split_col}".')
-        splits = self.points[[split_col, pace_col, 'cadence', 'hr', 'elevation']]
+
+        subset = [split_col]
+        for col in ('cadence', 'hr'):
+            if col in self.points.columns:
+                subset.append(col)
+        splits = self.points[subset]
         grouped = splits.groupby(split_col)
         summary = grouped.mean()
         split_times = self.get_split_markers(split_col)['time']
@@ -207,7 +203,10 @@ class Activity:
             summary['distance'] = 1000
         elif split_col == 'mile':
             summary['distance'] = MILE
-        return summary
+        return summary.rename(columns={
+            'cadence': 'mean_cadence',
+            'hr': 'mean_hr'
+        })
 
     @property
     def km_summary(self):
@@ -295,3 +294,6 @@ class Activity:
 
     def to_gpx_file(self, fpath: str):
         activity_to_gpx_file(self, fpath)
+
+    def to_tcx_file(self, fpath: str):
+        activity_to_tcx_file(self, fpath)
