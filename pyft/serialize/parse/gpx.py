@@ -64,8 +64,6 @@ class GPXParser(BaseParser):
 
     def _iter_points(self) -> Generator[Tuple[
                                             int,
-                                            int,
-                                            int,
                                             float,
                                             float,
                                             Optional[float],
@@ -83,9 +81,13 @@ class GPXParser(BaseParser):
             # Convert tz from "SimpleTZ" (used by gpxpy)
             time = point.time.replace(tzinfo=timezone(point.time.tzinfo.utcoffset(None)))
             yield (
-                point_no, track_no, segment_no,
-                point.latitude, point.longitude, point.elevation,
-                time, hr, cad,
+                point_no,
+                point.latitude,
+                point.longitude,
+                point.elevation,
+                time,
+                hr,
+                cad,
                 None,  # lap (GPX data doesn't have laps)
                 None   # kmph
             )

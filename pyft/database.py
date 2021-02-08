@@ -118,8 +118,6 @@ class DatabaseManager:
         id INTEGER NOT NULL,
         activity_id INTEGER NOT NULL,
         point_no INTEGER,
-        track_no INTEGER,
-        segment_no INTEGER,
         latitude FLOAT NOT NULL,
         longitude FLOAT NOT NULL,
         elevation FLOAT,

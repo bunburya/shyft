@@ -61,8 +61,6 @@ class FITParser(BaseActivityParser):
     ):
         data = {
             'point_no': self._get_point_no(),
-            'track_no': 0,
-            'segment_no': 0,
             'latitude': None,
             'longitude': None,
             'elevation': elev,

@@ -59,8 +59,6 @@ class TCXParser(BaseActivityParser):
         for point_elem in track.findall('Trackpoint', self.NAMESPACES):
             data = {
                 'lap': lap_no,
-                'track_no': 0,
-                'segment_no': 0,
                 'point_no': self._get_point_no()
             }
             lat = lon = None

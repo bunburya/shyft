@@ -1,33 +1,45 @@
 from pyft.df_utils.validate import DataFrameSchema, Column
 
+POINTS = DataFrameSchema(
+    columns=[
+        Column(
+            name='activity_id',
+            type='integer',
+            description='The ID of the relevant Activity.'
+        ),
+        Column(
+            name='point_no',
+            type='integer',
+            description='The number/index of the point within the Activity.'
+        ),
+        Column(
+            name='track_no',
+            type='integer',
+            description='The number/index of the track to which the point belongs. Mainly relevant to GPX files.'
+        )
+    ]
+)
+
 LAPS_OR_SPLITS = DataFrameSchema(
     columns=[
         Column(
             name='start_time',
             type='datetime',
-            mandatory=True,
-            nullable=False,
             description='The date and time at which the split/lap started.'
         ),
         Column(
             name='duration',
             type='timedelta',
-            mandatory=True,
-            nullable=False,
             description='The duration of the split/lap.'
         ),
         Column(
             name='distance',
             type='number',
-            mandatory=True,
-            nullable=False,
             description='The distance of the split/lap.'
         ),
         Column(
             name='mean_hr',
             type='number',
-            mandatory=False,
-            nullable=True,
             description='Average heart rate over the split/lap.'
         ),
         Column(

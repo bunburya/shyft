@@ -22,13 +22,23 @@ class BaseParser:
 
     # The DataFrame that is passed to infer_points_data must contain all of these columns
     INITIAL_COL_NAMES_POINTS = (
-        'point_no', 'track_no', 'segment_no',
-        'latitude', 'longitude', 'elevation',
-        'time', 'hr', 'cadence', 'lap', 'kmph'
+        'point_no',
+        'latitude',
+        'longitude',
+        'elevation',
+        'time',
+        'hr',
+        'cadence',
+        'lap',
+        'kmph'
     )
 
     INITIAL_COL_NAMES_LAPS = (
-        'lap_no', 'start_time', 'distance', 'duration', 'calories'
+        'lap_no',
+        'start_time',
+        'distance',
+        'duration',
+        'calories'
     )
 
     def __init__(self, fpath: str, config: Config):

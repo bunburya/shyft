@@ -58,16 +58,12 @@ def activity_to_gpx(activity: Activity) -> gpx.GPX:
     g.description = activity.metadata.description
     g.time = activity.metadata.date_time
     g.nsmap |= NAMESPACES
-    for track_no in points['track_no'].unique():
-        track = gpx.GPXTrack()
-        track.type = activity.metadata.activity_type
-        track_points = points[points['track_no'] == track_no]
-        for seg_no in track_points['segment_no'].unique():
-            seg = gpx.GPXTrackSegment()
-            track.segments.append(seg)
-            seg_points = track_points[track_points['segment_no'] == seg_no]
-            seg_points.apply(lambda row: _add_point_to_seg(row, seg), axis=1)
-        g.tracks.append(track)
+    track = gpx.GPXTrack()
+    track.type = activity.metadata.activity_type
+    seg = gpx.GPXTrackSegment()
+    track.segments.append(seg)
+    points.apply(lambda row: _add_point_to_seg(row, seg), axis=1)
+    g.tracks.append(track)
     return g
 
 
