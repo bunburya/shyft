@@ -13,11 +13,94 @@ POINTS = DataFrameSchema(
             description='The number/index of the point within the Activity.'
         ),
         Column(
-            name='track_no',
+            name='latitude',
+            type='float',
+            description='The latitude of the point (in degrees).'
+        ),
+        Column(
+            name='longitude',
+            type='float',
+            description='The longitude of the point (in degrees).'
+        ),
+        Column(
+            name='elevation',
+            type='number',
+            nullable=True,
+            description='The elevation of the point (in metres).'
+        ),
+        Column(
+            name='time',
+            type='datetime',
+            description='The date and time at which the point was recorded.'
+        ),
+        Column(
+            name='hr',
+            type='number',
+            nullable=True,
+            description='Heart rate.'
+        ),
+        Column(
+            name='cadence',
+            type='number',
+            nullable=True
+        ),
+        Column(
+            name='step_length_2d',
+            type='number',
+            nullable=True,
+            description='The distance between this point and the previous point.'
+        ),
+        Column(
+            name='cumul_distance_2d',
+            type='number',
+            nullable=True,
+            description='The cumulative distance traveled at this point.'
+        ),
+        Column(
+            name='km',
             type='integer',
-            description='The number/index of the track to which the point belongs. Mainly relevant to GPX files.'
+            description='The kilometre of the point (ie, the point is in the nth kilometre of the activity).'
+        ),
+        Column(
+            name='mile',
+            type='integer',
+            description='The mile of the point.'
+        ),
+        Column(
+            name='km_pace',
+            type='timedelta',
+        ),
+        Column(
+            name='mile_pace',
+            type='timedelta'
+        ),
+        Column(
+            name='kmph',
+            type='number',
+            nullable=True,
+            description='Kilometres per hour.'
+        ),
+        Column(
+            name='mph',
+            type='number',
+            nullable=True,
+            description='Miles per hour.'
+        ),
+        Column(
+            name='run_time',
+            type='timedelta',
+            description='The time of the point, relative to the start of the activity.'
+        ),
+        Column(
+            name='lap',
+            type='integer',
+            nullable=True,
+            description='The lap of the point.'
         )
-    ]
+    ],
+    extra_cols_ok=False,
+    index_type='integer',
+    description='A DataFrame containing information about the GPS points for an activity.'
 )
 
 LAPS_OR_SPLITS = DataFrameSchema(
@@ -57,7 +140,7 @@ LAPS_OR_SPLITS = DataFrameSchema(
             description='Calories burned during the split/lap.'
         )
     ],
-    extra_cols_ok=True,
+    extra_cols_ok=False,
     index_type='integer',
     description='A DataFrame containing information summarising the laps or splits of an activity.'
 )
