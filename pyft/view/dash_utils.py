@@ -3,7 +3,7 @@
 Most of these are implemented as factory methods which return Dash
 objects, which can be included in the layout of the Dash app.
 """
-
+import logging
 from typing import Optional, Iterable, List
 
 import pandas as pd
@@ -170,10 +170,10 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         down by split.
         """
         split_col = self.config.distance_unit
-        splits_df = splits_df['time'].reset_index()
+        splits_df = splits_df['duration'].reset_index()
         splits_df[split_col] += 1
         # TODO:  Make this less awful
-        splits_df['time'] = splits_df['time'].astype(str).str.split(' ').str[-1].str.split('.').str[:-1]
+        splits_df['duration'] = splits_df['duration'].astype(str).str.split(' ').str[-1].str.split('.').str[:-1]
         cols = [{'name': i, 'id': i} for i in splits_df.columns]
         data = splits_df.to_dict('records')
         return dt.DataTable(
@@ -216,16 +216,19 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 data = activity.mile_summary
             else:
                 raise ValueError(f'Bad value for source_data: "{source}".')
-            graphs.append(
-                dbc.Row(
-                    dbc.Col(
-                        dcc.Graph(
-                            id=f'graph_{i}',
-                            figure=self.graph(data, go_data.pop('graph_type'), **go_data)
+            try:
+                graphs.append(
+                    dbc.Row(
+                        dbc.Col(
+                            dcc.Graph(
+                                id=f'graph_{i}',
+                                figure=self.graph(data, go_data.pop('graph_type'), **go_data)
+                            )
                         )
                     )
                 )
-            )
+            except Exception as e:
+                logging.warning(f'Could not create graph from file "{source}".', exc_info=True)
         return graphs
 
     def map_figure(self, df: pd.DataFrame, highlight_col: Optional[str] = None,

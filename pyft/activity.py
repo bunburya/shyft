@@ -188,9 +188,10 @@ class Activity:
         splits (km or mile).
         """
 
-        subset = [split_col]
+        speed_col = self.get_speed_col(split_col)
+        subset = [split_col, speed_col]
         for col in ('cadence', 'hr'):
-            if col in self.points.columns:
+            if (col in self.points.columns) and self.points[col].notnull().any():
                 subset.append(col)
         splits = self.points[subset]
         grouped = splits.groupby(split_col)
@@ -198,7 +199,7 @@ class Activity:
         split_times = self.get_split_markers(split_col)['time']
         summary['start_time'] = split_times
         summary['duration'] = split_times - split_times.shift(fill_value=self.points.iloc[0]['time'])
-        summary.loc[summary.index[-1], 'duration'] = self.points.iloc[-1]['duration'] - split_times.iloc[-1]
+        summary.loc[summary.index[-1], 'duration'] = self.points.iloc[-1]['time'] - split_times.iloc[-1]
         if split_col == 'km':
             summary['distance'] = 1000
         elif split_col == 'mile':
@@ -264,6 +265,14 @@ class Activity:
         fig.write_image(fpath, format='png', scale=0.1)
         #print(f'thumbnail fpath is {fpath}')
         return fpath
+
+    def get_speed_col(self, distance_unit: str) -> str:
+        if distance_unit == 'km':
+            return 'kmph'
+        elif distance_unit == 'mile':
+            return 'mph'
+        else:
+            raise ValueError(f'distance_unit must be "km" or "mile", not "{distance_unit}".')
 
     @staticmethod
     def from_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,

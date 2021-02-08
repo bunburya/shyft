@@ -2,6 +2,7 @@
 Garmin etc) to the ones used by Pyft.
 """
 
+
 def _reverse_dict(in_dict: dict) -> dict:
     """Reverse a dict so that keys become values and values become keys."""
 
@@ -9,6 +10,7 @@ def _reverse_dict(in_dict: dict) -> dict:
     for k in in_dict:
         out_dict[in_dict[k]] = k
     return out_dict
+
 
 PYFT_TYPES = {
     'run',
@@ -44,4 +46,10 @@ STRAVA_GPX_TO_PYFT = {
     '4': 'hike',
     '9': 'run',
     '10': 'walk',
+}
+
+RK_GPX_TO_PYFT = {
+    'Running': 'run',
+    'Walking': 'walk',
+    'Cycling': 'cycle'
 }

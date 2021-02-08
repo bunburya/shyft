@@ -98,12 +98,16 @@ class FITParser(BaseActivityParser):
         """Parse a FitDataMessage of type `lap`, which contains
         information about a lap.
         """
+        mean_speed = frame.get_value('avg_speed', fallback=None)
+        if mean_speed is not None:
+            mean_speed /= 3.6
         self._laps_data.append({
             'lap_no': self._get_lap_no(),
             'start_time': frame.get_value('start_time'),
             'distance': frame.get_value('total_distance'),
             'duration': timedelta(seconds=frame.get_value('total_elapsed_time')),
             'calories': frame.get_value('total_calories', fallback=None),
+            'mean_speed': mean_speed,
             'mean_hr': frame.get_value('avg_heart_rate', fallback=None),
             'mean_cadence': frame.get_value('avg_running_cadence', fallback=None)
         })

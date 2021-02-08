@@ -11,7 +11,7 @@ import gpxpy
 from gpxpy import gpx
 from pyft.serialize._xml_namespaces import GPX_NAMESPACES
 from pyft.serialize.parse._base import PyftParserException, BaseParser
-from pyft.serialize._activity_types import GARMIN_GPX_TO_PYFT, STRAVA_GPX_TO_PYFT
+from pyft.serialize._activity_types import GARMIN_GPX_TO_PYFT, STRAVA_GPX_TO_PYFT, RK_GPX_TO_PYFT
 
 
 class GPXParserError(PyftParserException): pass
@@ -20,6 +20,7 @@ class GPXParser(BaseParser):
 
     STRAVA_TYPES = STRAVA_GPX_TO_PYFT
     GARMIN_TYPES = GARMIN_GPX_TO_PYFT
+    RK_TYPES = RK_GPX_TO_PYFT
 
     # Namespaces for extensions
     # (Even though these relate to Garmin we do not put them in the GarminMixin class because they are also
@@ -32,7 +33,41 @@ class GPXParser(BaseParser):
 
     def _parse(self, fpath: str):
         with open(fpath) as f:
-            self.gpx = gpxpy.parse(f)
+            self._gpx = gpxpy.parse(f)
+        df = pd.DataFrame(self._iter_points(), columns=self.INITIAL_COL_NAMES_POINTS)
+        self._points_df = self._handle_points_data(df)
+        self._metadata = {
+            'name': self._gpx.name,
+            'description': self._gpx.description,
+            'date_time': self._get_activity_time(),
+            'activity_type': self._get_activity_type()
+        }
+
+    def _get_activity_time(self) -> datetime:
+        """Return the time the activity was recorded, falling back to
+        the time the first point was registered if the GPX file does
+        not specify a time for the activity.
+        """
+        time = self._gpx.time
+        if time is not None:
+            return self._gpx.time.replace(tzinfo=timezone(self._gpx.time.tzinfo.utcoffset(None)))
+        else:
+            return self._points_df.iloc[0]['time'].to_pydatetime()
+
+    def _get_activity_type(self) -> str:
+        activity_type = 'activity'
+        track_type = self._gpx.tracks[0].type
+        track_name = self._gpx.tracks[0].name
+        if track_type in self.ACTIVITY_TYPES:
+            activity_type = track_type
+        elif self._gpx.creator.startswith('StravaGPX'):
+            activity_type = self.STRAVA_TYPES.get(track_type, activity_type)
+        elif self._gpx.creator.startswith('Garmin Connect'):
+            activity_type = self.GARMIN_TYPES.get(track_type, activity_type)
+        elif self._gpx.creator.startswith('Runkeeper'):
+            activity_type = self.RK_TYPES.get(track_name.split(' ')[0], activity_type)
+        return activity_type
+
 
     def _get_try_func(self, func: Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], float]) \
             -> Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], Optional[float]]:
@@ -73,7 +108,7 @@ class GPXParser(BaseParser):
                                             None,
                                             None
                                         ], None, None]:
-        for point, track_no, segment_no, point_no in self.gpx.walk():
+        for point, track_no, segment_no, point_no in self._gpx.walk():
             ext = self._get_garmin_tpe(point)
             hr = self._get_hr(ext)
             cad = self._get_cad(ext)
@@ -99,36 +134,17 @@ class GPXParser(BaseParser):
         method can be called on the resulting DataFrame to generate
         more data.
         """
-        if self._points_df is None:
-            df = pd.DataFrame(self._iter_points(), columns=self.INITIAL_COL_NAMES_POINTS)
-            self._points_df = self._handle_points_data(df)
         return self._points_df
 
     @property
     def date_time(self) -> datetime:
-        try:
-            return self.gpx.time.replace(tzinfo=timezone(self.gpx.time.tzinfo.utcoffset(None)))
-        except AttributeError:
-            return self.gpx.time
+        return self._metadata['date_time']
 
     @property
     def metadata(self) -> dict:
         """Return (selected) metadata for GPX object."""
-        return {
-            'name': self.gpx.name,
-            'description': self.gpx.description,
-            'date_time': self.date_time,
-            'activity_type': self.activity_type
-        }
+        return self._metadata
 
     @property
     def activity_type(self) -> str:
-        activity_type = 'activity'
-        track_type = self.gpx.tracks[0].type
-        if track_type in self.ACTIVITY_TYPES:
-            activity_type = track_type
-        elif self.gpx.creator.startswith('StravaGPX'):
-            activity_type = self.STRAVA_TYPES.get(track_type, activity_type)
-        elif self.gpx.creator.startswith('Garmin Connect'):
-            activity_type = self.GARMIN_TYPES.get(track_type, activity_type)
-        return activity_type
+        return self._metadata['activity_type']

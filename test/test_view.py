@@ -96,13 +96,13 @@ def get_gpx_file(id: str):
     metadata = am.get_metadata_by_id(activity_id)
     data_file = metadata.gpx_file
     if data_file:
-        return send_file(data_file, mimetype='application/gpx+xml', as_attachment=True,
+        return send_file(data_file, mimetype='application/_gpx+xml', as_attachment=True,
                          attachment_filename=os.path.basename(data_file))
     else:
         return (f'No data file found for activity ID "{id}".')
 
 MIMETYPES = {
-    '.gpx': 'application/gpx+xml',
+    '._gpx': 'application/_gpx+xml',
     '.fit': 'application/vnd.ant.fit'
 }
 MIMETYPE_FALLBACK = 'application/octet-stream'

@@ -3,18 +3,24 @@
 General:
 
 - Custom type definitions
-- Clean up and expand unit tests
+
+Testing:
+
+- Incorporate DataFrame validation 
+
+Serialisation:
+
+- Proper errors
 
 Activity:
 
-- Handle multiple tracks
-  - each track should be a new activity
-- Handle multiple segments
-- Handle waypoints
 - Data editor
-- Laps
-  - View
-- TCX writer
+- Link SQLite schema to DataFrameSchema
+
+Overview:
+
+  - Average heart rate over time
+  - Pace over time
 
 View:
 
@@ -23,6 +29,7 @@ View:
   - Tidy up
   - Improve graph
   - Get auto-scaled map (see https://github.com/plotly/plotly.js/issues/3434 and https://community.plotly.com/t/dynamic-zoom-for-mapbox/32658/9)
+  - Laps
 
 - Improve config page
 

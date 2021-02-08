@@ -121,6 +121,11 @@ LAPS_OR_SPLITS = DataFrameSchema(
             description='The distance of the split/lap.'
         ),
         Column(
+            name='mean_speed',
+            type='number',
+            description='Average speed over the split/lap in km/h.'
+        ),
+        Column(
             name='mean_hr',
             type='number',
             description='Average heart rate over the split/lap.'
