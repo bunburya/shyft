@@ -139,6 +139,8 @@ TEST_DF_5 = pd.DataFrame([{
 
 class ValidateDataFrameTestCase(BaseDataFrameValidateTestCase):
 
+    # TODO: Test ColumnList and copying.
+
     def test_df_01(self):
         """TEST_DF_1"""
         self.assert_dataframe_valid(TEST_DF_1, TEST_SCHEMA_1)

@@ -1,6 +1,7 @@
-"""Base code for unit testing, including a base test class and variables
+"""Base code for unit testing, including base test classes and variables
 describing where to find and save test data, for use by test scripts.
 """
+
 import filecmp
 import os
 import shutil
@@ -9,14 +10,17 @@ from datetime import timedelta
 from shutil import copyfile
 from typing import List, Optional
 
-import gpxpy
+
 import numpy as np
 import pandas as pd
+import gpxpy
+
 from pyft.config import Config
 from pyft.activity_manager import ActivityManager
 
 from pyft.activity import ActivityMetaData, Activity
 from pyft.df_utils.validate import DataFrameSchema
+from pyft.df_utils.schemas import points_schema, laps_splits_schema
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')
@@ -108,16 +112,25 @@ def get_config(run_dir: str) -> Config:
 
 class BaseDataFrameValidateTestCase(unittest.TestCase):
 
-    def assert_dataframe_valid(self, df: pd.DataFrame, schema: DataFrameSchema):
+    def assert_dataframe_valid(self, df: pd.DataFrame, schema: DataFrameSchema, df_name: str = None):
+        """Assert that the given DataFrame conforms to the given
+        DataFrameSchema.
+        """
         result = schema.validate_dataframe(df)
         if not result.is_valid:
-            msg = ['DataFrame does not conform to schema.']
+            if df_name is None:
+                msg = ['DataFrame does not conform to schema.']
+            else:
+                msg = [f'DataFrame "{df_name}" does not conform to schema.']
             if result.missing_mandatory_cols:
                 col_names = [col.name for col in result.missing_mandatory_cols]
                 msg.append(f'Mandatory columns are missing: {", ".join(col_names)}.')
             if result.type_mismatched_cols:
-                col_names = [col.name for col in result.type_mismatched_cols]
-                msg.append(f'Columns are of the wrong dtype: {", ".join(col_names)}.')
+                col_details = []
+                for col in result.type_mismatched_cols:
+                    actual, expected = result.type_mismatched_cols[col]
+                    col_details.append(f'{col.name} ({actual} vs {expected})')
+                msg.append(f'Columns are of the wrong dtype: {"; ".join(col_details)}.')
             if result.bad_null_cols:
                 col_names = [col.name for col in result.bad_null_cols]
                 msg.append(f'Columns contain impermissible null values: {", ".join(col_names)}.')
@@ -130,10 +143,23 @@ class BaseDataFrameValidateTestCase(unittest.TestCase):
             raise AssertionError(' '.join(msg))
 
     def assert_dataframe_invalid(self, df: pd.DataFrame, schema: DataFrameSchema):
+        """Assert that the given DataFrame does not confirm to the given
+        DataFrameSchema.
+        """
         self.assertRaises(
             AssertionError,
             lambda: self.assert_dataframe_valid(df, schema)
         )
+
+    def assert_activity_dataframes_valid(self, activity: Activity):
+        """Assert that DataFrames associated with the given Activity
+        confirm to their respective DataFrameSchemas.
+        """
+        self.assert_dataframe_valid(activity.points, points_schema, 'points')
+        if activity.laps is not None:
+            self.assert_dataframe_valid(activity.laps, laps_splits_schema, 'laps')
+        self.assert_dataframe_valid(activity.km_summary, laps_splits_schema, 'km_splits')
+        self.assert_dataframe_valid(activity.mile_summary, laps_splits_schema, 'mile_splits')
 
 class BaseTestCase(BaseDataFrameValidateTestCase):
 
@@ -265,3 +291,23 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
             self.assert_activities_equal(a1, a2, almost, check_data_files=check_data_files, check_types=check_types,
                                          ignore_points_cols=ignore_points_cols, check_laps=check_laps,
                                          check_elev=check_elev)
+
+    def assert_activity_valid(self, activity: Activity):
+        """Assert that the given Activity is valid at a basic level
+        (ie, that it broadly contains the minimum amount of data an
+        Activity needs to have).
+        """
+        self.assert_activity_dataframes_valid(activity)
+        # TODO: More validation
+
+    def assert_all_activities_valid(self, am: ActivityManager):
+        for activity in am:
+            self.assert_activity_valid(activity)
+
+    def assert_manager_valid(self, am: ActivityManager):
+        """Assert that the given ActivityManager is valid (ie, that all
+        its Activities are valid and that it contains the minimum
+        amount of data an ActivityManager needs to have.
+        """
+        self.assert_all_activities_valid(am)
+        # TODO: More validation

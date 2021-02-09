@@ -113,9 +113,9 @@ class ActivityMetaData:
 
 @dataclass(init=False)
 class Activity:
-    """ A dataclass representing a single _activity_elem.  Stores the points (as a pd.DataFrame),
-    as well as some metadata about the _activity_elem.  We only separately store data about
-    the _activity_elem which cannot easily and quickly be deduced from the points.
+    """ A dataclass representing a single Activity.  Stores the points (as a pd.DataFrame),
+    as well as some metadata about the Activity.  We only separately store data about
+    the Activity which cannot easily and quickly be deduced from the points.
     """
 
     metadata: ActivityMetaData

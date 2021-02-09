@@ -87,6 +87,7 @@ class SerializeTestCase(BaseTestCase):
             activity.to_gpx_file(fpath)
             validator.assert_(lxml.etree.parse(fpath))
             manager_pyftgpx.add_activity_from_file(fpath)
+        self.assert_manager_valid(manager_pyftgpx)
         self.assert_managers_equal(self.manager_stravagpx, manager_pyftgpx)
 
     def test_03_create_tcx(self):
@@ -99,6 +100,7 @@ class SerializeTestCase(BaseTestCase):
             activity.to_tcx_file(fpath)
             validator.assert_(lxml.etree.parse(fpath))
             manager_pyfttcx.add_activity_from_file(fpath)
+        self.assert_manager_valid(manager_pyfttcx)
         self.assert_managers_equal(self.manager_garmintcx, manager_pyfttcx)
 
     def test_04_fit_gpx_parser_equal(self):
@@ -180,6 +182,7 @@ class SerializeTestCase(BaseTestCase):
                 ignore_points_cols=['hr', 'cadence'],
                 check_elev=False  # Runtastic imports its own elevation
             )
+        self.assert_manager_valid(manager_rkgpx)
 
 
 if __name__ == '__main__':

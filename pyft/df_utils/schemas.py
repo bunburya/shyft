@@ -1,17 +1,8 @@
-from pyft.df_utils.validate import DataFrameSchema, Column
+from dataclasses import replace
+from pyft.df_utils.validate import DataFrameSchema, Column, ColumnList
 
-POINTS = DataFrameSchema(
-    columns=[
-        Column(
-            name='activity_id',
-            type='integer',
-            description='The ID of the relevant Activity.'
-        ),
-        Column(
-            name='point_no',
-            type='integer',
-            description='The number/index of the point within the Activity.'
-        ),
+points_schema = DataFrameSchema(
+    columns=ColumnList([
         Column(
             name='latitude',
             type='float',
@@ -69,10 +60,12 @@ POINTS = DataFrameSchema(
         Column(
             name='km_pace',
             type='timedelta',
+            nullable=True
         ),
         Column(
             name='mile_pace',
-            type='timedelta'
+            type='timedelta',
+            nullable=True
         ),
         Column(
             name='kmph',
@@ -97,14 +90,14 @@ POINTS = DataFrameSchema(
             nullable=True,
             description='The lap of the point.'
         )
-    ],
+    ]),
     extra_cols_ok=False,
     index_type='integer',
     description='A DataFrame containing information about the GPS points for an activity.'
 )
 
-LAPS_OR_SPLITS = DataFrameSchema(
-    columns=[
+laps_splits_km_schema = DataFrameSchema(
+    columns=ColumnList([
         Column(
             name='start_time',
             type='datetime',
@@ -121,7 +114,7 @@ LAPS_OR_SPLITS = DataFrameSchema(
             description='The distance of the split/lap.'
         ),
         Column(
-            name='mean_speed',
+            name='mean_kmph',
             type='number',
             description='Average speed over the split/lap in km/h.'
         ),
@@ -144,8 +137,22 @@ LAPS_OR_SPLITS = DataFrameSchema(
             nullable=True,
             description='Calories burned during the split/lap.'
         )
-    ],
+    ]),
     extra_cols_ok=False,
     index_type='integer',
-    description='A DataFrame containing information summarising the laps or splits of an activity.'
+    description='A DataFrame containing information summarising the laps or splits of an activity (when the data'
+                'is given in kilometres).'
+)
+
+laps_splits_mile_schema = replace(
+    laps_splits_km_schema,
+    columns=laps_splits_km_schema.columns.replace(
+        mean_kmph=Column(
+            name='mean_mph',
+            type='number',
+            description='Average speed over the split/lap in miles per hour.'
+        )
+    ),
+    description='A DataFrame containing information summarising the laps or splits of an activity (when the data'
+                'is given in miles).'
 )
