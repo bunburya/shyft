@@ -121,6 +121,7 @@ laps_splits_km_schema = DataFrameSchema(
         Column(
             name='mean_hr',
             type='number',
+            nullable=True,
             description='Average heart rate over the split/lap.'
         ),
         Column(
@@ -141,7 +142,7 @@ laps_splits_km_schema = DataFrameSchema(
     extra_cols_ok=False,
     index_type='integer',
     description='A DataFrame containing information summarising the laps or splits of an activity (when the data'
-                'is given in kilometres).'
+                'is given in kilometres). Index is 1-based.'
 )
 
 laps_splits_mile_schema = replace(
@@ -154,5 +155,5 @@ laps_splits_mile_schema = replace(
         )
     ),
     description='A DataFrame containing information summarising the laps or splits of an activity (when the data'
-                'is given in miles).'
+                'is given in miles). Index is 1-based.'
 )

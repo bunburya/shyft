@@ -144,17 +144,17 @@ class DatabaseManager:
     )"""
 
     LAPS = """CREATE TABLE IF NOT EXISTS \"laps\" (
-        id INTEGER NOT NULL,
-        activity_id INTEGER NOT NULL,
         lap_no INTEGER NOT NULL,
+        activity_id INTEGER NOT NULL,
         start_time TIMESTAMP NOT NULL,
         distance FLOAT NOT NULL,
         duration FLOAT NOT NULL,
         mean_cadence INTEGER,
         mean_hr INTEGER,
+        mean_kmph FLOAT,
         calories INTEGER,
         FOREIGN KEY(activity_id) REFERENCES activities(id),
-        PRIMARY KEY(id, activity_id, lap_no)
+        PRIMARY KEY(activity_id, lap_no)
     )"""
 
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
@@ -218,14 +218,15 @@ class DatabaseManager:
             self.commit()
         return self.cursor.lastrowid
 
-    def save_dataframe(self, table_name: str, data: pd.DataFrame, activity_id: int, commit: bool = True):
+    def save_dataframe(self, table_name: str, data: pd.DataFrame, activity_id: int, commit: bool = True,
+                       index_label: str = 'id'):
         """Generic method to save a DataFrame to the database. Can be
-        used for points or laps. DataFrame must have index column named
-        `id`.
+        used for points or laps. DataFrame must have index with a name
+        corresponding to `index label` (by default "id").
         """
         data = data.copy()
         data['activity_id'] = activity_id
-        data.to_sql(table_name, self.connection, if_exists='append', index_label='id')
+        data.to_sql(table_name, self.connection, if_exists='append', index_label=index_label)
         if commit:
             self.commit()
 
@@ -313,7 +314,7 @@ class DatabaseManager:
 
     def load_laps(self, activity_id: int) -> Optional[pd.DataFrame]:
         laps = pd.read_sql_query('SELECT * FROM "laps" WHERE activity_id=?', self.connection,
-                                 params=(activity_id,)).drop(['id', 'activity_id'], axis=1)
+                                 params=(activity_id,)).drop('activity_id', axis=1).set_index('lap_no')
         if laps.empty:
             return None
         else:

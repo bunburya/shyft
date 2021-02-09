@@ -38,8 +38,10 @@ class TCXParser(BaseActivityParser):
         points_data = []
         for lap in self._activity_elem.findall('Lap', self.NAMESPACES):
             lap_no = self._get_lap_no()
-            lap_data = {'lap_no': lap_no}
-            lap_data['start_time'] = dp.parse(lap.attrib['StartTime']).astimezone(timezone.utc)
+            lap_data = {
+                'lap_no': lap_no,
+                'start_time': dp.parse(lap.attrib['StartTime']).astimezone(timezone.utc)
+            }
             # None of the below should actually be None as these are all require elements according to the TCX schema,
             # but no harm to check in case we get slightly invalid data.
             if (dist_elem := lap.find('DistanceMeters', self.NAMESPACES)) is not None:
@@ -48,11 +50,21 @@ class TCXParser(BaseActivityParser):
                 lap_data['duration'] = timedelta(seconds=float(time_elem.text))
             if (cal_elem := lap.find('Calories', self.NAMESPACES)) is not None:
                 lap_data['calories'] = float(cal_elem.text)
+
+            # The following are optional values in the TCX scheme.
+            if (avg_hr_elem := lap.find('AverageHeartRateBpm')) is not None:
+                lap_data['mean_hr'] = int(avg_hr_elem.find('Value').text)
+            if (avg_cad_elem := lap.find('Cadence')) is not None:
+                lap_data['mean_cadence'] = int(avg_cad_elem.text)
+
             laps_data.append(lap_data)
             self._iter_points(lap, points_data, lap_no)
-        self._laps_df = pd.DataFrame(laps_data, columns=self.INITIAL_COL_NAMES_LAPS)
         points_df = pd.DataFrame(points_data, columns=self.INITIAL_COL_NAMES_POINTS)
         self._points_df = self._handle_points_data(points_df)
+        self._laps_df = self._infer_laps_data(
+            pd.DataFrame(laps_data, columns=self.INITIAL_COL_NAMES_LAPS).set_index('lap_no'),
+            self._points_df
+        )
 
     def _iter_points(self, lap_elem: lxml.etree._Element, points_data: List[dict], lap_no: int):
         track = lap_elem.find('Track', self.NAMESPACES)
@@ -86,9 +98,6 @@ class TCXParser(BaseActivityParser):
             if cad_elem is None:
                 if (cad_ext_elem := point_elem.find('.//activity_extension:RunCadence', self.NAMESPACES)) is not None:
                     data['cadence'] = float(cad_ext_elem.text)
-            if speed_elem is None:
-                if (speed_ext_elem := point_elem.find('.//activity_extension:Speed', self.NAMESPACES)) is not None:
-                    data['kmph'] = self._convert_speed(float(speed_ext_elem.text))
 
             self._handle_backfill(data, points_data, lat, lon)
 

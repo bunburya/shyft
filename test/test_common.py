@@ -20,7 +20,7 @@ from pyft.activity_manager import ActivityManager
 
 from pyft.activity import ActivityMetaData, Activity
 from pyft.df_utils.validate import DataFrameSchema
-from pyft.df_utils.schemas import points_schema, laps_splits_schema
+from pyft.df_utils.schemas import points_schema, laps_splits_km_schema, laps_splits_mile_schema
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')
@@ -157,9 +157,9 @@ class BaseDataFrameValidateTestCase(unittest.TestCase):
         """
         self.assert_dataframe_valid(activity.points, points_schema, 'points')
         if activity.laps is not None:
-            self.assert_dataframe_valid(activity.laps, laps_splits_schema, 'laps')
-        self.assert_dataframe_valid(activity.km_summary, laps_splits_schema, 'km_splits')
-        self.assert_dataframe_valid(activity.mile_summary, laps_splits_schema, 'mile_splits')
+            self.assert_dataframe_valid(activity.laps, laps_splits_km_schema, 'laps')
+        self.assert_dataframe_valid(activity.km_summary, laps_splits_km_schema, 'km_splits')
+        self.assert_dataframe_valid(activity.mile_summary, laps_splits_mile_schema, 'mile_splits')
 
 class BaseTestCase(BaseDataFrameValidateTestCase):
 
@@ -235,12 +235,15 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
 
     def assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True,
                                 check_types: bool = True, ignore_points_cols: Optional[List[str]] = None,
-                                check_laps: bool = True, check_elev: bool = True):
+                                check_laps: bool = True, check_elev: bool = True, ignore_laps_cols=None):
         # NOTE: If almost is True, comparisons will have a pretty high tolerance of errors. This is mainly to allow
         # rough comparisons between activities generated from different data sources (eg, GPX files vs .FIT files)
         # where differences in precision can lead to differences in distances, etc.
+
         self.assert_metadata_equal(a1.metadata, a2.metadata, almost=almost, check_data_files=check_data_files,
                                    check_types=check_types, check_elev=check_elev)
+        if ignore_laps_cols is None:
+            ignore_laps_cols = []
 
         if ignore_points_cols is None:
             ignore_points_cols = []
@@ -251,9 +254,15 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
                 points1 = a1.points.drop('lap', axis=1)
                 points2 = a2.points.drop('lap', axis=1)
             else:
+                if ignore_laps_cols:
+                    laps1 = a1.laps.drop(ignore_laps_cols, axis=1)
+                    laps2 = a1.laps.drop(ignore_laps_cols, axis=1)
+                else:
+                    laps1 = a1.laps
+                    laps2 = a2.laps
                 pd.testing.assert_frame_equal(
-                    a1.laps,
-                    a2.laps,
+                    laps1,
+                    laps2,
                     check_like=True,
                     check_dtype=check_types
                 )
@@ -286,11 +295,11 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
     def assert_managers_equal(self, manager1: ActivityManager, manager2: ActivityManager, almost: bool = False,
                               check_data_files: bool = True, check_types: bool = True,
                               ignore_points_cols: Optional[List[str]] = None, check_laps: bool = True,
-                              check_elev: bool = True):
+                              check_elev: bool = True, ignore_laps_cols: Optional[List[str]] = None):
         for a1, a2 in zip(manager1, manager2):
             self.assert_activities_equal(a1, a2, almost, check_data_files=check_data_files, check_types=check_types,
                                          ignore_points_cols=ignore_points_cols, check_laps=check_laps,
-                                         check_elev=check_elev)
+                                         check_elev=check_elev, ignore_laps_cols=ignore_laps_cols)
 
     def assert_activity_valid(self, activity: Activity):
         """Assert that the given Activity is valid at a basic level

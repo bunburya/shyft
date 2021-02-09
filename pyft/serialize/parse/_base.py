@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from pyft.config import Config
+from pyft.df_utils.helper_funcs import get_lap_distances, get_lap_durations, get_lap_means
 from pyft.geo_utils import haversine_distance
 from pyft.serialize._activity_types import PYFT_TYPES
 
@@ -38,7 +39,10 @@ class BaseParser:
         'start_time',
         'distance',
         'duration',
-        'calories'
+        'calories',
+        'mean_kmph',
+        'mean_hr',
+        'mean_cadence'
     )
 
     def __init__(self, fpath: str, config: Config):
@@ -97,6 +101,30 @@ class BaseParser:
         if missing := set(self.INITIAL_COL_NAMES_POINTS).difference(df.columns):
             raise ValueError(f'DataFrame is missing the following columns: {missing}.')
         return self._infer_points_data(self._clean_points_data(df))
+
+    def _infer_laps_data(self, laps_df: pd.DataFrame, points_df: pd.DataFrame) -> pd.DataFrame:
+        """Fills in missing data in a laps DataFrame, where possible,
+        by looking at the data in the points DataFrame.
+
+        Returns copy of laps_df with appropriate modifications.
+        """
+        to_fill = ('duration', 'distance', 'mean_kmph', 'mean_hr', 'mean_cadence')
+        is_null = {col: laps_df[col].isnull().any() for col in to_fill}
+        if not any(is_null.values()):
+            return laps_df
+        laps_df = laps_df.copy()
+        if is_null.pop('duration'):
+            laps_df['duration'] = get_lap_durations(laps_df, points_df)
+        if is_null.pop('distance'):
+            laps_df['distance'] = get_lap_distances(laps_df, points_df)
+        null_means = list(filter(lambda c: is_null[c], is_null))
+        if null_means:
+            #print(f'inferring {null_means}')
+            means = get_lap_means([c.lstrip('mean_') for c in null_means], points_df, 'lap')
+            for col in null_means:
+                laps_df[col] = laps_df[col].combine_first(means[col.lstrip('mean_')])
+        return laps_df
+
 
     def distance_2d(self, lat1: pd.Series, lon1: pd.Series, lat2: pd.Series, lon2: pd.Series) -> np.ndarray:
         return haversine_distance(lat1, lon1, lat2, lon2)

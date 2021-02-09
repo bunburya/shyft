@@ -124,7 +124,7 @@ class GPXParser(BaseParser):
                 hr,
                 cad,
                 None,  # lap (GPX data doesn't have laps)
-                None   # kmph
+                None   # kmph (GPX data doesn't store speed)
             )
 
     @property

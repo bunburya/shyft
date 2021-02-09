@@ -34,8 +34,7 @@ class ColumnList:
     _column_index: Dict[str, int] = field(init=False)
 
     def __post_init__(self):
-        for i, col in enumerate(self._column_list):
-            self._column_index[col.name] = i
+        self._column_index = {col.name: i for i, col in enumerate(self._column_list)}
 
     def __getitem__(self, i) -> Column:
         return self._column_list[i]

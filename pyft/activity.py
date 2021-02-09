@@ -2,12 +2,13 @@ import os
 import shutil
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Tuple, Callable, Optional, Any
+from typing import Tuple, Callable, Optional, Any, List
 
 import pandas as pd
 import numpy as np
 
 from pyft.config import Config
+from pyft.df_utils.helper_funcs import get_lap_durations
 from pyft.geo_utils import intersect_points
 from pyft.serialize.create import activity_to_gpx_file
 from pyft.serialize.create.tcx import activity_to_tcx_file
@@ -189,24 +190,30 @@ class Activity:
         """
 
         speed_col = self.get_speed_col(split_col)
-        subset = [split_col, speed_col]
-        for col in ('cadence', 'hr'):
-            if (col in self.points.columns) and self.points[col].notnull().any():
-                subset.append(col)
-        splits = self.points[subset]
-        grouped = splits.groupby(split_col)
-        summary = grouped.mean()
+        splits = self.points[[split_col, speed_col, 'cadence', 'hr']]
+        split_no = splits[split_col] + 1
+        splits.set_index(split_no)
+        # groupby drops any null columns, so preserve and re-add these
+        null_cols = list(filter(lambda c: splits[c].isnull().all(), splits.columns))
+        summary = splits.groupby(split_col).mean()
+        for col in null_cols:
+            summary[col] = None
+        # split_time = point in time at which split ended/began, not duration of split
         split_times = self.get_split_markers(split_col)['time']
-        summary['start_time'] = split_times
+        start_times = [self.metadata.date_time]
+        start_times.extend(split_times)
+        summary['start_time'] = pd.Series(start_times)
         summary['duration'] = split_times - split_times.shift(fill_value=self.points.iloc[0]['time'])
         summary.loc[summary.index[-1], 'duration'] = self.points.iloc[-1]['time'] - split_times.iloc[-1]
+        #summary['duration'] = get_lap_durations(summary, self.points)
         if split_col == 'km':
             summary['distance'] = 1000
         elif split_col == 'mile':
             summary['distance'] = MILE
         return summary.rename(columns={
             'cadence': 'mean_cadence',
-            'hr': 'mean_hr'
+            'hr': 'mean_hr',
+            speed_col: f'mean_{speed_col}'
         })
 
     @property

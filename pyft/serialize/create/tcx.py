@@ -192,8 +192,7 @@ def _create_activity_elem(activity: Activity, split_col) -> lxml.etree._Element:
         lap_no_col = split_col
 
     for i in lap_data.index:
-        # Index in lap_data starts at 0; lap_no in activity.points starts at 1
-        lap_no = i + 1
+        lap_no = i
         lap_points = activity.points[activity.points[lap_no_col] == lap_no]
         activity_elem.append(_create_lap_elem(lap_data.loc[i], lap_points))
 

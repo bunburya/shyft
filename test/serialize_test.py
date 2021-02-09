@@ -124,7 +124,8 @@ class SerializeTestCase(BaseTestCase):
         """Test that the Activity generated from the TCX file and the
         FIT file are (roughly) equivalent.
         """
-        #print('BEGINNING TCX TEST')
+        # TCX doesn't have have lap average speed, even though FIT does.
+        ignore_laps_cols = ['mean_kmph']
         for tcx_activity, fit_activity in zip(self.manager_garmintcx, self.manager_fit):
             if tcx_activity.metadata.activity_type == CONFIG_GARMINTCX.default_activity_type:
                 # For some reason, Garmin-generated TCX files for non-running activities do not include cadence for me,
@@ -138,7 +139,8 @@ class SerializeTestCase(BaseTestCase):
                 almost=True,
                 check_data_files=False,
                 check_types=False,
-                ignore_points_cols=ignore_points_cols
+                ignore_points_cols=ignore_points_cols,
+                ignore_laps_cols=ignore_laps_cols
             )
 
     def test_06_source_save(self):

@@ -138,7 +138,7 @@ class ActivityManager:
         self.dbm.save_activity_data(activity.metadata)
         self.dbm.save_dataframe('points', activity.points, activity.metadata.activity_id)
         if activity.laps is not None:
-            self.dbm.save_dataframe('laps', activity.laps, activity.metadata.activity_id)
+            self.dbm.save_dataframe('laps', activity.laps, activity.metadata.activity_id, index_label='lap_no')
 
     def get_activity_matches(self, metadata: ActivityMetaData,
                              number: Optional[int] = None) -> Iterable[ActivityMetaData]:
