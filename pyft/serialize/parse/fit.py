@@ -41,13 +41,10 @@ class FITParser(BaseActivityParser):
     LATLON_TO_DECIMAL = (2 ** 32) / 360
 
     def __init__(self, *args, **kwargs):
-        self._metadata: Dict[str, Union[str, datetime, timedelta, Optional[str]]] = {
-            'name': None,
-            'description': None
-        }
         self._points_data = []
         self._laps_data = []
         super().__init__(*args, **kwargs)
+        self._metadata['source_format'] = 'fit'
 
     def _add_point(
             self,
@@ -114,7 +111,7 @@ class FITParser(BaseActivityParser):
 
     def _parse_session(self, frame: fitdecode.FitDataMessage):
         """Parse a FitDataMessage of type `session`, which contains
-        information about an _activity_elem.
+        information about an activity.
         """
         self._metadata['date_time'] = frame.get_value('start_time')
         self._metadata['activity_type'] = self.GARMIN_TYPES.get(frame.get_value('sport'))
@@ -133,6 +130,7 @@ class FITParser(BaseActivityParser):
                         self._parse_lap(frame)
                     elif frame.name == 'session':
                         self._parse_session(frame)
+
 
         self._points = self._handle_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES_POINTS))
         self._laps = self._infer_laps_data(

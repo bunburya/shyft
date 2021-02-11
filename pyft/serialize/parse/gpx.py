@@ -30,13 +30,14 @@ class GPXParser(BaseParser):
     def __init__(self, *args, **kwargs):
         self._points_df = None
         super().__init__(*args, **kwargs)
+        self._metadata['source_format'] = 'gpx'
 
     def _parse(self, fpath: str):
         with open(fpath) as f:
             self._gpx = gpxpy.parse(f)
         df = pd.DataFrame(self._iter_points(), columns=self.INITIAL_COL_NAMES_POINTS)
         self._points_df = self._handle_points_data(df)
-        self._metadata = {
+        self._metadata |= {
             'name': self._gpx.name,
             'description': self._gpx.description,
             'date_time': self._get_activity_time(),
@@ -67,7 +68,6 @@ class GPXParser(BaseParser):
         elif self._gpx.creator.startswith('Runkeeper'):
             activity_type = self.RK_TYPES.get(track_name.split(' ')[0], activity_type)
         return activity_type
-
 
     def _get_try_func(self, func: Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], float]) \
             -> Callable[[gpx.GPXTrackPoint, gpx.GPXTrackPoint], Optional[float]]:

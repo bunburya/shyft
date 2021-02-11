@@ -85,7 +85,7 @@ class Config:
         for k in self.kwargs:
             setattr(self, k, self.kwargs[k])
 
-        for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir, self.source_file_dir):
+        for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir, self.tcx_file_dir, self.source_file_dir):
             if not os.path.exists(_dir):
                 os.makedirs(_dir)
 
@@ -119,6 +119,7 @@ class Config:
         self._data_dir = new
         self.thumbnail_dir = os.path.join(new, 'thumbnails')
         self.gpx_file_dir = os.path.join(new, 'gpx_files')
+        self.tcx_file_dir = os.path.join(new, 'tcx_files')
         self.source_file_dir = os.path.join(new, 'source_files')
         self.db_file = os.path.join(new, 'pyft.db')
 

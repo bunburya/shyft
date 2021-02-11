@@ -23,8 +23,8 @@ class TCXParser(BaseActivityParser):
     NAMESPACES = TCX_NAMESPACES
 
     def __init__(self, *args, **kwargs):
-        self._metadata = {}
         super().__init__(*args, **kwargs)
+        self._metadata['source_format'] = 'tcx'
 
     def _parse(self, fpath: str):
         self._xml_root: lxml.etree._Element = lxml.etree.parse(fpath).getroot()
@@ -110,8 +110,7 @@ class TCXParser(BaseActivityParser):
             self._metadata['date_time'] = dp.parse(id_elem.text).astimezone(timezone.utc)
         self._metadata['distance_2d_km'] = self._laps_df['distance'].sum() / 1000
         self._metadata['duration'] = self._laps_df['duration'].sum()
-        # Strangely, non-running activities seem to just have a Sport value of "Other", even if the underlying FIT
-        # data reports a more specific activity type (eg, walking).
+        # TCX only supports three activity types: "Running", "Biking" or "Other".
         self._metadata['activity_type'] = self.GARMIN_TYPES.get(self._activity_elem.attrib.get('Sport', '').lower())
 
     @property

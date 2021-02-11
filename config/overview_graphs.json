@@ -9,6 +9,6 @@
   {
     "graph_type": "scatter",
     "x": "distance_2d_km",
-    "y": "km_pace_mean"
+    "y": "mean_km_pace"
   }
 ]

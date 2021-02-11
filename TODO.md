@@ -4,10 +4,6 @@ General:
 
 - Custom type definitions
 
-Testing:
-
-- Incorporate DataFrame validation 
-
 Serialisation:
 
 - Proper errors

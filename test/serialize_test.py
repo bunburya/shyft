@@ -76,7 +76,16 @@ class SerializeTestCase(BaseTestCase):
             parser = parser_factory(os.path.join(TEST_TCX_FILES_DIR, tcx_file), CONFIG_GARMINTCX)
             self.assertIsInstance(parser, TCXParser)
 
-    def test_02_create_gpx(self):
+    def test_02_source(self):
+        """Test that we properly get the source format and source name."""
+        for activity in self.manager_stravagpx:
+            self.assertEqual(activity.metadata.source_format, 'gpx')
+        for activity in self.manager_garmintcx:
+            self.assertEqual(activity.metadata.source_format, 'tcx')
+        for activity in self.manager_fit:
+            self.assertEqual(activity.metadata.source_format, 'fit')
+
+    def test_03_create_gpx(self):
         """Test that we can create GPX files and load those files again."""
         manager_pyftgpx = self.get_manager(CONFIG_PYFTGPX)
         validator = lxml.etree.XMLSchema(file=GPX_SCHEMA)
@@ -86,11 +95,13 @@ class SerializeTestCase(BaseTestCase):
             fpath = os.path.join(NEW_GPX_DIR, f'{activity_id}.gpx')
             activity.to_gpx_file(fpath)
             validator.assert_(lxml.etree.parse(fpath))
-            manager_pyftgpx.add_activity_from_file(fpath)
+            id_ = manager_pyftgpx.add_activity_from_file(fpath)
+            new_activity = manager_pyftgpx[id_]
+            self.assertEqual(new_activity.metadata.source_format, 'gpx')
         self.assert_manager_valid(manager_pyftgpx)
-        self.assert_managers_equal(self.manager_stravagpx, manager_pyftgpx)
+        self.assert_managers_equal(self.manager_stravagpx, manager_pyftgpx, check_format=False)
 
-    def test_03_create_tcx(self):
+    def test_04_create_tcx(self):
         """Test that we can create TCX files and load those files again.."""
         manager_pyfttcx = self.get_manager(CONFIG_PYFTTCX)
         validator = lxml.etree.XMLSchema(file=TCX_SCHEMA)
@@ -99,11 +110,13 @@ class SerializeTestCase(BaseTestCase):
             fpath = os.path.join(NEW_TCX_DIR, f'{activity_id}.tcx')
             activity.to_tcx_file(fpath)
             validator.assert_(lxml.etree.parse(fpath))
-            manager_pyfttcx.add_activity_from_file(fpath)
+            id_ = manager_pyfttcx.add_activity_from_file(fpath)
+            new_activity = manager_pyfttcx[id_]
+            self.assertEqual(new_activity.metadata.source_format, 'tcx')
         self.assert_manager_valid(manager_pyfttcx)
-        self.assert_managers_equal(self.manager_garmintcx, manager_pyfttcx)
+        self.assert_managers_equal(self.manager_garmintcx, manager_pyfttcx, check_format=False)
 
-    def test_04_fit_gpx_parser_equal(self):
+    def test_05_fit_gpx_parser_equal(self):
         """Test that the Activity generated from the GPX file and the
         FIT file are (roughly) equivalent.
         """
@@ -116,11 +129,12 @@ class SerializeTestCase(BaseTestCase):
                 fit_activity,
                 almost=True,
                 check_data_files=False,
-                check_laps=False
+                check_laps=False,
+                check_format=False,
             )
             _id += 1
 
-    def test_05_fit_tcx_parser_equal(self):
+    def test_06_fit_tcx_parser_equal(self):
         """Test that the Activity generated from the TCX file and the
         FIT file are (roughly) equivalent.
         """
@@ -140,10 +154,11 @@ class SerializeTestCase(BaseTestCase):
                 check_data_files=False,
                 check_types=False,
                 ignore_points_cols=ignore_points_cols,
-                ignore_laps_cols=ignore_laps_cols
+                ignore_laps_cols=ignore_laps_cols,
+                check_format=False,
             )
 
-    def test_06_source_save(self):
+    def test_07_source_save(self):
         """Test that source files are properly saved."""
         for activity, gpx_file in zip(self.manager_stravagpx, TEST_GPX_FILES_2):
             self.assert_files_equal(activity.metadata.source_file, gpx_file)
@@ -151,7 +166,7 @@ class SerializeTestCase(BaseTestCase):
         for activity, fit_file in zip(manager_fit, TEST_FIT_FILES):
             self.assert_files_equal(activity.metadata.source_file, fit_file)
 
-    def test_07_gpx_length(self):
+    def test_08_gpx_length(self):
         """Test that the length we calculate for activities generated
         from GPX files is the same as the length calculated by gpxpy.
         There is some tolerance of small discrepancies as there may be
@@ -160,7 +175,7 @@ class SerializeTestCase(BaseTestCase):
         for activity, gpx in zip(self.manager_stravagpx, self.strava_gpx):
             self.assertAlmostEqual(activity.metadata.distance_2d_km * 1000, gpx.length_2d(), places=3)
 
-    def test_08_laps(self):
+    def test_09_laps(self):
         """Test that laps have been created correctly."""
         for activity in self.manager_stravagpx:
             self.assertIsNone(activity.laps)
@@ -170,11 +185,12 @@ class SerializeTestCase(BaseTestCase):
             self.assertAlmostEqual(laps['distance'].sum(), activity.metadata.distance_2d_km * 1000, places=3)
             self.assertAlmostEqual(laps['duration'].sum(), activity.metadata.duration)
 
-    def test_09_rk_gpx(self):
+    def test_10_rk_gpx(self):
         """Test parsing of GPX files generated by Runkeeper."""
         manager_rkgpx = self.get_manager(CONFIG_RKGPX, files=RK_GPX_FILES)
         for strava_activity, rk_activity in zip(self.manager_stravagpx, manager_rkgpx):
-            print(f'testing {rk_activity.metadata.source_file}')
+            #print(f'testing {rk_activity.metadata.source_file}')
+            self.assertEqual(rk_activity.metadata.source_format, 'gpx')
             self.assert_activities_equal(
                 strava_activity,
                 rk_activity,
@@ -182,7 +198,8 @@ class SerializeTestCase(BaseTestCase):
                 check_data_files=False,
                 check_types=False,
                 ignore_points_cols=['hr', 'cadence'],
-                check_elev=False  # Runtastic imports its own elevation
+                check_elev=False,  # Runtastic imports its own elevation,
+                check_format=False,
             )
         self.assert_manager_valid(manager_rkgpx)
 

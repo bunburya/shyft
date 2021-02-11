@@ -178,8 +178,8 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
         self.assertTrue(filecmp.cmp(fpath1, fpath2), f'{fpath1} is not equal to {fpath2}.')
 
     def assert_metadata_equal(self, md1: ActivityMetaData, md2: ActivityMetaData,
-                              almost: bool = False, check_data_files: bool = True,
-                              check_types: bool = True, check_elev: bool = True):
+                              almost: bool = False, check_data_files: bool = True, check_types: bool = True,
+                              check_elev: bool = True, check_format: bool = True):
 
         self.assertEqual(md1.activity_id, md2.activity_id,
                          msg=f'Activity IDs are not the same ({md1.activity_id} vs {md2.activity_id}).')
@@ -215,12 +215,12 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
             np.testing.assert_array_equal(center1, center2)
             np.testing.assert_array_equal(std1, std2)
         if almost:
-            self.assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean, -2)
-            self.assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean, -3)
+            self.assert_timedeltas_almost_equal(md1.mean_km_pace, md2.mean_km_pace, -2)
+            self.assert_timedeltas_almost_equal(md1.mean_mile_pace, md2.mean_mile_pace, -3)
             self.assert_timedeltas_almost_equal(md1.duration, md2.duration, -3)
         else:
-            self.assert_timedeltas_almost_equal(md1.km_pace_mean, md2.km_pace_mean)
-            self.assert_timedeltas_almost_equal(md1.mile_pace_mean, md2.mile_pace_mean)
+            self.assert_timedeltas_almost_equal(md1.mean_km_pace, md2.mean_km_pace)
+            self.assert_timedeltas_almost_equal(md1.mean_mile_pace, md2.mean_mile_pace)
             self.assert_timedeltas_almost_equal(md1.duration, md2.duration)
         self.assertEqual(md1.prototype_id, md2.prototype_id,
                          msg=f'Prototype IDs are not the same ({md1.prototype_id} vs {md2.prototype_id}).')
@@ -228,6 +228,8 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
                          msg=f'Activity names are not the same ({md1.name} vs {md2.name}).')
         self.assertEqual(md1.description, md2.description,
                          msg=f'Activity descriptions are not the same ({md1.description} vs {md2.description}).')
+        if check_format:
+            self.assertEqual(md1.source_format, md2.source_format)
         if not almost:
             self.assert_files_equal(md1.thumbnail_file, md2.thumbnail_file)
         if check_data_files:
@@ -235,13 +237,14 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
 
     def assert_activities_equal(self, a1: Activity, a2: Activity, almost: bool = False, check_data_files: bool = True,
                                 check_types: bool = True, ignore_points_cols: Optional[List[str]] = None,
-                                check_laps: bool = True, check_elev: bool = True, ignore_laps_cols=None):
+                                check_laps: bool = True, check_elev: bool = True, ignore_laps_cols=None,
+                                check_format: bool = True):
         # NOTE: If almost is True, comparisons will have a pretty high tolerance of errors. This is mainly to allow
         # rough comparisons between activities generated from different data sources (eg, GPX files vs .FIT files)
         # where differences in precision can lead to differences in distances, etc.
 
         self.assert_metadata_equal(a1.metadata, a2.metadata, almost=almost, check_data_files=check_data_files,
-                                   check_types=check_types, check_elev=check_elev)
+                                   check_types=check_types, check_elev=check_elev, check_format=check_format)
         if ignore_laps_cols is None:
             ignore_laps_cols = []
 
@@ -295,11 +298,13 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
     def assert_managers_equal(self, manager1: ActivityManager, manager2: ActivityManager, almost: bool = False,
                               check_data_files: bool = True, check_types: bool = True,
                               ignore_points_cols: Optional[List[str]] = None, check_laps: bool = True,
-                              check_elev: bool = True, ignore_laps_cols: Optional[List[str]] = None):
+                              check_elev: bool = True, ignore_laps_cols: Optional[List[str]] = None,
+                              check_format: bool = True):
         for a1, a2 in zip(manager1, manager2):
             self.assert_activities_equal(a1, a2, almost, check_data_files=check_data_files, check_types=check_types,
                                          ignore_points_cols=ignore_points_cols, check_laps=check_laps,
-                                         check_elev=check_elev, ignore_laps_cols=ignore_laps_cols)
+                                         check_elev=check_elev, ignore_laps_cols=ignore_laps_cols,
+                                         check_format=check_format)
 
     def assert_activity_valid(self, activity: Activity):
         """Assert that the given Activity is valid at a basic level

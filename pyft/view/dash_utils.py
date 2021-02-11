@@ -143,7 +143,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         """
         if self.config.distance_unit == 'km':
             distance = metadata.distance_2d_km
-            mean_pace = metadata.km_pace_mean
+            mean_pace = metadata.mean_km_pace
         elif self.config.distance_unit == 'mile':
             distance = metadata.distance_2d_mile
             mean_pace = metadata.mile_pace_mean
@@ -318,10 +318,10 @@ class OverviewComponentFactory(BaseDashComponentFactory):
                     figure=px.scatter(
                         self.summary,
                         x='distance_2d_km',
-                        y='kmph_mean',
+                        y='mean_kmph',
                         labels={
                             'distance_2d_km': 'Distance (km)',
-                            'kmph_mean': 'Average speed (km/h)'
+                            'mean_kmph': 'Average speed (km/h)'
                         },
                         title='Average speed vs. distance'
                     )

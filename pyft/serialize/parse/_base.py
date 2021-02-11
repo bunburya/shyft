@@ -1,7 +1,7 @@
 """Base classes for building parsers."""
 
-from datetime import datetime
-from typing import Optional, Union, List
+from datetime import datetime, timedelta
+from typing import Optional, Union, List, Any, Dict
 import logging
 
 import numpy as np
@@ -47,6 +47,15 @@ class BaseParser:
 
     def __init__(self, fpath: str, config: Config):
         logging.debug(f'Parsing {fpath} using {type(self).__name__}.')
+        self._metadata: Dict[str, Union[str, datetime, timedelta, Optional[str]]] = {
+            'name': None,
+            'description': None,
+            'date_time': None,
+            'activity_type': None,
+            'source_format': None,
+            'distance_2d_km': None,
+            'duration': None
+        }
         self.config = config
         self._parse(fpath)
 
