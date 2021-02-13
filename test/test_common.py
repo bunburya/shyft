@@ -215,7 +215,7 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
             np.testing.assert_array_equal(center1, center2)
             np.testing.assert_array_equal(std1, std2)
         if almost:
-            self.assert_timedeltas_almost_equal(md1.mean_km_pace, md2.mean_km_pace, -2)
+            self.assert_timedeltas_almost_equal(md1.mean_km_pace, md2.mean_km_pace, -3)
             self.assert_timedeltas_almost_equal(md1.mean_mile_pace, md2.mean_mile_pace, -3)
             self.assert_timedeltas_almost_equal(md1.duration, md2.duration, -3)
         else:

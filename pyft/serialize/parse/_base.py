@@ -1,14 +1,14 @@
 """Base classes for building parsers."""
 
 from datetime import datetime, timedelta
-from typing import Optional, Union, List, Any, Dict
+from typing import Optional, Union, List, Dict
 import logging
 
 import numpy as np
 import pandas as pd
 
 from pyft.config import Config
-from pyft.df_utils.helper_funcs import get_lap_distances, get_lap_durations, get_lap_means
+from pyft.helper_funcs import get_lap_distances, get_lap_durations, get_lap_means
 from pyft.geo_utils import haversine_distance
 from pyft.serialize._activity_types import PYFT_TYPES
 

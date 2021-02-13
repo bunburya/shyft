@@ -86,8 +86,7 @@ def activity_row_to_dict(row: sql.Row) -> Dict[str, Any]:
     results = dict(row)
     results['center'] = np.array((results.pop('center_lat'), results.pop('center_lon'), results.pop('center_elev')))
     results['points_std'] = np.array((results.pop('std_lat'), results.pop('std_lon'), results.pop('std_elev')))
-    for key in ('mean_km_pace', 'duration'):
-        results[key] = str_to_timedelta(results[key])
+    results['duration'] = str_to_timedelta(results['duration'])
     return results
 
 
@@ -103,8 +102,8 @@ class DatabaseManager:
         std_lat FLOAT,
         std_lon FLOAT,
         std_elev FLOAT,
-        mean_km_pace TEXT,
         duration TEXT,
+        mean_kmph FLOAT,
         prototype_id INTEGER,
         name TEXT,
         description TEXT,
@@ -114,7 +113,6 @@ class DatabaseManager:
         source_file TEXT,
         source_format TEXT,
         calories FLOAT,
-        mean_kmph FLOAT,
         mean_hr FLOAT,
         mean_cadence FLOAT,
         FOREIGN KEY(prototype_id) REFERENCES prototypes(id)
@@ -165,9 +163,9 @@ class DatabaseManager:
 
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
         (activity_id, activity_type, date_time, distance_2d_km, center_lat, center_lon, center_elev, std_lat, std_lon,
-        std_elev, mean_km_pace, duration, prototype_id, name, description, thumbnail_file, gpx_file, tcx_file,
-        source_file, source_format, calories, mean_kmph, mean_hr, mean_cadence)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        std_elev, duration, mean_kmph, prototype_id, name, description, thumbnail_file, gpx_file, tcx_file,
+        source_file, source_format, calories, mean_hr, mean_cadence)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     def __init__(self, config: pyft.config.Config):
@@ -212,8 +210,8 @@ class DatabaseManager:
             # Note: center and points_std should each have length 3
             *metadata.center,
             *metadata.points_std,
-            str(metadata.mean_km_pace),
             str(metadata.duration),
+            metadata.mean_kmph,
             metadata.prototype_id,
             metadata.name,
             metadata.description,
@@ -223,7 +221,6 @@ class DatabaseManager:
             metadata.source_file,
             metadata.source_format,
             metadata.calories,
-            metadata.mean_kmph,
             metadata.mean_hr,
             metadata.mean_cadence
         ))
