@@ -16,8 +16,8 @@
   {
     "data_source": "km_splits",
     "graph_type": "scatter",
-    "x": "cadence",
-    "y": "hr",
+    "x": "mean_cadence",
+    "y": "mean_hr",
     "title": "Heart rate vs cadence"
   }
 ]

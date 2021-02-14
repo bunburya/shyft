@@ -3,8 +3,9 @@ import os
 import shutil
 from typing import Callable
 
-from flask import Flask, url_for, render_template, redirect, send_file, flash, request
+from flask import Flask, url_for, render_template, redirect, send_file, flash, request, g
 import dash_bootstrap_components as dbc
+import pyft.message as msg
 from pyft.config import Config
 from pyft.activity_manager import ActivityManager
 from pyft.view import view_activity
@@ -12,17 +13,16 @@ from pyft.view.overview import Overview
 
 from pyft.serialize.parse import PARSERS
 
-
 ### FOR TESTING ONLY
 
 from test.test_common import *
 
 from pyft.view.edit_config import ConfigForm
 from pyft.view.view_activity import ActivityView
+from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
 TEST_DATA_DIR = 'test/test_data'
-
 
 TEST_RUN_DATA_DIR = run_data_dir('view', replace=True)
 TEST_CONFIG_FILE = config_file(TEST_RUN_DATA_DIR)
@@ -54,10 +54,15 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes
 server = Flask(__name__, template_folder='templates')
 server.secret_key = 'TEST_KEY'
 
-overview = Overview(am, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets)
+context = {}
 
-activity_view = ActivityView(am, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets,
+msg_bus = msg.MessageBus()
+
+overview = Overview(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets)
+
+activity_view = ActivityView(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets,
                              routes_pathname_prefix='/activity/')
+
 
 def id_str_to_int(id: str) -> int:
     """Convert a string activity id to an integer, performing some
@@ -72,8 +77,46 @@ def id_str_to_int(id: str) -> int:
         raise ValueError(f'Bad activity id: "{id}".')
     return activity_id
 
+
 def is_allowed_file(fname: str) -> bool:
     return os.path.splitext(fname)[1].lower() in SUPPORTED_EXTENSIONS
+
+
+MIMETYPES = {
+    '.gpx': 'application/gpx+xml',
+    '.fit': 'application/vnd.ant.fit',
+    '.tcx': 'application/vnd.garmin.tcx+xml'
+}
+MIMETYPE_FALLBACK = 'application/octet-stream'
+
+
+def serve_file(id: str, fpath_getter: Callable[[ActivityMetaData], str], not_found_msg: str = 'File not found.'):
+    """A generic function to serve a file.
+
+    `fpath_getter` should be a function that takes an ActivityMetaData
+    instance and returns the path to the file to be served.
+
+    `not_found_msg` is the message that will be displayed to the user
+    if the relevant file is not found. It can reference the provided
+    ID using Python's string formatting (ie, '{id}').
+    """
+    try:
+        activity_id = id_str_to_int(id)
+    except ValueError:
+        return abort(404, f'Invalid activity ID specified: "{id}".')
+    metadata = am.get_metadata_by_id(activity_id)
+    if metadata is not None:
+        fpath = fpath_getter(metadata)
+    else:
+        fpath = None
+    if fpath:
+        _, ext = os.path.splitext(fpath)
+        mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
+        return send_file(fpath, mimetype=mimetype, as_attachment=True,
+                         attachment_filename=os.path.basename(fpath))
+    else:
+        abort(404, not_found_msg.format(id=id))
+
 
 @server.route('/thumbnails/<id>.png')
 def get_thumbnail(id: str):
@@ -81,7 +124,7 @@ def get_thumbnail(id: str):
     try:
         activity_id = id_str_to_int(id)
     except ValueError:
-        return f'Invalid activity ID specified: "{id}".'
+        return abort(404, description=f'Invalid activity ID specified: "{id}".')
     # print(f'Activity with ID {activity_id}: {am.get_metadata_by_id(activity_id)}')
     metadata = am.get_metadata_by_id(activity_id)
     return send_file(metadata.thumbnail_file, mimetype='image/png')
@@ -89,39 +132,18 @@ def get_thumbnail(id: str):
 
 @server.route('/gpx_files/<id>')
 def get_gpx_file(id: str):
-    try:
-        activity_id = id_str_to_int(id)
-    except ValueError:
-        return f'Invalid activity ID specified: "{id}".'
-    metadata = am.get_metadata_by_id(activity_id)
-    data_file = metadata.gpx_file
-    if data_file:
-        return send_file(data_file, mimetype='application/_gpx+xml', as_attachment=True,
-                         attachment_filename=os.path.basename(data_file))
-    else:
-        return (f'No data file found for activity ID "{id}".')
+    return serve_file(id, lambda md: md.gpx_file, 'No GPX file found for activity ID {id}.')
 
-MIMETYPES = {
-    '._gpx': 'application/_gpx+xml',
-    '.fit': 'application/vnd.ant.fit'
-}
-MIMETYPE_FALLBACK = 'application/octet-stream'
+
+@server.route('/tcx_files/<id>')
+def get_tcx_file(id: str):
+    return serve_file(id, lambda md: md.tcx_file, 'No TCX file found for activity ID {id}.')
+
 
 @server.route('/source_files/<id>')
 def get_source_file(id: str):
-    try:
-        activity_id = id_str_to_int(id)
-    except ValueError:
-        return f'Invalid activity ID specified: "{id}".'
-    metadata = am.get_metadata_by_id(activity_id)
-    source_file = metadata.source_file
-    if source_file:
-        _, ext = os.path.splitext(source_file)
-        mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
-        return send_file(source_file, mimetype=mimetype, as_attachment=True,
-                         attachment_filename=os.path.basename(source_file))
-    else:
-        return (f'No source file found for activity ID "{id}".')
+    return serve_file(id, lambda md: md.source_file, 'No source file found for activity ID {id}.')
+
 
 @server.route('/config', methods=['GET', 'POST'])
 def config():
@@ -137,6 +159,7 @@ def config():
         # return redirect(url_for('save_config'))
         flash('Configuration saved.')
     return render_template('config.html', form=form)
+
 
 @server.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -168,20 +191,18 @@ def upload_file():
     </form>
     '''
 
+
 @server.route('/delete/<id>')
 def delete(id: str):
     try:
         activity_id = id_str_to_int(id)
         am.delete_activity(activity_id)
+        msg_bus.add_message(f'Deleted activity with ID {activity_id}.')
         overview.update_layout()
-        # FIXME: We can't flash message using Dash. Maybe implement some kind of MessageBus
-        # that the Overview and AcitivityView classes can use to display messages.
-        flash(f'Deleted activity with ID {activity_id}.')
         return redirect('/')
     except ValueError:
         # This should catch ValueErrors raise by either id_str_to_int or am.delete_activity
-        return f'Invalid activity ID specified: "{id}".'
-
+        return abort(404, f'No activity found with ID {id} (or there was some other error).')
 
 
 if __name__ == '__main__':

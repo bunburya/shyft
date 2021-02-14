@@ -16,7 +16,7 @@ import dash_bootstrap_components as dbc
 from pyft.config import Config
 from pyft.activity_manager import ActivityManager
 from pyft.activity import ActivityMetaData, Activity
-
+import pyft.message as msg
 
 class BaseDashComponentFactory:
     """A base for classes that generate Dash various components
@@ -53,9 +53,18 @@ class BaseDashComponentFactory:
         ],
     }
 
-    def __init__(self, config: Config, activity_manager: ActivityManager):
+    MSG_FG_COLORS = {
+        msg.CRITICAL: '#FF0000',
+        msg.ERROR: '#FF0000',
+        msg.INFO: '#000000',
+        msg.DEBUG: '#808080',
+        msg.NOTSET: '#808080'
+    }
+
+    def __init__(self, config: Config, activity_manager: ActivityManager, msg_bus: msg.MessageBus):
         self.config = config
         self.activity_manager = activity_manager
+        self.msg_bus = msg_bus
         self.summary = activity_manager.summarize_activity_data()
 
     def activity_name(self, metadata: ActivityMetaData) -> str:
@@ -133,6 +142,18 @@ class BaseDashComponentFactory:
                 kwargs[k] = data.index
         return func(data_frame=data, **kwargs)
 
+    def display_message(self, message: msg.Message) -> dcc.Markdown:
+        if message.severity >= msg.ERROR:
+            prefix='ERROR: '
+        elif message.severity <= msg.DEBUG:
+            prefix = 'DEBUG: '
+        else:
+            prefix = ''
+        return dcc.Markdown(f'*{prefix}{message.text}*', style={'color': self.MSG_FG_COLORS[message.severity]})
+
+    def display_all_messages(self, severity: int = msg.INFO, view: Optional[str] = None) -> List[dcc.Markdown]:
+        return [self.display_message(msg) for msg in self.msg_bus.get_messages(severity, view)]
+
 
 class ActivityViewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
@@ -146,7 +167,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
             mean_pace = metadata.mean_km_pace
         elif self.config.distance_unit == 'mile':
             distance = metadata.distance_2d_mile
-            mean_pace = metadata.mile_pace_mean
+            mean_pace = metadata.mean_mile_pace
         else:
             raise ValueError(f'Invalid value for distance_unit: \"{self.config.distance_unit}\".')
         return html.Div(

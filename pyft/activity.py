@@ -163,6 +163,8 @@ class Activity:
 
             if (self.metadata.gpx_file is not None) and (not os.path.exists(self.metadata.gpx_file)):
                 self.to_gpx_file(self.metadata.gpx_file)
+            if (self.metadata.tcx_file is not None) and (not os.path.exists(self.metadata.tcx_file)):
+                self.to_tcx_file(self.metadata.tcx_file)
 
     def get_split_markers(self, split_col: str) -> pd.DataFrame:
         """Takes a DataFrame, calculates the points that lie directly on

@@ -6,14 +6,16 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input, State
 from pyft.config import Config
 from pyft.activity_manager import ActivityManager
+from pyft.message import MessageBus
 from pyft.view.dash_utils import OverviewComponentFactory
 
 
 class Overview:
 
-    def __init__(self, activity_manager: ActivityManager, config: Config, *dash_args, **dash_kwargs):
+    def __init__(self, activity_manager: ActivityManager, msg_bus: MessageBus, config: Config,
+                 *dash_args, **dash_kwargs):
         self.dash_app = dash.Dash(*dash_args, **dash_kwargs)
-        self.dc_factory = OverviewComponentFactory(config, activity_manager)
+        self.dc_factory = OverviewComponentFactory(config, activity_manager, msg_bus)
         self.config = config
         self.activity_manager = activity_manager
         self.dash_app.layout = self.layout()
@@ -23,6 +25,7 @@ class Overview:
 
         return html.Div(
             id='overview_layout', children=[
+                *self.dc_factory.display_all_messages(),
                 html.H1(f'Activity overview for {self.config.user_name}'),
                 dcc.Markdown('[Configure](/config)'),
                 dcc.Markdown('[Upload](/upload)'),
