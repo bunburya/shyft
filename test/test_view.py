@@ -1,24 +1,20 @@
 import logging
-import os
-import shutil
 from typing import Callable
 
 from flask import Flask, url_for, render_template, redirect, send_file, flash, request, g
 import dash_bootstrap_components as dbc
-import pyft.message as msg
-from pyft.config import Config
-from pyft.activity_manager import ActivityManager
-from pyft.view import view_activity
-from pyft.view.overview import Overview
+import shyft.message as msg
+from shyft.metadata import APP_NAME
+from shyft.view.overview import Overview
 
-from pyft.serialize.parse import PARSERS
+from shyft.serialize.parse import PARSERS
 
 ### FOR TESTING ONLY
 
 from test.test_common import *
 
-from pyft.view.edit_config import ConfigForm
-from pyft.view.view_activity import ActivityView
+from shyft.view.edit_config import ConfigForm
+from shyft.view.view_activity import ActivityView
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
@@ -158,7 +154,7 @@ def config():
         overview.update_layout()
         # return redirect(url_for('save_config'))
         flash('Configuration saved.')
-    return render_template('config.html', form=form)
+    return render_template('config.html', form=form, app_name=APP_NAME)
 
 
 @server.route('/upload', methods=['GET', 'POST'])

@@ -1,6 +1,6 @@
 # Customising graphs
 
-The graphs displayed for activities and in the activity overview page can be customised through two files, `activity_graphs.json` and `overview_graphs.json`.  Eventually Pyft will allow users to customise graphs through the web interface, but for now, this file describes how to customise the JSON files.
+The graphs displayed for activities and in the activity overview page can be customised through two files, `activity_graphs.json` and `overview_graphs.json`.  Eventually Shyft will allow users to customise graphs through the web interface, but for now, this file describes how to customise the JSON files.
 
 ## Activity graphs
 

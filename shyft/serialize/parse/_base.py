@@ -7,19 +7,19 @@ import logging
 import numpy as np
 import pandas as pd
 
-from pyft.config import Config
-from pyft.helper_funcs import get_lap_distances, get_lap_durations, get_lap_means
-from pyft.geo_utils import haversine_distance
-from pyft.serialize._activity_types import PYFT_TYPES
+from shyft.config import Config
+from shyft.helper_funcs import get_lap_distances, get_lap_durations, get_lap_means
+from shyft.geo_utils import haversine_distance
+from shyft.serialize._activity_types import SHYFT_TYPES
 
 MILE = 1609.344  # metres in a mile
 
 
-class PyftParserException(Exception): pass
+class ShyftParserException(Exception): pass
 
 
 class BaseParser:
-    ACTIVITY_TYPES = PYFT_TYPES
+    ACTIVITY_TYPES = SHYFT_TYPES
 
     # The DataFrame that is passed to infer_points_data must contain all of these columns
     INITIAL_COL_NAMES_POINTS = (

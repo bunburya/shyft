@@ -3,15 +3,15 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
-from pyft.serialize import _activity_types
+from shyft.serialize import _activity_types
 
 if TYPE_CHECKING:
-    from pyft.activity import Activity
+    from shyft.activity import Activity
 
 import lxml.etree
 import pandas as pd
 
-from pyft.serialize._xml_namespaces import TCX_NAMESPACES, TCX_SCHEMALOCATION
+from shyft.serialize._xml_namespaces import TCX_NAMESPACES, TCX_SCHEMALOCATION
 
 
 def _tcx_elem(name: str, attrib: Optional[dict] = None, ns_name: Optional[str] = None) -> lxml.etree._Element:
@@ -134,7 +134,7 @@ def _create_lap_elem(lap: pd.Series, points: pd.DataFrame) -> lxml.etree._Elemen
         # If we do not have calorie data, we set this to 0, and leave a note indicating that the calorie information
         # was not present.
         calories_text = '0'
-        notes.append('pyft:no_calorie_data')
+        notes.append('shyft:no_calorie_data')
     else:
         calories_text = str(round(lap['calories']))
     calories_elem.text = calories_text
@@ -177,7 +177,7 @@ def _create_activity_elem(activity: Activity, split_col) -> lxml.etree._Element:
     # - Training
     # - Creator
     # - Extensions
-    sport = _activity_types.PYFT_TO_TCX.get(activity.metadata.activity_type, 'Other')
+    sport = _activity_types.SHYFT_TO_TCX.get(activity.metadata.activity_type, 'Other')
     activity_elem = _tcx_elem('Activity', attrib={'Sport': sport})
 
     id_elem = _tcx_elem('Id')

@@ -2,8 +2,8 @@ import os
 import unittest
 
 import lxml.etree
-from pyft.config import Config
-from pyft.serialize.parse import parser_factory, GPXParser, FITParser, TCXParser
+from shyft.config import Config
+from shyft.serialize.parse import parser_factory, GPXParser, FITParser, TCXParser
 from test.test_common import *
 
 RUN_DIR_BASE = 'serialize'
@@ -22,20 +22,20 @@ CONFIG_FIT = get_config(RUN_DIR_FIT)
 RUN_DIR_GARMINTCX = run_data_dir(RUN_DIR_BASE + '_GarminTCX', replace=True)  # For Garmin TCX-generated activities
 CONFIG_GARMINTCX = get_config(RUN_DIR_GARMINTCX)
 
-RUN_DIR_PYFTGPX = run_data_dir(RUN_DIR_BASE + '_PyftGPX', replace=True)  # For PyftGPX-generated activities
-CONFIG_PYFTGPX = get_config(RUN_DIR_PYFTGPX)
+RUN_DIR_SHYFTGPX = run_data_dir(RUN_DIR_BASE + '_ShyftGPX', replace=True)  # For Shyft-generated activities
+CONFIG_SHYFTGPX = get_config(RUN_DIR_SHYFTGPX)
 
-RUN_DIR_PYFTTCX = run_data_dir(RUN_DIR_BASE + '_PyftTCX', replace=True)  # For PyftTCX-generated activities
-CONFIG_PYFTTCX = get_config(RUN_DIR_PYFTTCX)
+RUN_DIR_SHYFTTCX = run_data_dir(RUN_DIR_BASE + '_ShyftTCX', replace=True)  # For Shyft-generated activities
+CONFIG_SHYFTTCX = get_config(RUN_DIR_SHYFTTCX)
 
 RUN_DIR_RKGPX = run_data_dir(RUN_DIR_BASE + '_RKGPX', replace=True)  # For Runkeeper-generated activities
 CONFIG_RKGPX = get_config(RUN_DIR_RKGPX)
 
-NEW_GPX_DIR = os.path.join(RUN_DIR_PYFTGPX, 'generated_gpx')
+NEW_GPX_DIR = os.path.join(RUN_DIR_SHYFTGPX, 'generated_gpx')
 if not os.path.exists(NEW_GPX_DIR):
     os.makedirs(NEW_GPX_DIR)
 
-NEW_TCX_DIR = os.path.join(RUN_DIR_PYFTTCX, 'generated_tcx')
+NEW_TCX_DIR = os.path.join(RUN_DIR_SHYFTTCX, 'generated_tcx')
 if not os.path.exists(NEW_TCX_DIR):
     os.makedirs(NEW_TCX_DIR)
 
@@ -87,7 +87,7 @@ class SerializeTestCase(BaseTestCase):
 
     def test_03_create_gpx(self):
         """Test that we can create GPX files and load those files again."""
-        manager_pyftgpx = self.get_manager(CONFIG_PYFTGPX)
+        manager_pyftgpx = self.get_manager(CONFIG_SHYFTGPX)
         validator = lxml.etree.XMLSchema(file=GPX_SCHEMA)
         for activity in self.manager_stravagpx:
             activity_id = activity.metadata.activity_id
@@ -103,7 +103,7 @@ class SerializeTestCase(BaseTestCase):
 
     def test_04_create_tcx(self):
         """Test that we can create TCX files and load those files again.."""
-        manager_pyfttcx = self.get_manager(CONFIG_PYFTTCX)
+        manager_pyfttcx = self.get_manager(CONFIG_SHYFTTCX)
         validator = lxml.etree.XMLSchema(file=TCX_SCHEMA)
         for activity in self.manager_garmintcx:
             activity_id = activity.metadata.activity_id

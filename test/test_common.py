@@ -15,12 +15,12 @@ import numpy as np
 import pandas as pd
 import gpxpy
 
-from pyft.config import Config
-from pyft.activity_manager import ActivityManager
+from shyft.config import Config
+from shyft.activity_manager import ActivityManager
 
-from pyft.activity import ActivityMetaData, Activity
-from pyft.df_utils.validate import DataFrameSchema
-from pyft.df_utils.schemas import points_schema, laps_splits_km_schema, laps_splits_mile_schema
+from shyft.activity import ActivityMetaData, Activity
+from shyft.df_utils.validate import DataFrameSchema
+from shyft.df_utils.schemas import points_schema, laps_splits_km_schema, laps_splits_mile_schema
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')

@@ -12,7 +12,7 @@ def _reverse_dict(in_dict: dict) -> dict:
     return out_dict
 
 
-PYFT_TYPES = {
+SHYFT_TYPES = {
     'run',
     'walk',
     'hike',
@@ -20,13 +20,13 @@ PYFT_TYPES = {
     'activity'
 }
 
-FIT_TO_PYFT = {
+FIT_TO_SHYFT = {
     'hiking': 'hike',
     'running': 'run',
     'walking': 'walk'
 }
 
-TCX_TO_PYFT = {
+TCX_TO_SHYFT = {
     'Running': 'run',
     'Biking': 'cycle',
     'Other': 'activity'
@@ -34,21 +34,21 @@ TCX_TO_PYFT = {
 
 # Unlike GPX, TCX only allows three different activity types, so we need to convert our own types back to these in order
 # to create a TCX file from an Activity.
-PYFT_TO_TCX = _reverse_dict(TCX_TO_PYFT)
-for t in PYFT_TYPES:
-    if t not in PYFT_TO_TCX:
-        PYFT_TO_TCX[t] = 'Other'
+SHYFT_TO_TCX = _reverse_dict(TCX_TO_SHYFT)
+for t in SHYFT_TYPES:
+    if t not in SHYFT_TO_TCX:
+        SHYFT_TO_TCX[t] = 'Other'
 
 # The GPX files created by Garmin seem to use the same naming scheme as the underlying FIT files.
-GARMIN_GPX_TO_PYFT = FIT_TO_PYFT.copy()
+GARMIN_GPX_TO_SHYFT = FIT_TO_SHYFT.copy()
 
-STRAVA_GPX_TO_PYFT = {
+STRAVA_GPX_TO_SHYFT = {
     '4': 'hike',
     '9': 'run',
     '10': 'walk',
 }
 
-RK_GPX_TO_PYFT = {
+RK_GPX_TO_SHYFT = {
     'Running': 'run',
     'Walking': 'walk',
     'Cycling': 'cycle'
