@@ -1,10 +1,10 @@
 import os
 
-from pyft.config import Config
-from pyft.serialize.parse._base import BaseParser
-from pyft.serialize.parse.fit import FITParser
-from pyft.serialize.parse.gpx import GPXParser
-from pyft.serialize.parse.tcx import TCXParser
+from shyft.config import Config
+from shyft.serialize.parse._base import BaseParser
+from shyft.serialize.parse.fit import FITParser
+from shyft.serialize.parse.gpx import GPXParser
+from shyft.serialize.parse.tcx import TCXParser
 
 PARSERS = {
     '.fit': FITParser,

@@ -4,10 +4,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input, State
-from pyft.config import Config
-from pyft.activity_manager import ActivityManager
-from pyft.message import MessageBus
-from pyft.view.dash_utils import OverviewComponentFactory
+from shyft.config import Config
+from shyft.activity_manager import ActivityManager
+from shyft.message import MessageBus
+from shyft.view.dash_utils import OverviewComponentFactory
 
 
 class Overview:

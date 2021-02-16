@@ -9,18 +9,18 @@ import pandas as pd
 import lxml.etree
 import gpxpy
 from gpxpy import gpx
-from pyft.serialize._xml_namespaces import GPX_NAMESPACES
-from pyft.serialize.parse._base import PyftParserException, BaseParser
-from pyft.serialize._activity_types import GARMIN_GPX_TO_PYFT, STRAVA_GPX_TO_PYFT, RK_GPX_TO_PYFT
+from shyft.serialize._xml_namespaces import GPX_NAMESPACES
+from shyft.serialize.parse._base import ShyftParserException, BaseParser
+from shyft.serialize._activity_types import GARMIN_GPX_TO_SHYFT, STRAVA_GPX_TO_SHYFT, RK_GPX_TO_SHYFT
 
 
-class GPXParserError(PyftParserException): pass
+class GPXParserError(ShyftParserException): pass
 
 class GPXParser(BaseParser):
 
-    STRAVA_TYPES = STRAVA_GPX_TO_PYFT
-    GARMIN_TYPES = GARMIN_GPX_TO_PYFT
-    RK_TYPES = RK_GPX_TO_PYFT
+    STRAVA_TYPES = STRAVA_GPX_TO_SHYFT
+    GARMIN_TYPES = GARMIN_GPX_TO_SHYFT
+    RK_TYPES = RK_GPX_TO_SHYFT
 
     # Namespaces for extensions
     # (Even though these relate to Garmin we do not put them in the GarminMixin class because they are also

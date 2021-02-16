@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 
-from pyft.message import MessageBus, Message, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+from shyft.message import MessageBus, Message, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
 
 
 class MessagingTestCase(unittest.TestCase):

@@ -6,7 +6,7 @@ from typing import Any, Iterable, Dict, Optional, Sequence, List
 import warnings
 warnings.simplefilter('ignore', UserWarning)
 
-import pyft.config
+import shyft.config
 import sqlite3 as sql
 import numpy as np
 import pandas as pd
@@ -168,7 +168,7 @@ class DatabaseManager:
         VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
-    def __init__(self, config: pyft.config.Config):
+    def __init__(self, config: shyft.config.Config):
         self.lock = threading.Lock()
         self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES, check_same_thread=False)
         #self.connection.set_trace_callback(print)

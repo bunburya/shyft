@@ -4,8 +4,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
+from shyft.metadata import APP_NAME, VERSION
+
 if TYPE_CHECKING:
-    from pyft.activity import Activity
+    from shyft.activity import Activity
 
 import pandas as pd
 import lxml.etree
@@ -14,7 +16,7 @@ from gpxpy import gpx
 
 
 # For now, we use Garmin's TrackPointExtension rather than rolling our own.
-from pyft.serialize._xml_namespaces import GPX_NAMESPACES as NAMESPACES
+from shyft.serialize._xml_namespaces import GPX_NAMESPACES as NAMESPACES
 TPE_URL = NAMESPACES['garmin_tpe']
 
 
@@ -53,7 +55,7 @@ def _add_point_to_seg(point_data: pd.Series, seg: gpx.GPXTrackSegment):
 def activity_to_gpx(activity: Activity) -> gpx.GPX:
     points = activity.points
     g = gpx.GPX()
-    g.creator = 'Pyft'
+    g.creator = f'{APP_NAME} {VERSION}'
     g.name = activity.metadata.name
     g.description = activity.metadata.description
     g.time = activity.metadata.date_time

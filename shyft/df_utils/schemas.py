@@ -1,5 +1,5 @@
 from dataclasses import replace
-from pyft.df_utils.validate import DataFrameSchema, Column, ColumnList
+from shyft.df_utils.validate import DataFrameSchema, Column, ColumnList
 
 points_schema = DataFrameSchema(
     columns=ColumnList([

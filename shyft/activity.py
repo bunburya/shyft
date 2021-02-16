@@ -7,12 +7,12 @@ from typing import Optional
 import pandas as pd
 import numpy as np
 
-from pyft.config import Config
-from pyft.geo_utils import intersect_points
-from pyft.helper_funcs import MILE_KM, kmph_to_mph, speed_to_pace
-from pyft.serialize.create import activity_to_gpx_file
-from pyft.serialize.create.tcx import activity_to_tcx_file
-from pyft.serialize.parse import parser_factory
+from shyft.config import Config
+from shyft.geo_utils import intersect_points
+from shyft.helper_funcs import MILE_KM, kmph_to_mph, speed_to_pace
+from shyft.serialize.create.gpx import activity_to_gpx_file
+from shyft.serialize.create.tcx import activity_to_tcx_file
+from shyft.serialize.parse import parser_factory
 
 MILE = 1609.344
 pd.options.plotting.backend = "plotly"

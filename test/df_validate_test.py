@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from pyft.df_utils.validate import DataFrameSchema, Column
+from shyft.df_utils.validate import DataFrameSchema, Column
 
 # Make test schemas
 from test.test_common import BaseDataFrameValidateTestCase

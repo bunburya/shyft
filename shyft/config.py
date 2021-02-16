@@ -59,7 +59,7 @@ class Config:
             self.user_name = parser['general']['user_name']
 
         if not parser['general']['data_dir']:
-            self.data_dir = appdirs.user_data_dir(appname='pyft')
+            self.data_dir = appdirs.user_data_dir(appname='shyft')
         else:
             self.data_dir = parser['general']['data_dir']
 
@@ -121,7 +121,7 @@ class Config:
         self.gpx_file_dir = os.path.join(new, 'gpx_files')
         self.tcx_file_dir = os.path.join(new, 'tcx_files')
         self.source_file_dir = os.path.join(new, 'source_files')
-        self.db_file = os.path.join(new, 'pyft.db')
+        self.db_file = os.path.join(new, 'shyft.db')
 
     @property
     def week_start(self) -> str:

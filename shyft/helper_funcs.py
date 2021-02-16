@@ -5,7 +5,6 @@ from datetime import timedelta
 from typing import Optional, Union, List
 
 import pandas as pd
-from pyft.geo_utils import haversine_distance
 
 MILE = 1609.344  # metres in a mile
 MILE_KM = MILE / 1000  # km in a mile

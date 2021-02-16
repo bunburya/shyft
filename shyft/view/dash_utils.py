@@ -13,10 +13,10 @@ import dash_table as dt
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from pyft.config import Config
-from pyft.activity_manager import ActivityManager
-from pyft.activity import ActivityMetaData, Activity
-import pyft.message as msg
+from shyft.config import Config
+from shyft.activity_manager import ActivityManager
+from shyft.activity import ActivityMetaData, Activity
+import shyft.message as msg
 
 class BaseDashComponentFactory:
     """A base for classes that generate Dash various components

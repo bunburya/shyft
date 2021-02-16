@@ -1,8 +1,5 @@
 import shutil
 
-from pyft.activity_manager import ActivityManager
-from pyft.config import Config
-from test import test_common
 from test.test_common import *
 
 """Set up a basic test environment, so that running `python -i test_env.py`

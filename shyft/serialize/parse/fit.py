@@ -5,16 +5,16 @@ from typing import Dict, Union, Optional
 
 import fitdecode
 import pandas as pd
-from pyft.serialize.parse._base import BaseActivityParser, PyftParserException
-from pyft.serialize._activity_types import GARMIN_GPX_TO_PYFT
+from shyft.serialize.parse._base import BaseActivityParser, ShyftParserException
+from shyft.serialize._activity_types import GARMIN_GPX_TO_SHYFT
 
 
-class TCXParserError(PyftParserException): pass
+class TCXParserError(ShyftParserException): pass
 
 
 class FITParser(BaseActivityParser):
 
-    GARMIN_TYPES = GARMIN_GPX_TO_PYFT
+    GARMIN_TYPES = GARMIN_GPX_TO_SHYFT
 
     MANDATORY_POINT_FIELDS = (
         'position_lat',
