@@ -8,7 +8,7 @@ to, for example, a service provider's servers going down, or a service provider 
 a paid model. Some optional features may rely on (free) third party services - for example, the map display currently
 relies on [OpenStreetMap](https://www.openstreetmap.org).
 
-Shyft is written in Python and uses [Plotly / Dash](https://plotly.com/dash/) to display activity data. A full list of
+Shyft is written in Python and uses [Plotly/Dash](https://plotly.com/dash/) to display activity data. A full list of
 the dependencies is available in the Pipfile.
 
 Shyft is an early work in progress.

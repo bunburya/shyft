@@ -34,7 +34,6 @@ class ActivityMetaData:
 
     config: Config
     activity_id: int
-    date_time: datetime
     activity_type: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
@@ -45,6 +44,7 @@ class ActivityMetaData:
 
     # The following will be auto-generated when the associated Activity is instantiated, if not explicitly provided
     # (because they rely on points data)
+    date_time: Optional[datetime] = None
     distance_2d_km: float = None
     center: np.ndarray = None
     points_std: np.ndarray = None
@@ -158,6 +158,8 @@ class Activity:
                 kwargs['duration'] = self.points.iloc[-1]['time'] - kwargs['date_time']
             if (kwargs.get('thumbnail_file') is None) and config.thumbnail_dir:
                 kwargs['thumbnail_file'] = self.write_thumbnail(activity_id=kwargs['activity_id'])
+            if kwargs.get('date_time') is None:
+                kwargs['date_time'] = points.iloc[0]['time'].to_pydatetime()
 
             self.metadata = ActivityMetaData(config, **kwargs)
 

@@ -9,7 +9,7 @@ import pandas as pd
 
 from shyft.serialize._xml_namespaces import TCX_NAMESPACES
 from shyft.serialize.parse._base import ShyftParserException, BaseActivityParser
-from shyft.serialize._activity_types import STRAVA_GPX_TO_SHYFT, GARMIN_GPX_TO_SHYFT
+from shyft.serialize._activity_types import TCX_TO_SHYFT
 
 
 class FITParserError(ShyftParserException): pass
@@ -17,8 +17,7 @@ class FITParserError(ShyftParserException): pass
 
 class TCXParser(BaseActivityParser):
 
-    STRAVA_TYPES = STRAVA_GPX_TO_SHYFT
-    GARMIN_TYPES = GARMIN_GPX_TO_SHYFT
+    ACTIVITY_TYPES = TCX_TO_SHYFT
 
     NAMESPACES = TCX_NAMESPACES
 

@@ -11,13 +11,14 @@ def _reverse_dict(in_dict: dict) -> dict:
         out_dict[in_dict[k]] = k
     return out_dict
 
+DEFAULT_TYPE = 'activity'
 
 SHYFT_TYPES = {
     'run',
     'walk',
     'hike',
     'cycle',
-    'activity'
+    DEFAULT_TYPE
 }
 
 FIT_TO_SHYFT = {
@@ -29,7 +30,7 @@ FIT_TO_SHYFT = {
 TCX_TO_SHYFT = {
     'Running': 'run',
     'Biking': 'cycle',
-    'Other': 'activity'
+    'Other': DEFAULT_TYPE
 }
 
 # Unlike GPX, TCX only allows three different activity types, so we need to convert our own types back to these in order
