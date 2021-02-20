@@ -110,7 +110,7 @@ class TCXParser(BaseActivityParser):
         self._metadata['distance_2d_km'] = self._laps_df['distance'].sum() / 1000
         self._metadata['duration'] = self._laps_df['duration'].sum()
         # TCX only supports three activity types: "Running", "Biking" or "Other".
-        self._metadata['activity_type'] = self.GARMIN_TYPES.get(self._activity_elem.attrib.get('Sport', '').lower())
+        self._metadata['activity_type'] = self.ACTIVITY_TYPES.get(self._activity_elem.attrib.get('Sport', '').lower())
 
     @property
     def metadata(self) -> dict:

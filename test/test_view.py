@@ -1,15 +1,16 @@
 import logging
-from typing import Callable
+from typing import Callable, Any, Dict
 
 from flask import Flask, url_for, render_template, redirect, send_file, flash, request, g
 import dash_bootstrap_components as dbc
 import shyft.message as msg
-from shyft.metadata import APP_NAME
+from shyft.metadata import APP_NAME, VERSION, URL
 from shyft.view.overview import Overview
 
 from shyft.serialize.parse import PARSERS
 
 ### FOR TESTING ONLY
+from shyft.view.upload import UploadForm
 
 from test.test_common import *
 
@@ -45,7 +46,8 @@ if not os.path.exists(TMP_UPLOAD_FOLDER):
 
 SUPPORTED_EXTENSIONS = PARSERS
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.BOOTSTRAP]
+stylesheets_nondash = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+stylesheets_dash = stylesheets_nondash + [dbc.themes.BOOTSTRAP]
 
 server = Flask(__name__, template_folder='templates')
 server.secret_key = 'TEST_KEY'
@@ -54,9 +56,9 @@ context = {}
 
 msg_bus = msg.MessageBus()
 
-overview = Overview(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets)
+overview = Overview(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash)
 
-activity_view = ActivityView(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=external_stylesheets,
+activity_view = ActivityView(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash,
                              routes_pathname_prefix='/activity/')
 
 
@@ -114,6 +116,32 @@ def serve_file(id: str, fpath_getter: Callable[[ActivityMetaData], str], not_fou
         abort(404, not_found_msg.format(id=id))
 
 
+def get_title(page_name: str) -> str:
+    """Return the title to be displayed for a page."""
+    return f'{page_name} - {APP_NAME}'
+
+
+def get_footer_rendering_data() -> Dict[str, Any]:
+    return {
+        'app_name': APP_NAME,
+        'app_version': VERSION,
+        'app_url': URL
+    }
+
+
+def get_flask_rendering_data(page_name: str) -> Dict[str, Any]:
+    """Returns a dict containing the data we need to provide as
+    arguments to the jinja render function (ignoring any
+    page-specific data).
+    """
+    return {
+        'title': get_title(page_name),
+        'stylesheets': stylesheets_nondash,
+        'messages': msg_bus.get_messages(),
+        **get_footer_rendering_data()
+    }
+
+
 @server.route('/thumbnails/<id>.png')
 def get_thumbnail(id: str):
     # TODO:  Probably better if we just statically serve the thumbnails.
@@ -153,39 +181,40 @@ def config():
         CONFIG.load(TEST_CONFIG_FILE)
         overview.update_layout()
         # return redirect(url_for('save_config'))
-        flash('Configuration saved.')
-    return render_template('config.html', form=form, app_name=APP_NAME)
+        msg_bus.add_message('Configuration saved.')
+    return render_template('config.html.jinja', form=form, **get_flask_rendering_data('Configure'))
 
 
 @server.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and is_allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            fpath = os.path.join(TMP_UPLOAD_FOLDER, filename)
-            file.save(fpath)
-            id = am.add_activity_from_file(fpath)
-            overview.update_layout()
-            return redirect(f'/activity/{id}')
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+    # if request.method == 'POST':  # POST means something is being uploaded (ie, user has clicked Upload)
+    #     # check if the post request has the file part
+    #     if 'file' not in request.files:
+    #         flash('No file part')
+    #         return redirect(request.url)
+    #     file = request.files['file']
+    #     # if user does not select file, browser also submits an empty part without filename
+    #     if file.filename == '':
+    #         flash('No selected file')
+    #         return redirect(request.url)
+    #     if file and is_allowed_file(file.filename):
+    #         filename = secure_filename(file.filename)
+    #         fpath = os.path.join(TMP_UPLOAD_FOLDER, filename)
+    #         file.save(fpath)
+    #         id = am.add_activity_from_file(fpath)
+    #         overview.update_layout()
+    #         return redirect(f'/activity/{id}')
+
+    form = UploadForm()
+    if form.validate_on_submit():
+        f = form.upload_file.data
+        filename = secure_filename(f.filename)
+        fpath = os.path.join(TMP_UPLOAD_FOLDER, filename)
+        f.save(fpath)
+        id = am.add_activity_from_file(fpath)
+        overview.update_layout()
+        return redirect(f'/activity/{id}')
+    return render_template('upload.html.jinja', form=form, **get_flask_rendering_data('Upload'))
 
 
 @server.route('/delete/<id>')

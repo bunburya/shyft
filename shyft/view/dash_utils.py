@@ -115,6 +115,12 @@ class BaseDashComponentFactory:
         """
         return f'/gpx_files/{metadata.activity_id}'
 
+    def tcx_file_link(self, metadata: ActivityMetaData) -> str:
+        """Returns a (relative) link to the TCX file associated with the
+        given activity.
+        """
+        return f'/tcx_files/{metadata.activity_id}'
+
     def source_file_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to the source file associated with
          the given activity (ie, the original data file from which the
@@ -179,6 +185,8 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 **Average pace:**\t{mean_pace}
 
                 [Export to GPX]({self.gpx_file_link(metadata)})
+                
+                [Export to TCX]({self.tcx_file_link(metadata)})
 
                 [Download source file]({self.source_file_link(metadata)})
 
@@ -294,15 +302,23 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
 
     def matched_activities(self, activity: Activity) -> dbc.Row:
         """Return a table listing the given activity's matched activities."""
-        return dbc.Row([
-                dbc.Col([
-                    self.activities_table(
-                        self.activity_manager.get_activity_matches(activity.metadata,
-                                                                   number=self.config.matched_activities_count),
-                        id='test'
-                    )
+        matched = self.activity_manager.get_activity_matches(activity.metadata,
+                                                             number=self.config.matched_activities_count)
+        print(matched)
+        if matched:
+            return dbc.Row([
+                    dbc.Col([
+                        self.activities_table(
+                            self.activity_manager.get_activity_matches(activity.metadata,
+                                                                       number=self.config.matched_activities_count),
+                            id='test'
+                        )
+                    ])
                 ])
-            ])
+        else:
+            return dcc.Markdown('No other activities match this route.')
+
+
 
 
 class OverviewComponentFactory(BaseDashComponentFactory):

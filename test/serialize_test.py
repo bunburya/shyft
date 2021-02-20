@@ -3,7 +3,8 @@ import unittest
 
 import lxml.etree
 from shyft.config import Config
-from shyft.serialize.parse import parser_factory, GPXParser, FITParser, TCXParser
+from shyft.serialize.parse import parser_factory, FITParser, TCXParser
+from shyft.serialize.parse.gpx import BaseGPXParser
 from test.test_common import *
 
 RUN_DIR_BASE = 'serialize'
@@ -68,7 +69,7 @@ class SerializeTestCase(BaseTestCase):
         """
         for gpx_file in TEST_GPX_FILES_2:
             parser = parser_factory(gpx_file, CONFIG_STRAVAGPX)
-            self.assertIsInstance(parser, GPXParser)
+            self.assertIsInstance(parser, BaseGPXParser)
         for fit_file in TEST_FIT_FILES:
             parser = parser_factory(os.path.join(TEST_FIT_FILES_DIR, fit_file), CONFIG_FIT)
             self.assertIsInstance(parser, FITParser)

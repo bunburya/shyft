@@ -3,6 +3,7 @@
 General:
 
 - Custom type definitions
+- Logging
 
 Serialisation:
 

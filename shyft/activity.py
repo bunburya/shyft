@@ -154,12 +154,13 @@ class Activity:
                 kwargs['center'] = self.points[['latitude', 'longitude', 'elevation']].mean().to_numpy()
             if kwargs.get('points_std') is None:
                 kwargs['points_std'] = self.points[['latitude', 'longitude', 'elevation']].std().to_numpy()
+            if kwargs.get('date_time') is None:
+                kwargs['date_time'] = points.iloc[0]['time'].to_pydatetime()
             if kwargs.get('duration') is None:
                 kwargs['duration'] = self.points.iloc[-1]['time'] - kwargs['date_time']
             if (kwargs.get('thumbnail_file') is None) and config.thumbnail_dir:
                 kwargs['thumbnail_file'] = self.write_thumbnail(activity_id=kwargs['activity_id'])
-            if kwargs.get('date_time') is None:
-                kwargs['date_time'] = points.iloc[0]['time'].to_pydatetime()
+
 
             self.metadata = ActivityMetaData(config, **kwargs)
 

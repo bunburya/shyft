@@ -105,14 +105,7 @@ class ActivityView:
             html.H2('Analysis'),
             *self.dc_factory.custom_graphs(activity),
             html.H2('Recent matched activities'),
-            dbc.Row([
-                dbc.Col([
-                    self.dc_factory.activities_table(
-                        self.activity_manager.get_activity_matches(activity.metadata, number=5),
-                        id='test'
-                    )
-                ])
-            ])
+            self.dc_factory.matched_activities(activity)
         ]
 
     def layout(self, activity: Optional[Activity] = None, empty: bool = True) -> html.Div:

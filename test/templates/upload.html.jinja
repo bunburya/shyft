@@ -1,0 +1,15 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+<div class="formwrapper">
+  <h1 class="title">Upload activity</h1>
+  <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+      {{ form.csrf_token }}
+      <h2 class="heading">Select file</h2>
+      Here you can select a file to upload. The file must be a GPX, TCX or FIT file, and the file name must end in
+      ".gpx", ".tcx" or ".fit", respectively.
+      <div class="form-field">{{ form.upload_file.label }} {{ form.upload_file }}</div>
+      {{ form.submit }}
+  </form>
+</div>
+{% endblock %}
