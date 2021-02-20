@@ -1,5 +1,7 @@
 from typing import List, Optional
 from urllib.parse import urlsplit
+import logging
+
 
 import plotly.graph_objects as go
 import dash
@@ -7,11 +9,14 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input, State
+
 from shyft.config import Config
 from shyft.activity_manager import ActivityManager
 from shyft.activity import Activity
 from shyft.message import MessageBus
 from shyft.view.dash_utils import ActivityViewComponentFactory
+
+logger = logging.getLogger(__name__)
 
 
 class ActivityView:
@@ -34,8 +39,8 @@ class ActivityView:
             [State('map', 'figure'), State('activity_id', 'data')]
         )
         def update_map(selected_rows: List[int], figure: go.Figure, activity_id: int):
-            # print(selected_rows)
-            # print(f'update_map called with selected rows {selected_rows}')
+            """Update the map of the run."""
+            logger.info('Updating map.')
             activity = self.activity_manager.get_activity_by_id(activity_id)
             new_map = self.dc_factory.map_figure(activity.points, figure=figure,
                                                  highlight_col=self.config.distance_unit,
@@ -48,10 +53,11 @@ class ActivityView:
             [Input('activity_id', 'data')]
         )
         def display_page(activity_id: Optional[int]):
+            """Update the page to display a different activity."""
+            logger.info(f'Displaying view for activity with ID {activity_id}.')
             if activity_id is None:
                 activity = None
             else:
-                # print(f'activity_id: {activity_id} (type {type(activity_id)}')
                 activity = self.activity_manager.get_activity_by_id(activity_id)
             return self.page_content(activity)
 
@@ -60,7 +66,6 @@ class ActivityView:
             [Input('url', 'pathname')]
         )
         def update_activity(pathname: str):
-            # print(f'display_page called with {pathname}')
             try:
                 activity_id = int(urlsplit(pathname)[2].split('/')[-1])
             except (TypeError, ValueError):
@@ -69,7 +74,6 @@ class ActivityView:
             return activity_id
 
     def page_content(self, activity: Optional[Activity] = None) -> list:
-
         if activity is None:
             return [dcc.Markdown('No activity specified, or no such activity exists.')]
 

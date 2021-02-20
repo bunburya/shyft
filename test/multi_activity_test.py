@@ -1,6 +1,11 @@
+import logging
 from datetime import datetime, timedelta
 
+from shyft.logger import get_logger
 from test.test_common import *
+
+logger = get_logger(file_level=logging.DEBUG, console_level=logging.WARN,
+                    log_file=os.path.join(TEST_LOGS_DIR, 'multi_activity.log'))
 
 
 class ActivityManagerTestCase(BaseTestCase):

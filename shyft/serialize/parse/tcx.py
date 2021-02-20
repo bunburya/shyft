@@ -8,16 +8,16 @@ import dateutil.parser as dp
 import pandas as pd
 
 from shyft.serialize._xml_namespaces import TCX_NAMESPACES
-from shyft.serialize.parse._base import ShyftParserException, BaseActivityParser
+from shyft.serialize.parse._base import ShyftParserError, BaseActivityParser
 from shyft.serialize._activity_types import TCX_TO_SHYFT
 
 
-class FITParserError(ShyftParserException): pass
+class TCXParserError(ShyftParserError): pass
 
 
 class TCXParser(BaseActivityParser):
-
     ACTIVITY_TYPES = TCX_TO_SHYFT
+    EXCEPTION = TCXParserError
 
     NAMESPACES = TCX_NAMESPACES
 

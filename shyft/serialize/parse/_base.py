@@ -2,7 +2,6 @@
 
 from datetime import datetime, timedelta
 from typing import Optional, Union, List, Dict
-import logging
 
 import numpy as np
 import pandas as pd
@@ -10,16 +9,22 @@ import pandas as pd
 from shyft.config import Config
 from shyft.helper_funcs import get_lap_distances, get_lap_durations, get_lap_means
 from shyft.geo_utils import haversine_distance
+from shyft.logger import get_logger
 from shyft.serialize._activity_types import SHYFT_TYPES
 
 MILE = 1609.344  # metres in a mile
 
+# Create a common logger for all parsers.
+logger = get_logger('parse')
 
-class ShyftParserException(Exception): pass
+
+class ShyftParserError(Exception): pass
 
 
 class BaseParser:
     ACTIVITY_TYPES = SHYFT_TYPES
+
+    EXCEPTION = ShyftParserError
 
     # The DataFrame that is passed to infer_points_data must contain all of these columns
     INITIAL_COL_NAMES_POINTS = (
@@ -46,7 +51,6 @@ class BaseParser:
     )
 
     def __init__(self, fpath: str, config: Config):
-        logging.debug(f'Parsing {fpath} using {type(self).__name__}.')
         self._metadata: Dict[str, Union[str, datetime, timedelta, Optional[str]]] = {
             'name': None,
             'description': None,
@@ -75,9 +79,6 @@ class BaseParser:
         df['km'] = (df['cumul_distance_2d'] // 1000).astype(int)
         df['mile'] = (df['cumul_distance_2d'] // MILE).astype(int)
         df['run_time'] = df['time'] - df.iloc[0]['time']
-        logging.debug(f'Average step length (distance): {df["step_length_2d"].mean()}')
-        # step_time = df['time'] - df['time'].shift()
-        # logging.info(f'Average step length (time): {step_time.mean()}s')
 
         # Calculate speed / pace.
         # If we have speed from the device, calculate the other metrics from that.
@@ -209,8 +210,5 @@ class BaseActivityParser(BaseParser):
                             to_add[k] = point_data[k]
                     all_points_data.append(to_add)
                 self._backfill = []
-            # if isinstance(self, TCXParser):
-            #    print(f'adding {point_data["elevation"]}')
             all_points_data.append(point_data)
-            # if isinstance(self, TCXParser):
-            #    raise ValueError
+

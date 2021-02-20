@@ -3,9 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, AbstractSet, Callable
-import logging
 
-from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, Logger
 
 @dataclass(frozen=True)
 class Message:
@@ -26,7 +25,7 @@ class MessageBus:
         self._messages = []
 
     def add_message(self, text: str, severity: int = INFO, views: Optional[AbstractSet[str]] = None,
-                    timestamp: Optional[datetime] = None, log: bool = False) -> Message:
+                    timestamp: Optional[datetime] = None, logger: Optional[Logger] = None) -> Message:
         if timestamp is None:
             timestamp = datetime.utcnow()
         msg = Message(
@@ -36,8 +35,8 @@ class MessageBus:
             timestamp=timestamp
         )
         self._messages.append(msg)
-        if log:
-            logging.log(severity, text)
+        if logger is not None:
+            logger.log(severity, text)
         return msg
 
     def _get_predicate(self,

@@ -122,6 +122,7 @@ class Config:
         self.tcx_file_dir = os.path.join(new, 'tcx_files')
         self.source_file_dir = os.path.join(new, 'source_files')
         self.db_file = os.path.join(new, 'shyft.db')
+        self.log_file = os.path.join(new, 'shyft.log')
 
     @property
     def week_start(self) -> str:

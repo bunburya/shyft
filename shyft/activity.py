@@ -10,17 +10,18 @@ import numpy as np
 from shyft.config import Config
 from shyft.geo_utils import intersect_points
 from shyft.helper_funcs import MILE_KM, kmph_to_mph, speed_to_pace
+from shyft.logger import get_logger
 from shyft.serialize.create.gpx import activity_to_gpx_file
 from shyft.serialize.create.tcx import activity_to_tcx_file
 from shyft.serialize.parse import parser_factory
 
 MILE = 1609.344
 pd.options.plotting.backend = "plotly"
-
+logger = get_logger(__name__)
 
 @dataclass
 class ActivityMetaData:
-    """A dataclass representing a brief summary of an _activity_elem."""
+    """A dataclass representing a brief summary of an activity."""
 
     # NOTE:  ActivityMetaData can be created in one of two situations:
     #   1.  when an Activity is created from a GPX file (points-related data will be calculated from the
@@ -304,8 +305,13 @@ class Activity:
     @staticmethod
     def from_file(fpath: str, config: Config, activity_id: int, activity_name: str = None,
                   activity_description: str = None, activity_type: str = None) -> 'Activity':
+        logger.info(f'Generating activity from file: "{fpath}".')
         fname, ext = os.path.splitext(fpath)
-        parser = parser_factory(fpath, config)
+        try:
+            parser = parser_factory(fpath, config)
+        except Exception as e:
+            logger.error('Error getting parser.', exc_info=e)
+            raise e
 
         metadata = parser.metadata
         if activity_type is not None:
@@ -315,15 +321,20 @@ class Activity:
         if activity_description is not None:
             metadata['description'] = activity_description
 
-        activity = Activity(
-            config,
-            parser.points,
-            parser.laps,
-            activity_id=activity_id,
-            **metadata
-        )
+        try:
+            activity = Activity(
+                config,
+                parser.points,
+                parser.laps,
+                activity_id=activity_id,
+                **metadata
+            )
+        except Exception as e:
+            logger.error('Error creating activity.', exc_info=e)
+            raise e
         source_file = os.path.join(config.source_file_dir, f'{activity.metadata.file_name}{ext}')
         if not os.path.exists(source_file):
+            logger.info(f'Copying source file to "{source_file}".')
             shutil.copyfile(fpath, source_file)
         activity.metadata.source_file = source_file
         return activity

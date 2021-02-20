@@ -1,14 +1,17 @@
-import dash
+import logging
 
+import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+
 from dash.dependencies import Output, Input, State
 from shyft.config import Config
 from shyft.activity_manager import ActivityManager
 from shyft.message import MessageBus
 from shyft.view.dash_utils import OverviewComponentFactory
 
+logger = logging.getLogger(__name__)
 
 class Overview:
 
@@ -23,6 +26,7 @@ class Overview:
     def layout(self) -> html.Div:
         """Generate a layout based on the current configuration and activities."""
 
+        logger.info('Loading overview layout.')
         return html.Div(
             id='overview_layout', children=[
                 *self.dc_factory.display_all_messages(),

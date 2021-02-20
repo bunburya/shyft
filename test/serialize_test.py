@@ -1,13 +1,18 @@
+import logging
 import os
 import unittest
 
 import lxml.etree
 from shyft.config import Config
+from shyft.logger import get_logger
 from shyft.serialize.parse import parser_factory, FITParser, TCXParser
 from shyft.serialize.parse.gpx import BaseGPXParser
 from test.test_common import *
 
 RUN_DIR_BASE = 'serialize'
+
+logger = get_logger(file_level=logging.DEBUG, console_level=logging.WARN,
+                    log_file=os.path.join(TEST_LOGS_DIR, 'serialize.log'))
 
 # Generate run data directories and config files, etc, for different ActivityManagers
 # - one ActivityManager loads Activities from the Strava GPX files,

@@ -4,10 +4,12 @@ from typing import Callable, Any, Dict
 from flask import Flask, url_for, render_template, redirect, send_file, flash, request, g
 import dash_bootstrap_components as dbc
 import shyft.message as msg
+from shyft.logger import get_logger
 from shyft.metadata import APP_NAME, VERSION, URL
 from shyft.view.overview import Overview
 
 from shyft.serialize.parse import PARSERS
+
 
 ### FOR TESTING ONLY
 from shyft.view.upload import UploadForm
@@ -38,6 +40,7 @@ for fpath in TEST_GPX_FILES:
 logging.getLogger().setLevel(logging.INFO)
 
 ### /TESTING
+logger = get_logger(file_level=logging.DEBUG, console_level=logging.WARNING, config=CONFIG)
 
 DATA_DIR = CONFIG.data_dir
 TMP_UPLOAD_FOLDER = os.path.join(DATA_DIR, 'tmp_uploads')
@@ -144,7 +147,6 @@ def get_flask_rendering_data(page_name: str) -> Dict[str, Any]:
 
 @server.route('/thumbnails/<id>.png')
 def get_thumbnail(id: str):
-    # TODO:  Probably better if we just statically serve the thumbnails.
     try:
         activity_id = id_str_to_int(id)
     except ValueError:
@@ -175,6 +177,7 @@ def config():
     raw_config = CONFIG.raw()
     form = ConfigForm(obj=raw_config)
     if form.validate_on_submit():
+        logging.info('Saving configuration data.')
         form.populate_obj(raw_config)
         raw_config.to_file(TEST_CONFIG_FILE)
         # Have to load again to get the interpolation working right
@@ -182,38 +185,28 @@ def config():
         overview.update_layout()
         # return redirect(url_for('save_config'))
         msg_bus.add_message('Configuration saved.')
+    logging.info('Displaying configuration page.')
     return render_template('config.html.jinja', form=form, **get_flask_rendering_data('Configure'))
 
 
 @server.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    # if request.method == 'POST':  # POST means something is being uploaded (ie, user has clicked Upload)
-    #     # check if the post request has the file part
-    #     if 'file' not in request.files:
-    #         flash('No file part')
-    #         return redirect(request.url)
-    #     file = request.files['file']
-    #     # if user does not select file, browser also submits an empty part without filename
-    #     if file.filename == '':
-    #         flash('No selected file')
-    #         return redirect(request.url)
-    #     if file and is_allowed_file(file.filename):
-    #         filename = secure_filename(file.filename)
-    #         fpath = os.path.join(TMP_UPLOAD_FOLDER, filename)
-    #         file.save(fpath)
-    #         id = am.add_activity_from_file(fpath)
-    #         overview.update_layout()
-    #         return redirect(f'/activity/{id}')
-
     form = UploadForm()
     if form.validate_on_submit():
         f = form.upload_file.data
         filename = secure_filename(f.filename)
+        logger.info(f'Received file "{filename}"; attempting to add activity.')
         fpath = os.path.join(TMP_UPLOAD_FOLDER, filename)
         f.save(fpath)
-        id = am.add_activity_from_file(fpath)
-        overview.update_layout()
-        return redirect(f'/activity/{id}')
+        try:
+            id = am.add_activity_from_file(fpath)
+            overview.update_layout()
+            logger.info(f'Added new activity with ID {id}.')
+            return redirect(f'/activity/{id}')
+        except Exception as e:
+            logger.error(f'Could not add new activity.')
+            msg_bus.add_message('Could not upload new activity. Check logs for details.')
+    logger.info('Displaying file upload page.')
     return render_template('upload.html.jinja', form=form, **get_flask_rendering_data('Upload'))
 
 

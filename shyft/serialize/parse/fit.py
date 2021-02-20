@@ -1,20 +1,21 @@
 """Parser for FIT files."""
 
 from datetime import datetime, timedelta
-from typing import Dict, Union, Optional
+from typing import Optional
 
 import fitdecode
 import pandas as pd
-from shyft.serialize.parse._base import BaseActivityParser, ShyftParserException
-from shyft.serialize._activity_types import GARMIN_GPX_TO_SHYFT
+from shyft.serialize.parse._base import BaseActivityParser, ShyftParserError
+from shyft.serialize._activity_types import FIT_TO_SHYFT
 
 
-class TCXParserError(ShyftParserException): pass
+class FITParserError(ShyftParserError): pass
 
 
 class FITParser(BaseActivityParser):
 
-    GARMIN_TYPES = GARMIN_GPX_TO_SHYFT
+    ACTIVITY_TYPES = FIT_TO_SHYFT
+    EXCEPTION = FITParserError
 
     MANDATORY_POINT_FIELDS = (
         'position_lat',
@@ -114,7 +115,7 @@ class FITParser(BaseActivityParser):
         information about an activity.
         """
         self._metadata['date_time'] = frame.get_value('start_time')
-        self._metadata['activity_type'] = self.GARMIN_TYPES.get(frame.get_value('sport'))
+        self._metadata['activity_type'] = self.ACTIVITY_TYPES.get(frame.get_value('sport'))
         if frame.has_field('total_elapsed_time'):
             self._metadata['duration'] = timedelta(seconds=frame.get_value('total_elapsed_time'))
         if frame.has_field('total_distance'):

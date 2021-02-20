@@ -1,7 +1,7 @@
 import re
 import threading
 from datetime import timezone, timedelta, datetime
-from typing import Any, Iterable, Dict, Optional, Sequence, List
+from typing import Any, Dict, Optional, Sequence, List
 
 import warnings
 warnings.simplefilter('ignore', UserWarning)
@@ -201,7 +201,7 @@ class DatabaseManager:
         if commit:
             self.commit()
 
-    def save_activity_data(self, metadata: 'ActivityMetaData', commit: bool = True) -> int:
+    def save_metadata(self, metadata: 'ActivityMetaData', commit: bool = True) -> int:
         self.cursor.execute(self.SAVE_ACTIVITY_DATA, (
             metadata.activity_id,
             metadata.activity_type,
@@ -256,7 +256,7 @@ class DatabaseManager:
         if commit:
             self.commit()
 
-    def load_activity_data(self, activity_id: int) -> Dict[str, Any]:
+    def load_metadata(self, activity_id: int) -> Dict[str, Any]:
         """Load metadata for the activity represented by activity_id and
         return it as a dict.  Raises a ValueError if activity_id is not
         valid.

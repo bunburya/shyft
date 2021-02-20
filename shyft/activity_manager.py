@@ -8,7 +8,9 @@ from shyft.config import Config
 from shyft.database import DatabaseManager, str_to_timedelta
 from shyft.geo_utils import norm_dtw, norm_length_diff, norm_center_diff
 from shyft.activity import Activity, ActivityMetaData
+from shyft.logger import get_logger
 
+logger = get_logger(__name__)
 
 class ActivityManager:
 
@@ -27,9 +29,12 @@ class ActivityManager:
         return self.dbm.get_all_prototypes()
 
     def get_activity_by_id(self, activity_id: int, cache: bool = True) -> Optional[Activity]:
+        logger.info(f'Getting activity with ID {activity_id} .')
         if activity_id in self._cache:
+            logger.debug(f'Fetching activity from cache.')
             return self._cache[activity_id]
         else:
+            logger.debug(f'Activity not in cache; loading from database.')
             points = self.dbm.load_points(activity_id)
             laps = self.dbm.load_laps(activity_id)
             try:
@@ -37,12 +42,13 @@ class ActivityManager:
                     self.config,
                     points,
                     laps,
-                    **self.dbm.load_activity_data(activity_id)
+                    **self.dbm.load_metadata(activity_id)
                 )
                 if cache:
                     self._cache[activity_id] = activity
                 return activity
             except ValueError:
+                logger.warning(f'No activity with ID {activity_id} found in database.')
                 return None
 
     def get_metadata_by_id(self, activity_id: int) -> Optional[ActivityMetaData]:
@@ -50,7 +56,7 @@ class ActivityManager:
             return self._cache[activity_id].metadata
         else:
             try:
-                return ActivityMetaData(self.config, **self.dbm.load_activity_data(activity_id))
+                return ActivityMetaData(self.config, **self.dbm.load_metadata(activity_id))
             except ValueError:
                 return None
 
@@ -66,7 +72,6 @@ class ActivityManager:
         if activity.metadata.prototype_id is None:
             activity.metadata.prototype_id = self.find_route_match(activity)
         self.save_activity_to_db(activity)
-        #self.activities.append(_activity_elem)
         _id = activity.metadata.activity_id
         if cache:
             self._cache[_id] = activity
@@ -135,13 +140,13 @@ class ActivityManager:
         return df
 
     def save_activity_to_db(self, activity: Activity):
-        self.dbm.save_activity_data(activity.metadata)
+        self.dbm.save_metadata(activity.metadata)
         self.dbm.save_dataframe('points', activity.points, activity.metadata.activity_id)
         if activity.laps is not None:
             self.dbm.save_dataframe('laps', activity.laps, activity.metadata.activity_id, index_label='lap_no')
 
     def get_activity_matches(self, metadata: ActivityMetaData,
-                             number: Optional[int] = None) -> Iterable[ActivityMetaData]:
+                             number: Optional[int] = None) -> List[ActivityMetaData]:
         results = list(filter(
             lambda a: a.activity_id != metadata.activity_id,
             self.search_activity_data(prototype=metadata.prototype_id)
@@ -176,7 +181,7 @@ class ActivityManager:
             if metadata.activity_id in self._cache:
                 self._cache.pop(metadata.activity_id)
             metadata.prototype_id = new_id
-            self.dbm.save_activity_data(metadata, commit=False)
+            self.dbm.save_metadata(metadata, commit=False)
         self.dbm.change_prototype(old_id, new_id, commit=False)
         self.dbm.commit()
 

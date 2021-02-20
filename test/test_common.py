@@ -31,6 +31,10 @@ TEST_RUN_DATA_DIR_BASE = os.path.join(TEST_DATA_DIR, 'run')
 TEST_ACTIVITY_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_activity_graphs.json')
 TEST_OVERVIEW_GRAPHS_FILE = os.path.join(TEST_DATA_DIR, 'test_overview_graphs.json')
 
+TEST_LOGS_DIR = os.path.join(TEST_RUN_DATA_DIR_BASE, '__logs__')
+if not os.path.exists(TEST_LOGS_DIR):
+    os.makedirs(TEST_LOGS_DIR)
+
 # Test GPX files.
 # Neither 0 nor 1 should loose- or tight-match any other activity.
 # 2 and 3 should loose- and tight-match each other but not match any others.
@@ -99,6 +103,7 @@ def run_data_dir(name: str, replace: bool = False) -> str:
         shutil.rmtree(data_dir)
     os.makedirs(data_dir, exist_ok=True)
     return data_dir
+
 
 
 def config_file(run_dir: str) -> str:
