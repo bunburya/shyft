@@ -40,7 +40,7 @@ class BaseParser:
     )
 
     INITIAL_COL_NAMES_LAPS = (
-        'lap_no',
+        'lap',
         'start_time',
         'distance',
         'duration',

@@ -3,9 +3,7 @@ import logging
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_bootstrap_components as dbc
 
-from dash.dependencies import Output, Input, State
 from shyft.config import Config
 from shyft.activity_manager import ActivityManager
 from shyft.message import MessageBus
@@ -38,7 +36,8 @@ class Overview:
                 html.H2('Analysis'),
                 self.dc_factory.weekday_count(),
                 self.dc_factory.distance_pace(),
-                *self.dc_factory.custom_graphs()
+                *self.dc_factory.custom_graphs(),
+                self.dc_factory.footer()
             ]
         )
 

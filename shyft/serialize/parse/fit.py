@@ -100,7 +100,7 @@ class FITParser(BaseActivityParser):
         if mean_speed is not None:
             mean_speed *= 3.6
         self._laps_data.append({
-            'lap_no': self._get_lap_no(),
+            'lap': self._get_lap_no(),
             'start_time': frame.get_value('start_time'),
             'distance': frame.get_value('total_distance'),
             'duration': timedelta(seconds=frame.get_value('total_elapsed_time')),

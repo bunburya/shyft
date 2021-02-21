@@ -310,7 +310,7 @@ class Activity:
         try:
             parser = parser_factory(fpath, config)
         except Exception as e:
-            logger.error('Error getting parser.', exc_info=e)
+            logger.error('Could not load parser object.', exc_info=e)
             raise e
 
         metadata = parser.metadata

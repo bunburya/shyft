@@ -38,7 +38,7 @@ class TCXParser(BaseActivityParser):
         for lap in self._activity_elem.findall('Lap', self.NAMESPACES):
             lap_no = self._get_lap_no()
             lap_data = {
-                'lap_no': lap_no,
+                'lap': lap_no,
                 'start_time': dp.parse(lap.attrib['StartTime']).astimezone(timezone.utc)
             }
             # None of the below should actually be None as these are all require elements according to the TCX schema,
@@ -61,7 +61,7 @@ class TCXParser(BaseActivityParser):
         points_df = pd.DataFrame(points_data, columns=self.INITIAL_COL_NAMES_POINTS)
         self._points_df = self._handle_points_data(points_df)
         self._laps_df = self._infer_laps_data(
-            pd.DataFrame(laps_data, columns=self.INITIAL_COL_NAMES_LAPS).set_index('lap_no'),
+            pd.DataFrame(laps_data, columns=self.INITIAL_COL_NAMES_LAPS).set_index('lap'),
             self._points_df
         )
 

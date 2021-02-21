@@ -1,10 +1,10 @@
-"""A number of helper functions for generating dashboards.
+"""A number of helper functions and classes for generating dashboards.
 
 Most of these are implemented as factory methods which return Dash
 objects, which can be included in the layout of the Dash app.
 """
 import logging
-from typing import Optional, Iterable, List
+from typing import Optional, Iterable, List, Dict, Callable, Any, Tuple
 
 import pandas as pd
 import plotly.express as px
@@ -13,10 +13,13 @@ import dash_table as dt
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+
 from shyft.config import Config
 from shyft.activity_manager import ActivityManager
 from shyft.activity import ActivityMetaData, Activity
 import shyft.message as msg
+from shyft.view.flask_controller import get_footer_rendering_data
+
 
 class BaseDashComponentFactory:
     """A base for classes that generate Dash various components
@@ -150,7 +153,7 @@ class BaseDashComponentFactory:
 
     def display_message(self, message: msg.Message) -> dcc.Markdown:
         if message.severity >= msg.ERROR:
-            prefix='ERROR: '
+            prefix = 'ERROR: '
         elif message.severity <= msg.DEBUG:
             prefix = 'DEBUG: '
         else:
@@ -160,9 +163,68 @@ class BaseDashComponentFactory:
     def display_all_messages(self, severity: int = msg.INFO, view: Optional[str] = None) -> List[dcc.Markdown]:
         return [self.display_message(msg) for msg in self.msg_bus.get_messages(severity, view)]
 
+    def footer(self):
+        """Return a footer element to be displayed at the bottom of
+        the page.
+
+        Because Dash does not have a way to directly render raw HTML,
+        we can't just render the jinja template, but have to
+        reconstruct an equivalent footer using Dash's html components.
+        """
+        app_metadata = get_footer_rendering_data()
+        return html.Footer([
+            html.A(['Main page'], href='/'),
+            ' | ',
+            html.A(['{app_name} {app_version}'.format(**app_metadata)], href=app_metadata['app_url'])
+        ])
+
 
 class ActivityViewComponentFactory(BaseDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.split_types: Dict[int, str] = {}
+
+    def set_split_type(self, activity: Activity, split_type: Optional[str]):
+        self.split_types[activity.metadata.activity_id] = split_type
+
+    def get_split_type(self, activity: Activity, save: bool = False) -> Optional[str]:
+        """Return a string representing the type split to be displayed
+         to the user (one of "km", "mile", and "lap").`split_type`.
+
+        Initially consults self.split_types[activity_id]; if that is
+        None, then return "lap" if the Activity has lap data, otherwise
+        the distance unit specified in the config.
+
+        If `save` is true, save the calculated split type to
+        self.split_type[activity_id].
+        """
+        id = activity.metadata.activity_id
+        stored_type = self.split_types.get(id)
+        if stored_type is not None:
+            split_type = stored_type
+        elif activity.laps is not None:
+            split_type = 'lap'
+        else:
+            split_type = self.config.distance_unit
+
+        if save:
+            self.set_split_type(activity, split_type)
+
+        return split_type
+
+    def get_splits_df(self, activity: Activity, split_type: Optional[str] = None) -> pd.DataFrame:
+        if split_type is None:
+            split_type = self.get_split_type(activity)
+
+        if split_type == 'lap':
+            if activity.laps is not None:
+                return activity.laps
+            else:
+                raise ValueError('split_type is "lap" but Activity has no laps data.')
+        else:
+            return activity.get_split_summary(split_type)
 
     def activity_overview(self, metadata: ActivityMetaData) -> html.Div:
         """Return markdown containing a summary of some key metrics
@@ -192,32 +254,6 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
 
                 [Delete]({self.delete_link(metadata)})
             """)
-        )
-
-    def splits_table(self, id: str, splits_df: pd.DataFrame, **kwargs) -> dt.DataTable:
-        """Return a DataTable with information about an activity broken
-        down by split.
-        """
-        split_col = self.config.distance_unit
-        splits_df = splits_df['duration'].reset_index()
-        splits_df[split_col] += 1
-        # TODO:  Make this less awful
-        splits_df['duration'] = splits_df['duration'].astype(str).str.split(' ').str[-1].str.split('.').str[:-1]
-        cols = [{'name': i, 'id': i} for i in splits_df.columns]
-        data = splits_df.to_dict('records')
-        return dt.DataTable(
-            id=id,
-            columns=cols,
-            data=data,
-            cell_selectable=False,
-            row_selectable='multi',
-            selected_rows=[],
-            style_table={
-                'height': 450,
-                'overflowY': 'scroll'
-            },
-            **self.COMMON_DATATABLE_OPTIONS,
-            **kwargs
         )
 
     def activity_graph(self, activity: Activity, **kwargs) -> go.Figure:
@@ -260,9 +296,50 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 logging.warning(f'Could not create graph from file "{source}".', exc_info=True)
         return graphs
 
+    def splits_table_data(self, activity: Activity,
+                          split_type: Optional[str] = None) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        """Return a tuple containing the columns and data to be included
+        in the splits table. Used to create / update the splits table.
+        """
+        splits_df = self.get_splits_df(activity, split_type)
+        splits_df = splits_df['duration'].reset_index()
+        # TODO:  Make this less awful
+        splits_df['duration'] = splits_df['duration'].astype(str).str.split(' ').str[-1].str.split('.').str[:-1]
+        cols = [{'name': i, 'id': i} for i in splits_df.columns]
+        data = splits_df.to_dict('records')
+        return cols, data
+
+    def splits_table(self, id: str, activity: Activity, **kwargs) -> dt.DataTable:
+        """Return a DataTable with information about an activity broken
+        down by split.
+        """
+        cols, data = self.splits_table_data(activity)
+        return dt.DataTable(
+            id=id,
+            columns=cols,
+            data=data,
+            cell_selectable=False,
+            row_selectable='multi',
+            selected_rows=[],
+            style_table={
+                'height': 450,
+                'overflowY': 'scroll'
+            },
+            **self.COMMON_DATATABLE_OPTIONS,
+            **kwargs
+        )
+
     def map_figure(self, df: pd.DataFrame, highlight_col: Optional[str] = None,
                    highlight_vals: Optional[List[int]] = None, figure: Optional[go.Figure] = None,
                    **kwargs) -> go.Figure:
+        """Generate the map figure showing an activity's route, from
+        the DataFrame containing its points data.
+
+        `highlight_col` specifies what column in the DataFrame to refer
+        to when highlighting certain parts of the route, and
+        `highlight_vals` specifies what values of that column to
+        highlight.
+        """
         # TODO:  More helpful hover text
         if figure:
             fig = go.Figure(figure)
@@ -300,6 +377,55 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 ))
         return fig
 
+    def map_and_splits(self, activity: Activity) -> dbc.Row:
+        """Return a Row combining the map of the activity and the list
+        of splits/laps.
+
+        `splits` determines what we show in the splits table.
+        If `splits` is None and the Activity has laps associated with
+        it, show those laps.
+        If `splits` is None and there are no laps, show the splits
+        corresponding to the distance unit specified in the config.
+        If `splits` is not None, it should be one of `lap`, `km` or
+        `mile` and will display the corresponding splits.
+        """
+        return dbc.Row(
+            children=[
+                dbc.Col(children=[
+                    dbc.Row(dbc.Col(
+                        dcc.Dropdown(
+                            id='split_type_dropdown',
+                            options=[
+                                {'label': 'km splits', 'value': 'km'},
+                                {'label': 'mile splits', 'value': 'mile'},
+                                {'label': 'laps', 'value': 'lap', 'disabled': activity.laps is None}
+                            ],
+                            value=self.get_split_type(activity)
+                        )
+                    )),
+                    dbc.Row(dbc.Col(
+                        self.splits_table(
+                            id=f'split_summary_table',
+                            activity=activity,
+                        ),
+                        width=12
+                    )),
+                ], width=4),
+
+                dbc.Col(
+                    dcc.Graph(
+                        id='map',
+                        figure=self.map_figure(activity.points)
+                    ),
+                    width=8
+                )
+            ],
+            style={
+                'height': 450
+            },
+            no_gutters=True
+        )
+
     def matched_activities(self, activity: Activity) -> dbc.Row:
         """Return a table listing the given activity's matched activities."""
         matched = self.activity_manager.get_activity_matches(activity.metadata,
@@ -307,18 +433,16 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         print(matched)
         if matched:
             return dbc.Row([
-                    dbc.Col([
-                        self.activities_table(
-                            self.activity_manager.get_activity_matches(activity.metadata,
-                                                                       number=self.config.matched_activities_count),
-                            id='test'
-                        )
-                    ])
+                dbc.Col([
+                    self.activities_table(
+                        self.activity_manager.get_activity_matches(activity.metadata,
+                                                                   number=self.config.matched_activities_count),
+                        id='test'
+                    )
                 ])
+            ])
         else:
             return dcc.Markdown('No other activities match this route.')
-
-
 
 
 class OverviewComponentFactory(BaseDashComponentFactory):

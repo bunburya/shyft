@@ -6,10 +6,10 @@ import dash_bootstrap_components as dbc
 import shyft.message as msg
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME, VERSION, URL
+from shyft.view.flask_controller import FlaskController, id_str_to_int
 from shyft.view.overview import Overview
 
 from shyft.serialize.parse import PARSERS
-
 
 ### FOR TESTING ONLY
 from shyft.view.upload import UploadForm
@@ -40,14 +40,13 @@ for fpath in TEST_GPX_FILES:
 logging.getLogger().setLevel(logging.INFO)
 
 ### /TESTING
-logger = get_logger(file_level=logging.DEBUG, console_level=logging.WARNING, config=CONFIG)
+logger = get_logger(file_level=logging.DEBUG, console_level=logging.DEBUG, config=CONFIG)
 
 DATA_DIR = CONFIG.data_dir
 TMP_UPLOAD_FOLDER = os.path.join(DATA_DIR, 'tmp_uploads')
 if not os.path.exists(TMP_UPLOAD_FOLDER):
     os.makedirs(TMP_UPLOAD_FOLDER)
 
-SUPPORTED_EXTENSIONS = PARSERS
 
 stylesheets_nondash = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 stylesheets_dash = stylesheets_nondash + [dbc.themes.BOOTSTRAP]
@@ -64,86 +63,7 @@ overview = Overview(am, msg_bus, CONFIG, __name__, server=server, external_style
 activity_view = ActivityView(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash,
                              routes_pathname_prefix='/activity/')
 
-
-def id_str_to_int(id: str) -> int:
-    """Convert a string activity id to an integer, performing some
-    basic verification and raising a ValueError is the given id is
-    not valid.
-    """
-    try:
-        activity_id = int(id)
-    except (ValueError, TypeError):
-        activity_id = None
-    if activity_id is None:
-        raise ValueError(f'Bad activity id: "{id}".')
-    return activity_id
-
-
-def is_allowed_file(fname: str) -> bool:
-    return os.path.splitext(fname)[1].lower() in SUPPORTED_EXTENSIONS
-
-
-MIMETYPES = {
-    '.gpx': 'application/gpx+xml',
-    '.fit': 'application/vnd.ant.fit',
-    '.tcx': 'application/vnd.garmin.tcx+xml'
-}
-MIMETYPE_FALLBACK = 'application/octet-stream'
-
-
-def serve_file(id: str, fpath_getter: Callable[[ActivityMetaData], str], not_found_msg: str = 'File not found.'):
-    """A generic function to serve a file.
-
-    `fpath_getter` should be a function that takes an ActivityMetaData
-    instance and returns the path to the file to be served.
-
-    `not_found_msg` is the message that will be displayed to the user
-    if the relevant file is not found. It can reference the provided
-    ID using Python's string formatting (ie, '{id}').
-    """
-    try:
-        activity_id = id_str_to_int(id)
-    except ValueError:
-        return abort(404, f'Invalid activity ID specified: "{id}".')
-    metadata = am.get_metadata_by_id(activity_id)
-    if metadata is not None:
-        fpath = fpath_getter(metadata)
-    else:
-        fpath = None
-    if fpath:
-        _, ext = os.path.splitext(fpath)
-        mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
-        return send_file(fpath, mimetype=mimetype, as_attachment=True,
-                         attachment_filename=os.path.basename(fpath))
-    else:
-        abort(404, not_found_msg.format(id=id))
-
-
-def get_title(page_name: str) -> str:
-    """Return the title to be displayed for a page."""
-    return f'{page_name} - {APP_NAME}'
-
-
-def get_footer_rendering_data() -> Dict[str, Any]:
-    return {
-        'app_name': APP_NAME,
-        'app_version': VERSION,
-        'app_url': URL
-    }
-
-
-def get_flask_rendering_data(page_name: str) -> Dict[str, Any]:
-    """Returns a dict containing the data we need to provide as
-    arguments to the jinja render function (ignoring any
-    page-specific data).
-    """
-    return {
-        'title': get_title(page_name),
-        'stylesheets': stylesheets_nondash,
-        'messages': msg_bus.get_messages(),
-        **get_footer_rendering_data()
-    }
-
+flask_controller = FlaskController(am, msg_bus, stylesheets_nondash)
 
 @server.route('/thumbnails/<id>.png')
 def get_thumbnail(id: str):
@@ -158,17 +78,17 @@ def get_thumbnail(id: str):
 
 @server.route('/gpx_files/<id>')
 def get_gpx_file(id: str):
-    return serve_file(id, lambda md: md.gpx_file, 'No GPX file found for activity ID {id}.')
+    return flask_controller.serve_file(id, lambda md: md.gpx_file, 'No GPX file found for activity ID {id}.')
 
 
 @server.route('/tcx_files/<id>')
 def get_tcx_file(id: str):
-    return serve_file(id, lambda md: md.tcx_file, 'No TCX file found for activity ID {id}.')
+    return flask_controller.serve_file(id, lambda md: md.tcx_file, 'No TCX file found for activity ID {id}.')
 
 
 @server.route('/source_files/<id>')
 def get_source_file(id: str):
-    return serve_file(id, lambda md: md.source_file, 'No source file found for activity ID {id}.')
+    return flask_controller.serve_file(id, lambda md: md.source_file, 'No source file found for activity ID {id}.')
 
 
 @server.route('/config', methods=['GET', 'POST'])
@@ -186,7 +106,7 @@ def config():
         # return redirect(url_for('save_config'))
         msg_bus.add_message('Configuration saved.')
     logging.info('Displaying configuration page.')
-    return render_template('config.html.jinja', form=form, **get_flask_rendering_data('Configure'))
+    return render_template('config.html.jinja', form=form, **flask_controller.get_flask_rendering_data('Configure'))
 
 
 @server.route('/upload', methods=['GET', 'POST'])
@@ -207,7 +127,7 @@ def upload_file():
             logger.error(f'Could not add new activity.')
             msg_bus.add_message('Could not upload new activity. Check logs for details.')
     logger.info('Displaying file upload page.')
-    return render_template('upload.html.jinja', form=form, **get_flask_rendering_data('Upload'))
+    return render_template('upload.html.jinja', form=form, **flask_controller.get_flask_rendering_data('Upload'))
 
 
 @server.route('/delete/<id>')
