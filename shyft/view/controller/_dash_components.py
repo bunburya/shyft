@@ -92,7 +92,6 @@ class _BaseDashComponentFactory:
                 {'id': 'options', 'name': 'Options', 'presentation': 'markdown'}
             )
             for md, row in zip(metadata_list, data):
-                # TODO: Make this open in same tab (not sure if possible)
                 row['options'] = f'[Delete]({self.delete_link(md)})'
         return dt.DataTable(
             columns=cols,

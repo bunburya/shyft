@@ -34,8 +34,6 @@ def id_str_to_int(id: str) -> int:
         raise ValueError(f'Bad activity id: "{id}".')
     return activity_id
 
-
-
 class DashController:
     """A main controller class for use with our Dash app. This will
     hold instances of the other, page-specific controller classes.
@@ -44,8 +42,7 @@ class DashController:
     def __init__(self, dash_app: dash.Dash, activity_manager: ActivityManager, config: Config, msg_bus: MessageBus):
         logger.debug('Initialising DashController.')
         self.dash_app = dash_app
-        # Stop Dash complaining if not all components are present when callbacks are registered (they won't be, for
-        # example, when we register the callbacks in ActivityController).
+        # Stop Dash complaining if not all components are present when callbacks are registered
         # https://dash.plotly.com/callback-gotchas
         dash_app.config.suppress_callback_exceptions = True
         self.activity_manager = activity_manager
@@ -54,7 +51,7 @@ class DashController:
         self.overview_controller = OverviewController(activity_manager, msg_bus, config)
         self.activity_controller = ActivityController(activity_manager, msg_bus, config, dash_app)
         self._register_callbacks()
-
+        # Initialise with empty layout; content will be added by callbacks.
         self.dash_app.layout = self.layout()
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:
