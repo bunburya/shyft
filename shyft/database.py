@@ -271,6 +271,7 @@ class DatabaseManager:
                              from_date: Optional[datetime] = None,
                              to_date: Optional[datetime] = None,
                              prototype: Optional[int] = None,
+                             activity_type: Optional[str] = None,
                              number: Optional[int] = None) -> Sequence[Dict[str, Any]]:
         where = []
         params = []
@@ -286,6 +287,9 @@ class DatabaseManager:
         if prototype is not None:
             where.append('prototype_id = ?')
             params.append(prototype)
+        if activity_type is not None:
+            where.append('activity_type = ?')
+            params.append(activity_type)
         query = 'SELECT * FROM "activities"'
         if where:
             query += ' WHERE ' + ' AND '.join(where)

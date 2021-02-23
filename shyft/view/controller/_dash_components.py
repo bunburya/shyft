@@ -21,7 +21,7 @@ import shyft.message as msg
 from shyft.view.flask_controller import get_footer_rendering_data
 
 
-class BaseDashComponentFactory:
+class _BaseDashComponentFactory:
     """A base for classes that generate Dash various components
     depending on the configuration and the given activity data.
 
@@ -97,9 +97,39 @@ class BaseDashComponentFactory:
         return dt.DataTable(
             columns=cols,
             data=data,
+            markdown_options={'link_target': '_self'},
             **self.COMMON_DATATABLE_OPTIONS,
             **kwargs
         )
+
+    def activities_table_html(self, metadata_list: List[ActivityMetaData], options_col: bool = False) -> html.Table:
+        """An experimental alternative to activities_table, which
+        returns a HTML table rather than a Dash DataTable. This means
+        we can use dcc.Link for links, which would allow us to use
+        Dash's faster in-app loading, rather than conventional links
+        which reload the page (https://dash-docs.herokuapp.com/urls).
+
+        Not sure there is actually much of a speed gain, so for the
+        moment we're using activities_table to take advantage of the
+        extra features offered by the DataTable.
+        """
+        header_row = [
+            html.Th('', scope='col'),  # thumbnails
+            html.Th('Activity', scope='col')  # activity name
+        ]
+        if options_col:
+            header_row.append(html.Th('Options', scope='col'))  # options column
+
+        table_rows = [html.Tr(header_row)]
+        for md in metadata_list:
+            data_cells = [
+                html.Th(html.Img(src=self.thumbnail_link(md))),
+                html.Th(dcc.Link(self.activity_name(md), href=self.activity_link(md)))
+            ]
+            if options_col:
+                data_cells.append(html.Th(dcc.Link('Delete', href=self.delete_link(md))))
+            table_rows.append(html.Tr(data_cells))
+        return html.Table(table_rows)
 
     def activity_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to the given activity."""
@@ -109,7 +139,6 @@ class BaseDashComponentFactory:
         """Returns a (relative) link to to the thumbnail image of the
         given activity.
         """
-        # NOTE:  Not currently used; we just pull metadata.thumbnail_file.
         return f'/thumbnails/{metadata.activity_id}.png'
 
     def gpx_file_link(self, metadata: ActivityMetaData) -> str:
@@ -179,7 +208,7 @@ class BaseDashComponentFactory:
         ])
 
 
-class ActivityViewComponentFactory(BaseDashComponentFactory):
+class ActivityViewComponentFactory(_BaseDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
 
     def __init__(self, *args, **kwargs):
@@ -267,7 +296,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         """Generate all graphs based on the contents of config.overview_graphs
         (which is in turn generated based on the contents of activity_graphs.json).
 
-        See docs/graphs.md for help on how activity_graphs.json is interpreted.
+        See user_docs/graphs.md for help on how activity_graphs.json is interpreted.
         """
         graphs = []
         for i, go_data in enumerate(self.config.activity_graphs):
@@ -445,7 +474,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
             return dcc.Markdown('No other activities match this route.')
 
 
-class OverviewComponentFactory(BaseDashComponentFactory):
+class OverviewComponentFactory(_BaseDashComponentFactory):
     """Methods to generate Dash components used to in an overview of all
     a user's activities.
     """
@@ -494,7 +523,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """Generate all graphs based on the contents of config.overview_graphs
         (which is in turn generated based on the contents of test_overview_graphs.json).
 
-        See docs/graphs.md for help on how test_overview_graphs.json is interpreted.
+        See user_docs/graphs.md for help on how test_overview_graphs.json is interpreted.
         """
         graphs = []
         # TODO: Figure this out

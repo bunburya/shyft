@@ -1,15 +1,13 @@
 import logging
-from typing import Callable, Any, Dict
 
-from flask import Flask, url_for, render_template, redirect, send_file, flash, request, g
+from dash import dash
+from flask import Flask, render_template, redirect, send_file
 import dash_bootstrap_components as dbc
 import shyft.message as msg
 from shyft.logger import get_logger
-from shyft.metadata import APP_NAME, VERSION, URL
+from shyft.view.controller.main import DashController
 from shyft.view.flask_controller import FlaskController, id_str_to_int
-from shyft.view.overview import Overview
-
-from shyft.serialize.parse import PARSERS
+from shyft.view.controller.overview import OverviewController
 
 ### FOR TESTING ONLY
 from shyft.view.upload import UploadForm
@@ -17,7 +15,7 @@ from shyft.view.upload import UploadForm
 from test.test_common import *
 
 from shyft.view.edit_config import ConfigForm
-from shyft.view.view_activity import ActivityView
+from shyft.view.controller.activity import ActivityController
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
@@ -37,7 +35,7 @@ am = ActivityManager(CONFIG)
 for fpath in TEST_GPX_FILES:
     am.add_activity_from_file(fpath)
 
-logging.getLogger().setLevel(logging.INFO)
+#logging.getLogger().setLevel(logging.INFO)
 
 ### /TESTING
 logger = get_logger(file_level=logging.DEBUG, console_level=logging.DEBUG, config=CONFIG)
@@ -58,12 +56,16 @@ context = {}
 
 msg_bus = msg.MessageBus()
 
-overview = Overview(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash)
+dash_app = dash.Dash(__name__, server=server, external_stylesheets=stylesheets_dash)
+logger.info('Initialised Dash app.')
 
-activity_view = ActivityView(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash,
-                             routes_pathname_prefix='/activity/')
+#overview = OverviewController(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash)
+
+#activity_view = ActivityController(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash,
+#                                   routes_pathname_prefix='/activity/')
 
 flask_controller = FlaskController(am, msg_bus, stylesheets_nondash)
+dash_controller = DashController(dash_app, am, CONFIG, msg_bus)
 
 @server.route('/thumbnails/<id>.png')
 def get_thumbnail(id: str):
@@ -90,7 +92,7 @@ def get_tcx_file(id: str):
 def get_source_file(id: str):
     return flask_controller.serve_file(id, lambda md: md.source_file, 'No source file found for activity ID {id}.')
 
-
+"""
 @server.route('/config', methods=['GET', 'POST'])
 def config():
     # https://hackersandslackers.com/flask-wtforms-forms/
@@ -128,7 +130,7 @@ def upload_file():
             msg_bus.add_message('Could not upload new activity. Check logs for details.')
     logger.info('Displaying file upload page.')
     return render_template('upload.html.jinja', form=form, **flask_controller.get_flask_rendering_data('Upload'))
-
+"""
 
 @server.route('/delete/<id>')
 def delete(id: str):
@@ -136,7 +138,6 @@ def delete(id: str):
         activity_id = id_str_to_int(id)
         am.delete_activity(activity_id)
         msg_bus.add_message(f'Deleted activity with ID {activity_id}.')
-        overview.update_layout()
         return redirect('/')
     except ValueError:
         # This should catch ValueErrors raise by either id_str_to_int or am.delete_activity
@@ -146,5 +147,4 @@ def delete(id: str):
 if __name__ == '__main__':
     from sys import argv
 
-    debug = '--debug' in argv
-    server.run(host='0.0.0.0', debug=debug, port=8080)
+    dash_app.run_server(debug=True, port=8080, use_reloader=False)

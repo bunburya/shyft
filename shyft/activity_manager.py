@@ -12,6 +12,7 @@ from shyft.logger import get_logger
 
 logger = get_logger(__name__)
 
+
 class ActivityManager:
 
     def __init__(self, config: Config):
@@ -89,7 +90,8 @@ class ActivityManager:
         return (
                 (norm_center_diff(a1.metadata.center, a2.metadata.center, a1.metadata.points_std,
                                   a2.metadata.points_std) < self.config.match_center_threshold)
-                and (norm_length_diff(a1.metadata.distance_2d_km, a2.metadata.distance_2d_km) < self.config.match_length_threshold)
+                and (norm_length_diff(a1.metadata.distance_2d_km,
+                                      a2.metadata.distance_2d_km) < self.config.match_length_threshold)
         )
 
     def tight_match_routes(self, a1: Activity, a2: Activity) -> Tuple[bool, float]:
@@ -118,25 +120,26 @@ class ActivityManager:
                              from_date: Optional[datetime] = None,
                              to_date: Optional[datetime] = None,
                              prototype: Optional[int] = None,
+                             activity_type: Optional[str] = None,
                              number: Optional[int] = None
                              ) -> Sequence[ActivityMetaData]:
-        results = self.dbm.search_activity_data(from_date, to_date, prototype, number)
+        results = self.dbm.search_activity_data(from_date, to_date, prototype, activity_type, number)
         return [ActivityMetaData(self.config, **kwargs) for kwargs in results]
 
     def summarize_activity_data(self,
-                             from_date: Optional[datetime] = None,
-                             to_date: Optional[datetime] = None,
-                             prototype: Optional[int] = None,
-                             number: Optional[int] = None
-                             ) -> pd.DataFrame:
-        metadata = self.search_activity_data(from_date, to_date, prototype, number)
+                                from_date: Optional[datetime] = None,
+                                to_date: Optional[datetime] = None,
+                                prototype: Optional[int] = None,
+                                activity_type: Optional[str] = None,
+                                number: Optional[int] = None
+                                ) -> pd.DataFrame:
+        metadata = self.search_activity_data(from_date, to_date, prototype, activity_type, number)
         df = pd.DataFrame(vars(md) for md in metadata)
-        #print(df.columns)
+        # print(df.columns)
         df['center_lat'] = df['center'].str[0]
         df['center_lon'] = df['center'].str[1]
         df['center_elev'] = df['center'].str[2]
-        #df['day'] = df['date_time'].dt.strftime('%A')
-        #df['hour'] = df['date_time'].dt.hour
+
         return df
 
     def save_activity_to_db(self, activity: Activity):
@@ -185,11 +188,10 @@ class ActivityManager:
         self.dbm.change_prototype(old_id, new_id, commit=False)
         self.dbm.commit()
 
-
     def __getitem__(self, key: int) -> Activity:
         activity = self.get_activity_by_id(key)
         if activity is None:
-            raise KeyError(f'No _activity_elem with ID {key}.')
+            raise KeyError(f'No activity with ID {key}.')
         else:
             return activity
 
