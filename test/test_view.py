@@ -10,7 +10,6 @@ from shyft.view.flask_controller import FlaskController, id_str_to_int
 from shyft.view.controller.overview import OverviewController
 
 ### FOR TESTING ONLY
-from shyft.view.upload import UploadForm
 
 from test.test_common import *
 
@@ -50,7 +49,11 @@ stylesheets_nondash = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 stylesheets_dash = stylesheets_nondash + [dbc.themes.BOOTSTRAP]
 
 server = Flask(__name__, template_folder='templates')
-server.secret_key = 'TEST_KEY'
+
+# Prevent caching of files (such as thumbnails)
+# NOTE: We may actually want to cache when not debugging, as there shouldn't be different activities loaded with the
+# same ID in normal usage.
+server.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 context = {}
 
@@ -110,26 +113,6 @@ def config():
     logging.info('Displaying configuration page.')
     return render_template('config.html.jinja', form=form, **flask_controller.get_flask_rendering_data('Configure'))
 
-
-@server.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    form = UploadForm()
-    if form.validate_on_submit():
-        f = form.upload_file.data
-        filename = secure_filename(f.filename)
-        logger.info(f'Received file "{filename}"; attempting to add activity.')
-        fpath = os.path.join(TMP_UPLOAD_FOLDER, filename)
-        f.save(fpath)
-        try:
-            id = am.add_activity_from_file(fpath)
-            overview.update_layout()
-            logger.info(f'Added new activity with ID {id}.')
-            return redirect(f'/activity/{id}')
-        except Exception as e:
-            logger.error(f'Could not add new activity.')
-            msg_bus.add_message('Could not upload new activity. Check logs for details.')
-    logger.info('Displaying file upload page.')
-    return render_template('upload.html.jinja', form=form, **flask_controller.get_flask_rendering_data('Upload'))
 """
 
 @server.route('/delete/<id>')

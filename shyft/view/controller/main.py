@@ -16,6 +16,7 @@ from shyft.message import MessageBus
 from shyft.metadata import APP_NAME, VERSION, URL
 from shyft.view.controller.activity import ActivityController
 from shyft.view.controller.overview import OverviewController
+from shyft.view.controller.upload import UploadController
 
 logger = get_logger(__name__)
 
@@ -48,9 +49,10 @@ class DashController:
         self.activity_manager = activity_manager
         self.config = config
         self.msg_bus = msg_bus
-        self.overview_controller = OverviewController(activity_manager, msg_bus, config)
-        self.activity_controller = ActivityController(activity_manager, msg_bus, config, dash_app)
-        self._register_callbacks()
+        self.overview_controller = OverviewController(activity_manager, config, msg_bus, dash_app)
+        self.activity_controller = ActivityController(activity_manager, config, msg_bus, dash_app)
+        self.upload_controller = UploadController(activity_manager, config, msg_bus, dash_app)
+        self.register_callbacks()
         # Initialise with empty layout; content will be added by callbacks.
         self.dash_app.layout = self.layout()
 
@@ -81,7 +83,6 @@ class DashController:
 
         if tokens[0] == 'activity':
             try:
-                self._register_func = self.activity_controller._register_callbacks
                 return self.activity_controller.page_content(self._id_str_to_activity(tokens[1]))
             except IndexError:
                 logger.error('Could not load activity view: No activity ID provided.')
@@ -91,11 +92,12 @@ class DashController:
                 logger.error(f'Could not load activity view: Bad activity ID "{tokens[1]}".')
                 self.msg_bus.add_message('Could not display activity. Check the logs for more details.',
                                          severity=ERROR)
+        elif tokens[0] == 'upload':
+            return self.upload_controller.page_content()
 
         return self.overview_controller.page_content()
 
-    def _register_callbacks(self):
-
+    def register_callbacks(self):
         logger.debug('Registering app-level callbacks.')
 
         @self.dash_app.callback(

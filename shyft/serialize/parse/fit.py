@@ -135,7 +135,7 @@ class FITParser(BaseActivityParser):
 
         self._points = self._handle_points_data(pd.DataFrame(self._points_data, columns=self.INITIAL_COL_NAMES_POINTS))
         self._laps = self._infer_laps_data(
-            pd.DataFrame(self._laps_data, columns=self.INITIAL_COL_NAMES_LAPS).set_index('lap_no'),
+            pd.DataFrame(self._laps_data, columns=self.INITIAL_COL_NAMES_LAPS).set_index('lap'),
             self._points
         )
 

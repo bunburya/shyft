@@ -18,10 +18,11 @@ from shyft.config import Config
 from shyft.activity_manager import ActivityManager
 from shyft.activity import ActivityMetaData, Activity
 import shyft.message as msg
+from shyft.metadata import APP_NAME
 from shyft.view.flask_controller import get_footer_rendering_data
 
 
-class _BaseDashComponentFactory:
+class BasicDashComponentFactory:
     """A base for classes that generate Dash various components
     depending on the configuration and the given activity data.
 
@@ -64,11 +65,14 @@ class _BaseDashComponentFactory:
         msg.NOTSET: '#808080'
     }
 
-    def __init__(self, config: Config, activity_manager: ActivityManager, msg_bus: msg.MessageBus):
+    def __init__(self, activity_manager: ActivityManager, config: Config, msg_bus: msg.MessageBus):
         self.config = config
         self.activity_manager = activity_manager
         self.msg_bus = msg_bus
-        self.summary = activity_manager.summarize_activity_data()
+
+    @property
+    def summary(self) -> pd.DataFrame:
+        return self.activity_manager.summarize_activity_data()
 
     def activity_name(self, metadata: ActivityMetaData) -> str:
         """Return an activity's name or, if the activity has no name,
@@ -191,6 +195,12 @@ class _BaseDashComponentFactory:
     def display_all_messages(self, severity: int = msg.INFO, view: Optional[str] = None) -> List[dcc.Markdown]:
         return [self.display_message(msg) for msg in self.msg_bus.get_messages(severity, view)]
 
+    def title(self, page_title: str) -> html.Title:
+        """Return a HTML title component which includes `page_title` and
+        includes additional text to be included in all page titles.
+        """
+        return html.Title(f'{page_title} - {APP_NAME}')
+
     def footer(self):
         """Return a footer element to be displayed at the bottom of
         the page.
@@ -207,7 +217,7 @@ class _BaseDashComponentFactory:
         ])
 
 
-class ActivityViewComponentFactory(_BaseDashComponentFactory):
+class ActivityViewComponentFactory(BasicDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
 
     def __init__(self, *args, **kwargs):
@@ -473,7 +483,7 @@ class ActivityViewComponentFactory(_BaseDashComponentFactory):
             return dcc.Markdown('No other activities match this route.')
 
 
-class OverviewComponentFactory(_BaseDashComponentFactory):
+class OverviewComponentFactory(BasicDashComponentFactory):
     """Methods to generate Dash components used to in an overview of all
     a user's activities.
     """

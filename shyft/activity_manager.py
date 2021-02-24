@@ -30,12 +30,12 @@ class ActivityManager:
         return self.dbm.get_all_prototypes()
 
     def get_activity_by_id(self, activity_id: int, cache: bool = True) -> Optional[Activity]:
-        logger.info(f'Getting activity with ID {activity_id} .')
+        #logger.info(f'Getting activity with ID {activity_id} .')
         if activity_id in self._cache:
-            logger.debug(f'Fetching activity from cache.')
+            #logger.debug(f'Fetching activity from cache.')
             return self._cache[activity_id]
         else:
-            logger.debug(f'Activity not in cache; loading from database.')
+            #logger.debug(f'Activity not in cache; loading from database.')
             points = self.dbm.load_points(activity_id)
             laps = self.dbm.load_laps(activity_id)
             try:

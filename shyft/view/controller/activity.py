@@ -13,20 +13,18 @@ from shyft.activity_manager import ActivityManager
 from shyft.activity import Activity
 from shyft.logger import get_logger
 from shyft.message import MessageBus
+from shyft.view.controller._base import _BaseController
 from shyft.view.controller._dash_components import ActivityViewComponentFactory
 
 logger = get_logger(__name__)
 
 
-class ActivityController:
+class ActivityController(_BaseController):
 
-    def __init__(self, activity_manager: ActivityManager, msg_bus: MessageBus, config: Config, dash_app: dash.Dash):
+    DC_FACTORY = ActivityViewComponentFactory
 
-        self.activity_manager = activity_manager
-        self.config = config
-        self.dc_factory = ActivityViewComponentFactory(config, activity_manager, msg_bus)
-        self.dash_app = dash_app
-        self._register_callbacks()
+    def __init__(self, activity_manager: ActivityManager, config: Config, msg_bus: MessageBus,  dash_app: dash.Dash):
+        super().__init__(activity_manager, config, msg_bus, dash_app)
 
     def page_content(self, activity: Optional[Activity] = None) -> List[Component]:
         if activity is None:
@@ -47,7 +45,7 @@ class ActivityController:
             self.dc_factory.footer()
         ]
 
-    def _register_callbacks(self):
+    def register_callbacks(self):
 
         @self.dash_app.callback(
             Output('map', 'figure'),
