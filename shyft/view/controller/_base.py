@@ -1,9 +1,11 @@
-from dash import dash
-from shyft.activity_manager import ActivityManager
-from shyft.config import Config
+from __future__ import annotations
+
 from shyft.logger import get_logger
-from shyft.message import MessageBus
 from shyft.view.controller._dash_components import BasicDashComponentFactory
+
+import typing
+if typing.TYPE_CHECKING:
+    from shyft.view.controller.main import DashController
 
 logger = get_logger(__name__)
 
@@ -14,14 +16,16 @@ class _BaseController:
     # likely to be common to multiple pages; subclasses can override if they need a more specific component factory.
     DC_FACTORY = BasicDashComponentFactory
 
-    def __init__(self, activity_manager: ActivityManager, config: Config, msg_bus: MessageBus, dash_app: dash.Dash):
+    def __init__(self, main_controller: DashController, register_callbacks: bool = True):
         logger.info(f'Initialising controller {self.__class__.__name__}.')
-        self.activity_manager = activity_manager
-        self.config = config
-        self.msg_bus = msg_bus
-        self.dash_app = dash_app
-        self.dc_factory = self.DC_FACTORY(activity_manager, config, msg_bus)
-        self.register_callbacks()
+        self.main_controller = main_controller
+        self.activity_manager = main_controller.activity_manager
+        self.config = main_controller.config
+        self.msg_bus = main_controller.msg_bus
+        self.dash_app = main_controller.dash_app
+        self.dc_factory = self.DC_FACTORY(self.activity_manager, self.config, self.msg_bus)
+        if register_callbacks:
+            self.register_callbacks()
 
     def register_callbacks(self):
         pass

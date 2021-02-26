@@ -4,7 +4,7 @@ Most of these are implemented as factory methods which return Dash
 objects, which can be included in the layout of the Dash app.
 """
 import logging
-from typing import Optional, Iterable, List, Dict, Callable, Any, Tuple
+from typing import Optional, Iterable, List, Dict, Any, Tuple, Union
 
 import pandas as pd
 import plotly.express as px
@@ -19,7 +19,7 @@ from shyft.activity_manager import ActivityManager
 from shyft.activity import ActivityMetaData, Activity
 import shyft.message as msg
 from shyft.metadata import APP_NAME
-from shyft.view.flask_controller import get_footer_rendering_data
+from shyft.view.controller.flask_controller import get_footer_rendering_data
 
 
 class BasicDashComponentFactory:
@@ -555,8 +555,11 @@ class OverviewComponentFactory(BasicDashComponentFactory):
             )
         return graphs
 
-    def recent_activities(self):
+    def recent_activities(self) -> Union[dt.DataTable, dcc.Markdown]:
         """Return a table of the most recent activities."""
         metadata = [a.metadata for a in self.activity_manager]
-        metadata.sort(key=lambda md: md.date_time, reverse=True)
-        return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True)
+        if metadata:
+            metadata.sort(key=lambda md: md.date_time, reverse=True)
+            return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True)
+        else:
+            return dcc.Markdown('No recent activities found. [Upload an activity](/upload)')

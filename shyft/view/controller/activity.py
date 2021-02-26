@@ -23,9 +23,6 @@ class ActivityController(_BaseController):
 
     DC_FACTORY = ActivityViewComponentFactory
 
-    def __init__(self, activity_manager: ActivityManager, config: Config, msg_bus: MessageBus,  dash_app: dash.Dash):
-        super().__init__(activity_manager, config, msg_bus, dash_app)
-
     def page_content(self, activity: Optional[Activity] = None) -> List[Component]:
         if activity is None:
             raise ValueError('No activity specified, or no such activity exists.')

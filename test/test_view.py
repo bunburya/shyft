@@ -1,22 +1,18 @@
 import logging
 
 from dash import dash
-from flask import Flask, render_template, redirect, send_file
+from flask import Flask, redirect, send_file
 import dash_bootstrap_components as dbc
 import shyft.message as msg
 from shyft.logger import get_logger
 from shyft.view.controller.main import DashController
-from shyft.view.flask_controller import FlaskController, id_str_to_int
-from shyft.view.controller.overview import OverviewController
+from shyft.view.controller.flask_controller import id_str_to_int, FlaskController
 
 ### FOR TESTING ONLY
 
 from test.test_common import *
 
-from shyft.view.edit_config import ConfigForm
-from shyft.view.controller.activity import ActivityController
 from werkzeug.exceptions import abort
-from werkzeug.utils import secure_filename
 
 TEST_DATA_DIR = 'test/test_data'
 
@@ -34,7 +30,7 @@ am = ActivityManager(CONFIG)
 for fpath in TEST_GPX_FILES:
     am.add_activity_from_file(fpath)
 
-#logging.getLogger().setLevel(logging.INFO)
+# logging.getLogger().setLevel(logging.INFO)
 
 ### /TESTING
 logger = get_logger(file_level=logging.DEBUG, console_level=logging.DEBUG, config=CONFIG)
@@ -43,7 +39,6 @@ DATA_DIR = CONFIG.data_dir
 TMP_UPLOAD_FOLDER = os.path.join(DATA_DIR, 'tmp_uploads')
 if not os.path.exists(TMP_UPLOAD_FOLDER):
     os.makedirs(TMP_UPLOAD_FOLDER)
-
 
 stylesheets_nondash = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 stylesheets_dash = stylesheets_nondash + [dbc.themes.BOOTSTRAP]
@@ -59,16 +54,12 @@ context = {}
 
 msg_bus = msg.MessageBus()
 
-dash_app = dash.Dash(__name__, server=server, external_stylesheets=stylesheets_dash)
+dash_app = dash.Dash(__name__, server=server, external_stylesheets=stylesheets_dash, title='Shyft')
 logger.info('Initialised Dash app.')
 
-#overview = OverviewController(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash)
-
-#activity_view = ActivityController(am, msg_bus, CONFIG, __name__, server=server, external_stylesheets=stylesheets_dash,
-#                                   routes_pathname_prefix='/activity/')
-
 flask_controller = FlaskController(am, msg_bus, stylesheets_nondash)
-dash_controller = DashController(dash_app, am, CONFIG, msg_bus)
+dash_controller = DashController(dash_app, CONFIG, am)
+
 
 @server.route('/thumbnails/<id>.png')
 def get_thumbnail(id: str):
@@ -95,25 +86,6 @@ def get_tcx_file(id: str):
 def get_source_file(id: str):
     return flask_controller.serve_file(id, lambda md: md.source_file, 'No source file found for activity ID {id}.')
 
-"""
-@server.route('/config', methods=['GET', 'POST'])
-def config():
-    # https://hackersandslackers.com/flask-wtforms-forms/
-    raw_config = CONFIG.raw()
-    form = ConfigForm(obj=raw_config)
-    if form.validate_on_submit():
-        logging.info('Saving configuration data.')
-        form.populate_obj(raw_config)
-        raw_config.to_file(TEST_CONFIG_FILE)
-        # Have to load again to get the interpolation working right
-        CONFIG.load(TEST_CONFIG_FILE)
-        overview.update_layout()
-        # return redirect(url_for('save_config'))
-        msg_bus.add_message('Configuration saved.')
-    logging.info('Displaying configuration page.')
-    return render_template('config.html.jinja', form=form, **flask_controller.get_flask_rendering_data('Configure'))
-
-"""
 
 @server.route('/delete/<id>')
 def delete(id: str):
@@ -128,6 +100,4 @@ def delete(id: str):
 
 
 if __name__ == '__main__':
-    from sys import argv
-
     dash_app.run_server(debug=True, port=8080, use_reloader=False)

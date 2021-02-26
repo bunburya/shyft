@@ -20,9 +20,6 @@ class OverviewController(_BaseController):
 
     DC_FACTORY = OverviewComponentFactory
 
-    def __init__(self, activity_manager: ActivityManager, config: Config, msg_bus: MessageBus, dash_app: dash.Dash):
-        super().__init__(activity_manager, config, msg_bus, dash_app)
-
     def page_content(self) -> List[Component]:
         """Generate page content based on the current configuration and
         activities.

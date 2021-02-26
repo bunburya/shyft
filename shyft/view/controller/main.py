@@ -13,12 +13,13 @@ from shyft.activity_manager import ActivityManager
 from shyft.config import Config
 from shyft.logger import get_logger
 from shyft.message import MessageBus
-from shyft.metadata import APP_NAME, VERSION, URL
 from shyft.view.controller.activity import ActivityController
+from shyft.view.controller.config import ConfigController
 from shyft.view.controller.overview import OverviewController
 from shyft.view.controller.upload import UploadController
 
 logger = get_logger(__name__)
+
 
 def id_str_to_int(id: str) -> int:
     """Convert a string activity id to an integer, performing some
@@ -40,18 +41,25 @@ class DashController:
     hold instances of the other, page-specific controller classes.
     """
 
-    def __init__(self, dash_app: dash.Dash, activity_manager: ActivityManager, config: Config, msg_bus: MessageBus):
+    def __init__(self, dash_app: dash.Dash, config: Config, activity_manager: Optional[ActivityManager] = None):
         logger.debug('Initialising DashController.')
         self.dash_app = dash_app
         # Stop Dash complaining if not all components are present when callbacks are registered
         # https://dash.plotly.com/callback-gotchas
         dash_app.config.suppress_callback_exceptions = True
-        self.activity_manager = activity_manager
+        if activity_manager is None:
+            self.activity_manager = ActivityManager(config)
+        else:
+            self.activity_manager = activity_manager
         self.config = config
-        self.msg_bus = msg_bus
-        self.overview_controller = OverviewController(activity_manager, config, msg_bus, dash_app)
-        self.activity_controller = ActivityController(activity_manager, config, msg_bus, dash_app)
-        self.upload_controller = UploadController(activity_manager, config, msg_bus, dash_app)
+        self.config_fpath = config.ini_fpath
+        self.msg_bus = MessageBus()
+
+        self.overview_controller = OverviewController(self)
+        self.activity_controller = ActivityController(self)
+        self.upload_controller = UploadController(self)
+        self.config_controller = ConfigController(self)
+
         self.register_callbacks()
         # Initialise with empty layout; content will be added by callbacks.
         self.dash_app.layout = self.layout()
@@ -62,6 +70,7 @@ class DashController:
             id='layout',
             children=[
                 dcc.Location(id='url', refresh=False),
+                html.Div('dummy', hidden=True),
                 html.Div(id='page_content', children=content or [])
             ]
         )
@@ -73,12 +82,10 @@ class DashController:
         return self.activity_manager.get_activity_by_id(id_str_to_int(id))
 
     def _resolve_pathname(self, path) -> List[Component]:
-        """Resolve the URL pathname and return a tuple containing the
-        appropriate page content and a function to register callbacks
-        (which should be called after setting the page layout to the
-        returned page content).
+        """Resolve the URL pathname and return the appropriate page
+        content.
         """
-        logger.info(f'Resolving pathname "{path}".')
+        logger.info(f'Resolving pathname "{path}" for page content.')
         tokens = path.split('/')[1:]
 
         if tokens[0] == 'activity':
@@ -94,6 +101,8 @@ class DashController:
                                          severity=ERROR)
         elif tokens[0] == 'upload':
             return self.upload_controller.page_content()
+        elif tokens[0] == 'config':
+            return self.config_controller.page_content()
 
         return self.overview_controller.page_content()
 
@@ -107,4 +116,26 @@ class DashController:
         def update_activity(pathname: str) -> List[Component]:
             """Display different page on url update."""
             return self._resolve_pathname(pathname)
+
+        # Unfortunately this seems to be the only way to dynamically set the title in Dash.
+        # FIXME: Doesn't work...
+        self.dash_app.clientside_callback(
+            """
+            function(pathname) {
+                console.log('Callback called with %s', pathname);
+                token = pathname.split('/')[1];
+                if (token === 'activity') {
+                    document.title = 'View activity - Shyft'
+                } else if (token === 'config') {
+                    document.title = 'Configure - Shyft'
+                } else if (token === 'upload') {
+                    document.title = 'Upload - Shyft'
+                } else {
+                    document.title == 'Overview - Shyft'
+                }
+            }
+            """,
+            Output('dummy', 'children'),
+            Input('url', 'pathname')
+        )
 

@@ -19,14 +19,11 @@ logger = get_logger(__name__)
 
 
 class UploadController(_BaseController):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """Controller for the file upload page."""
 
     def page_content(self):
         logger.info('Generating page content for upload.')
         return [
-            dcc.Store(id='upload_in_progress', data=False),
             self.dc_factory.title('Upload'),
             *self.dc_factory.display_all_messages(),
             html.H1('Upload an activity'),
@@ -36,11 +33,10 @@ class UploadController(_BaseController):
             dcc.Upload(
                 id='upload_data',
                 children=html.Div([
-                    'Drag and Drop or ',
-                    html.A('Select File')
+                    'Drag and Drop or Select File'
                 ]),
                 style={
-                    'width': '100%',
+                    'width': '90%',
                     'height': '60px',
                     'lineHeight': '60px',
                     'borderWidth': '1px',
@@ -56,7 +52,7 @@ class UploadController(_BaseController):
         ]
 
     def register_callbacks(self):
-        logger.info('Registering callbacks for upload page.')
+        logger.debug('Registering callbacks for upload page.')
 
         @self.dash_app.callback(
             Output('url', 'pathname'),
