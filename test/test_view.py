@@ -27,8 +27,8 @@ CONFIG = Config(
 )
 
 am = ActivityManager(CONFIG)
-for fpath in TEST_GPX_FILES:
-    am.add_activity_from_file(fpath)
+#for fpath in TEST_GPX_FILES:
+#    am.add_activity_from_file(fpath)
 
 # logging.getLogger().setLevel(logging.INFO)
 
@@ -41,7 +41,8 @@ if not os.path.exists(TMP_UPLOAD_FOLDER):
     os.makedirs(TMP_UPLOAD_FOLDER)
 
 stylesheets_nondash = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-stylesheets_dash = stylesheets_nondash + [dbc.themes.BOOTSTRAP]
+# stylesheets_dash = stylesheets_nondash + [dbc.themes.BOOTSTRAP]
+stylesheets_dash = stylesheets_nondash + [dbc.themes.SANDSTONE]
 
 server = Flask(__name__, template_folder='templates')
 

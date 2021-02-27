@@ -13,6 +13,7 @@ import dash_table as dt
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+from dash.development.base_component import Component
 
 from shyft.config import Config
 from shyft.activity_manager import ActivityManager
@@ -555,11 +556,21 @@ class OverviewComponentFactory(BasicDashComponentFactory):
             )
         return graphs
 
-    def recent_activities(self) -> Union[dt.DataTable, dcc.Markdown]:
+    def recent_activities(self) -> dt.DataTable:
         """Return a table of the most recent activities."""
         metadata = [a.metadata for a in self.activity_manager]
-        if metadata:
-            metadata.sort(key=lambda md: md.date_time, reverse=True)
-            return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True)
+        metadata.sort(key=lambda md: md.date_time, reverse=True)
+        return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True)
+
+    def graphs_or_no_activity_msg(self, markdown: str = 'No recent activities found. Upload some!') -> List[Component]:
+        if self.activity_manager.activity_ids:
+            return [
+                html.H2('Recent activities'),
+                self.recent_activities(),
+                html.H2('Analysis'),
+                self.weekday_count(),
+                self.distance_pace(),
+                *self.custom_graphs(),
+            ]
         else:
-            return dcc.Markdown('No recent activities found. [Upload an activity](/upload)')
+            return [dcc.Markdown(markdown)]

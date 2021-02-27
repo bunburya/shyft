@@ -31,12 +31,7 @@ class OverviewController(_BaseController):
             html.H1(f'Activity overview for {self.config.user_name}'),
             dcc.Markdown('[Configure](/config)'),
             dcc.Markdown('[Upload](/upload)'),
-            html.H2('Recent activities'),
-            self.dc_factory.recent_activities(),
-            html.H2('Analysis'),
-            self.dc_factory.weekday_count(),
-            self.dc_factory.distance_pace(),
-            *self.dc_factory.custom_graphs(),
+            *self.dc_factory.graphs_or_no_activity_msg(),
             self.dc_factory.footer()
         ]
 
