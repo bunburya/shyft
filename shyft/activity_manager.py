@@ -1,5 +1,6 @@
+import calendar
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Iterable, Tuple, Sequence, Optional, Dict, Any, List
 
 import pandas as pd
@@ -116,13 +117,13 @@ class ActivityManager:
         else:
             return min(tight_matches, key=lambda p: p[1])[0]
 
-    def search_activity_data(self,
-                             from_date: Optional[datetime] = None,
-                             to_date: Optional[datetime] = None,
-                             prototype: Optional[int] = None,
-                             activity_type: Optional[str] = None,
-                             number: Optional[int] = None
-                             ) -> Sequence[ActivityMetaData]:
+    def search_metadata(self,
+                        from_date: Optional[datetime] = None,
+                        to_date: Optional[datetime] = None,
+                        prototype: Optional[int] = None,
+                        activity_type: Optional[str] = None,
+                        number: Optional[int] = None
+                        ) -> List[ActivityMetaData]:
         results = self.dbm.search_activity_data(from_date, to_date, prototype, activity_type, number)
         return [ActivityMetaData(self.config, **kwargs) for kwargs in results]
 
@@ -133,7 +134,7 @@ class ActivityManager:
                                 activity_type: Optional[str] = None,
                                 number: Optional[int] = None
                                 ) -> pd.DataFrame:
-        metadata = self.search_activity_data(from_date, to_date, prototype, activity_type, number)
+        metadata = self.search_metadata(from_date, to_date, prototype, activity_type, number)
         df = pd.DataFrame(vars(md) for md in metadata)
         # print(df.columns)
         df['center_lat'] = df['center'].str[0]
@@ -152,7 +153,7 @@ class ActivityManager:
                              number: Optional[int] = None) -> List[ActivityMetaData]:
         results = list(filter(
             lambda a: a.activity_id != metadata.activity_id,
-            self.search_activity_data(prototype=metadata.prototype_id)
+            self.search_metadata(prototype=metadata.prototype_id)
         ))
         if number is None:
             return results
@@ -179,7 +180,7 @@ class ActivityManager:
             os.remove(metadata.source_file)
 
     def replace_prototype(self, old_id: int, new_id: int):
-        matches = self.search_activity_data(prototype=old_id)
+        matches = self.search_metadata(prototype=old_id)
         for metadata in matches:
             if metadata.activity_id in self._cache:
                 self._cache.pop(metadata.activity_id)
@@ -187,6 +188,31 @@ class ActivityManager:
             self.dbm.save_metadata(metadata, commit=False)
         self.dbm.change_prototype(old_id, new_id, commit=False)
         self.dbm.commit()
+
+    def get_metadata_by_month(self, year: int, month: int, **kwargs) -> List[ActivityMetaData]:
+        """Return a list of ActivityMetaData objects representing all
+        activities in the given year and month.
+
+        This method also takes the same arguments (other than from_date
+        and start_date) as search_metadata, and will filter the results
+        accordingly.
+        """
+        _, last = calendar.monthrange(year, month)
+        start = datetime(year, month, 1)
+        end = datetime(year, month, last, 23, 59, 59)
+        print(start, end)
+        return self.search_metadata(from_date=start, to_date=end, **kwargs)
+
+    def get_metadata_by_week(self, start: datetime, **kwargs) -> List[ActivityMetaData]:
+        """Return a list of ActivityMetaData objects representing all
+        activities week that commenced on the given date.
+
+        This method also takes the same arguments (other than from_date
+        and start_date) as search_metadata, and will filter the results
+        accordingly.
+        """
+        end = start + timedelta(days=7)
+        return self.search_metadata(start, end, **kwargs)
 
     def __getitem__(self, key: int) -> Activity:
         activity = self.get_activity_by_id(key)

@@ -173,10 +173,10 @@ class ActivityManagerTestCase(BaseTestCase):
 
     def test_08_search(self):
         # print(self.manager_1.get_activity_by_id(1))
-        results = self.manager_1.search_activity_data(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
+        results = self.manager_1.search_metadata(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
         self.assertSetEqual({a.activity_id for a in results}, set(ACTIVITIES_2019))
         # print(results)
-        results = self.manager_1.search_activity_data(prototype=2)
+        results = self.manager_1.search_metadata(prototype=2)
         self.assertSetEqual({a.activity_id for a in results}, {2, 3})
         # print(results)
 
@@ -253,6 +253,9 @@ class ActivityManagerTestCase(BaseTestCase):
 
     def test_16_delete(self):
         """Test deleting an activity."""
+
+        # TODO: Operate on copy of manager_1, so that manager_1 is preserved for subsequent tests
+
         reduced_activities = self.activities[:]
 
         # Test assumptions
@@ -284,6 +287,31 @@ class ActivityManagerTestCase(BaseTestCase):
 
         # Try remove an Activity that is not present
         self.assertRaises(ValueError, lambda: self.manager_1.delete_activity(444))
+
+    def test_17_get_week(self):
+        """Test getting metadata for all activities in a given week."""
+
+        start1 = datetime(2020, 8, 3)
+        results1 = self.manager_1.get_metadata_by_week(start1)
+        self.assert_metadata_iterable_equal(results1, [2, 3])
+        start2 = datetime(2020, 10, 10)
+        results2 = self.manager_1.get_metadata_by_week(start2)
+        self.assert_metadata_iterable_equal(results2, [15, 16])
+        start3 = datetime(2019, 9, 2)
+        results3 = self.manager_1.get_metadata_by_week(start3)
+        self.assert_metadata_iterable_equal(results3, [0])
+        start4 = datetime(2018, 8, 8)
+        results4 = self.manager_1.get_metadata_by_week(start4)
+        self.assert_metadata_iterable_equal(results4, [])
+
+    def test_18_get_month(self):
+        """Test getting metadata for all activities in a given week."""
+        results1 = self.manager_1.get_metadata_by_month(2020, 8)
+        self.assert_metadata_iterable_equal(results1, [2, 3])
+        results2 = self.manager_1.get_metadata_by_month(2020, 8, activity_type='walk')
+        self.assert_metadata_iterable_equal(results2, [])
+        results3 = self.manager_1.get_metadata_by_month(2020, 8, activity_type='run')
+        self.assert_metadata_iterable_equal(results3, [2, 3])
 
 if __name__ == '__main__':
     unittest.main()

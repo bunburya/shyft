@@ -8,8 +8,7 @@ import shutil
 import unittest
 from datetime import timedelta
 from shutil import copyfile
-from typing import List, Optional
-
+from typing import List, Optional, Collection, Iterable
 
 import numpy as np
 import pandas as pd
@@ -299,6 +298,17 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
             )
         else:
             pd.testing.assert_frame_equal(a1.points, a2.points, check_like=True, check_dtype=check_types)
+
+    def assert_metadata_iterable_equal(self, metadata: Iterable[ActivityMetaData], ids: Collection[int],
+                                         ordered: bool = False):
+        """Assert that an iterable of ActivityMetaData objects contains
+        objects with the activity IDs contained in `ids` (and nothing
+        else).
+        """
+        if ordered:
+            self.assertListEqual([m.activity_id for m in metadata], list(ids))
+        else:
+            self.assertSetEqual({m.activity_id for m in metadata}, set(ids))
 
     def assert_managers_equal(self, manager1: ActivityManager, manager2: ActivityManager, almost: bool = False,
                               check_data_files: bool = True, check_types: bool = True,
