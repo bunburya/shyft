@@ -9,7 +9,7 @@ import numpy as np
 
 from shyft.config import Config
 from shyft.geo_utils import intersect_points
-from shyft.helper_funcs import MILE_KM, kmph_to_mph, speed_to_pace
+from shyft.df_utils import MILE_KM, kmph_to_mph, speed_to_pace
 from shyft.logger import get_logger
 from shyft.serialize.create.gpx import activity_to_gpx_file
 from shyft.serialize.create.tcx import activity_to_tcx_file
@@ -32,6 +32,7 @@ class ActivityMetaData:
     # - DatabaseManager.ACTIVITIES;
     # - DatabaseManager.SAVE_ACTIVITY_DATA;
     # - DatabaseManager.save_activity_data;
+    # - df_utils.schemas.metadata_summary_schema
 
     config: Config
     activity_id: int
@@ -61,7 +62,7 @@ class ActivityMetaData:
     mean_mph: float = None
     day: str = None
     hour: int = None
-    month: str = None
+    month: int = None
     mean_hr: Optional[float] = None
     mean_cadence: Optional[float] = None
     calories: Optional[float] = None
@@ -87,7 +88,7 @@ class ActivityMetaData:
         if self.hour is None:
             self.hour = self.date_time.hour
         if self.month is None:
-            self.month = self.date_time.strftime('%M')
+            self.month = self.date_time.month
 
         # File locations for export
         if self.gpx_file is None:

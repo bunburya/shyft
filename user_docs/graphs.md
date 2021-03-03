@@ -23,7 +23,7 @@ You can also provide other key-value pairs that will be passed as additional arg
 `overview_graphs.json` describes the graphs to be displayed on the overview page.  Again, the structure of the JSON file is a list of JSON objects, each of which describes one graph.  The most important keys in each such object are:
 
 - `graph_type`: As above.
-- `x`: Specifies the data to be displayed on the x axis. Must correspond to the name of a column of the DataFrame output by the `summarize_activity_data` method of an `ActivityManager` instance. If the `agg` argument is provided (see below), the DataFrame will be grouped by the data specified by `x`. If `null`, the data used for the x axis will be the index of the relevant dataframe.
+- `x`: Specifies the data to be displayed on the x axis. Must correspond to the name of a column of the DataFrame output by the `summarize_metadata` method of an `ActivityManager` instance. If the `agg` argument is provided (see below), the DataFrame will be grouped by the data specified by `x`. If `null`, the data used for the x axis will be the index of the relevant dataframe.
 - `y`: Specifies the data to be displayed on the y axis.
 - `groupby`: Optional. If provided, the DataFrame summarising the activities will be grouped by the specified column. `agg` must also be provided or else this will do nothing.
 - `agg`: Must be provided if `groupby` is provided (and does nothing if `groupby` is not provided).  If provided, must correspond to an attribute of a `DataFrameGroupBy` (eg,`count`, `mean`).

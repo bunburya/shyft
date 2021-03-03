@@ -51,6 +51,10 @@ class ActivityManagerTestCase(BaseTestCase):
     def test_01_setup(self):
         """Perform some basic checks to ensure the test is set up properly."""
 
+        print(self.manager_1.summarize_metadata()['month'])
+        self.assert_manager_valid(self.manager_1)
+
+
         self.assertEqual(len(TEST_GPX_FILES), len(self.activities))
         self.assertEqual(len(TEST_GPX_FILES), len(self.gpx))
         db1 = self.manager_1.dbm
@@ -218,7 +222,7 @@ class ActivityManagerTestCase(BaseTestCase):
 
     def test_13_summarize_activities(self):
 
-        df = self.manager_1.summarize_activity_data()
+        df = self.manager_1.summarize_metadata()
         #print(df)
         print(df.columns)
         print(df.shape)

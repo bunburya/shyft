@@ -5,9 +5,10 @@ from typing import Optional, Union, List, Dict
 
 import numpy as np
 import pandas as pd
+import gpxpy
 
 from shyft.config import Config
-from shyft.helper_funcs import get_lap_distances, get_lap_durations, get_lap_means
+from shyft.df_utils import get_lap_distances, get_lap_durations, get_lap_means
 from shyft.geo_utils import haversine_distance
 from shyft.logger import get_logger
 from shyft.serialize._activity_types import SHYFT_TYPES

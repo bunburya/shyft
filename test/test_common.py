@@ -1,7 +1,6 @@
 """Base code for unit testing, including base test classes and variables
 describing where to find and save test data, for use by test scripts.
 """
-import dataclasses
 import filecmp
 import os
 import shutil
@@ -19,7 +18,8 @@ from shyft.activity_manager import ActivityManager
 
 from shyft.activity import ActivityMetaData, Activity
 from shyft.df_utils.validate import DataFrameSchema
-from shyft.df_utils.schemas import points_schema, laps_splits_km_schema, laps_splits_mile_schema
+from shyft.df_utils.schemas import points_schema, laps_splits_km_schema, laps_splits_mile_schema, \
+    metadata_summary_schema
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')
@@ -350,4 +350,5 @@ class BaseTestCase(BaseDataFrameValidateTestCase):
         amount of data an ActivityManager needs to have.
         """
         self.assert_all_activities_valid(am)
+        self.assert_dataframe_valid(am.summarize_metadata(), metadata_summary_schema)
         # TODO: More validation

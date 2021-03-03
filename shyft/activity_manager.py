@@ -1,14 +1,15 @@
 import calendar
 import os
 from datetime import datetime, timedelta
-from typing import Iterable, Tuple, Sequence, Optional, Dict, Any, List
+from typing import Tuple, Sequence, Optional, Dict, List
 
 import pandas as pd
 
 from shyft.config import Config
-from shyft.database import DatabaseManager, str_to_timedelta
+from shyft.database import DatabaseManager
 from shyft.geo_utils import norm_dtw, norm_length_diff, norm_center_diff
 from shyft.activity import Activity, ActivityMetaData
+from shyft.df_utils import summarize_metadata
 from shyft.logger import get_logger
 
 logger = get_logger(__name__)
@@ -129,21 +130,15 @@ class ActivityManager:
         results = self.dbm.search_activity_data(from_date, to_date, prototype, activity_type, number)
         return [ActivityMetaData(self.config, **kwargs) for kwargs in results]
 
-    def summarize_activity_data(self,
-                                from_date: Optional[datetime] = None,
-                                to_date: Optional[datetime] = None,
-                                prototype: Optional[int] = None,
-                                activity_type: Optional[str] = None,
-                                number: Optional[int] = None
-                                ) -> pd.DataFrame:
+    def summarize_metadata(self,
+                           from_date: Optional[datetime] = None,
+                           to_date: Optional[datetime] = None,
+                           prototype: Optional[int] = None,
+                           activity_type: Optional[str] = None,
+                           number: Optional[int] = None
+                           ) -> pd.DataFrame:
         metadata = self.search_metadata(from_date, to_date, prototype, activity_type, number)
-        df = pd.DataFrame(vars(md) for md in metadata)
-        # print(df.columns)
-        df['center_lat'] = df['center'].str[0]
-        df['center_lon'] = df['center'].str[1]
-        df['center_elev'] = df['center'].str[2]
-
-        return df
+        return summarize_metadata(metadata)
 
     def save_activity_to_db(self, activity: Activity):
         self.dbm.save_metadata(activity.metadata)

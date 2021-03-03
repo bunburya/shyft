@@ -73,7 +73,7 @@ class BasicDashComponentFactory:
 
     @property
     def summary(self) -> pd.DataFrame:
-        return self.activity_manager.summarize_activity_data()
+        return self.activity_manager.summarize_metadata()
 
     def activity_name(self, metadata: ActivityMetaData) -> str:
         """Return an activity's name or, if the activity has no name,
