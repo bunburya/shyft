@@ -124,6 +124,10 @@ class Config:
         self.db_file = os.path.join(new, 'shyft.db')
         self.log_file = os.path.join(new, 'shyft.log')
 
+        for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir, self.tcx_file_dir, self.source_file_dir):
+            if not os.path.exists(_dir):
+                os.makedirs(_dir)
+
     @property
     def week_start(self) -> str:
         try:

@@ -1,7 +1,7 @@
 """Base code for unit testing, including base test classes and variables
 describing where to find and save test data, for use by test scripts.
 """
-
+import dataclasses
 import filecmp
 import os
 import shutil
@@ -103,8 +103,6 @@ def run_data_dir(name: str, replace: bool = False) -> str:
     os.makedirs(data_dir, exist_ok=True)
     return data_dir
 
-
-
 def config_file(run_dir: str) -> str:
     config_fpath = os.path.join(run_dir, 'config.ini')
     copyfile(TEST_CONFIG_FILE_BASE, config_fpath)
@@ -113,6 +111,26 @@ def config_file(run_dir: str) -> str:
 def get_config(run_dir: str) -> Config:
     conf_file = config_file(run_dir)
     return Config(conf_file, data_dir=run_dir)
+
+def get_manager(config: Config, files: Optional[List[str]] = None) -> ActivityManager:
+    manager = ActivityManager(config)
+    if files:
+        for f in files:
+            manager.add_activity_from_file(f)
+    return manager
+
+def copy_manager(am: ActivityManager) -> ActivityManager:
+    old_config = am.config
+    old_data_dir = old_config.data_dir
+    i = 0
+    new_data_dir = old_data_dir + f'_copy_{i}'
+    while os.path.exists(new_data_dir):
+        i += 1
+        new_data_dir = old_data_dir + f'_copy_{i}'
+    config = Config(old_config.ini_fpath, old_config.activity_graphs_fpath, old_config.overview_graphs_fpath,
+                    old_config.interpolation, **old_config.kwargs)
+    config.data_dir = new_data_dir
+    return get_manager(config, files=[a.metadata.source_file for a in am])
 
 class BaseDataFrameValidateTestCase(unittest.TestCase):
 
@@ -165,15 +183,8 @@ class BaseDataFrameValidateTestCase(unittest.TestCase):
         self.assert_dataframe_valid(activity.km_summary, laps_splits_km_schema, 'km_splits')
         self.assert_dataframe_valid(activity.mile_summary, laps_splits_mile_schema, 'mile_splits')
 
-class BaseTestCase(BaseDataFrameValidateTestCase):
 
-    @classmethod
-    def get_manager(cls, config: Config, files: Optional[List[str]] = None) -> ActivityManager:
-        manager = ActivityManager(config)
-        if files:
-            for f in files:
-                manager.add_activity_from_file(f)
-        return manager
+class BaseTestCase(BaseDataFrameValidateTestCase):
 
     def assert_timedeltas_almost_equal(self, td1: timedelta, td2: timedelta, places: int = 4):
         self.assertAlmostEqual(td1.total_seconds(), td2.total_seconds(), places)

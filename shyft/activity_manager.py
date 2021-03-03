@@ -18,6 +18,8 @@ class ActivityManager:
 
     def __init__(self, config: Config):
         self.config = config
+        if not os.path.exists(config.data_dir):
+            os.makedirs(config.data_dir)
         self.dbm = DatabaseManager(config)
         self._cache: Dict[int, Activity] = {}
 

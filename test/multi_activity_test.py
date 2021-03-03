@@ -29,10 +29,10 @@ class ActivityManagerTestCase(BaseTestCase):
             cls.activities.append(Activity.from_file(fpath, cls.TEST_CONFIG_1, activity_id=i))
         cls.proto_ids = {}
         cls.fpath_ids = {}
-        cls.manager_1 = cls.get_manager(cls.TEST_CONFIG_1)  # Add Activities directly (populate in setUp and use as the
+        cls.manager_1 = get_manager(cls.TEST_CONFIG_1)  # Add Activities directly (populate in setUp and use as the
                                                             # base for most tests)
-        cls.manager_2 = cls.get_manager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
-        cls.manager_3 = cls.get_manager(cls.TEST_CONFIG_3)  # Add Activities directly (just to test adding)
+        cls.manager_2 = get_manager(cls.TEST_CONFIG_2)  # Add Activities from filepaths
+        cls.manager_3 = get_manager(cls.TEST_CONFIG_3)  # Add Activities directly (just to test adding)
 
         for a in cls.activities:
             cls.manager_1.add_activity(a)
@@ -60,6 +60,9 @@ class ActivityManagerTestCase(BaseTestCase):
         db2 = self.manager_2.dbm
         db2.cursor.execute('SELECT name from sqlite_master where type= "table"')
         self.assertSetEqual({i[0] for i in db2.cursor.fetchall()}, tables)
+
+        manager_copy = copy_manager(self.manager_1)
+        self.assert_managers_equal(self.manager_1, manager_copy)
 
     def test_02_add_activity(self):
         """Test basic adding of activities."""
@@ -257,33 +260,34 @@ class ActivityManagerTestCase(BaseTestCase):
         # TODO: Operate on copy of manager_1, so that manager_1 is preserved for subsequent tests
 
         reduced_activities = self.activities[:]
+        manager = copy_manager(self.manager_1)
 
         # Test assumptions
-        self.assertEqual(self.manager_1[3].metadata.prototype_id, 2)
-        self.assertIn(0, self.manager_1.prototypes)
-        self.assertIn(2, self.manager_1.prototypes)
+        self.assertEqual(manager[3].metadata.prototype_id, 2)
+        self.assertIn(0, manager.prototypes)
+        self.assertIn(2, manager.prototypes)
 
         # Remove Activity 2; Activity 3 should become its own prototype.
         reduced_activities.pop(2)
-        self.manager_1.delete_activity(2)
-        self.assertRaises(KeyError, lambda: self.manager_1[2])
+        manager.delete_activity(2)
+        self.assertRaises(KeyError, lambda: manager[2])
         #print(self.manager_1[2])
-        self.assertEqual(len(self.manager_1), len(reduced_activities))
-        for a1, a2 in zip(self.manager_1, reduced_activities):
+        self.assertEqual(len(manager), len(reduced_activities))
+        for a1, a2 in zip(manager, reduced_activities):
             self.assertEqual(a1.metadata.activity_id, a2.metadata.activity_id)
-        self.assertEqual(self.manager_1[3].metadata.prototype_id, 3)
-        self.assertNotIn(2, self.manager_1.prototypes)
-        self.assertIn(3, self.manager_1.prototypes)
+        self.assertEqual(manager[3].metadata.prototype_id, 3)
+        self.assertNotIn(2, manager.prototypes)
+        self.assertIn(3, manager.prototypes)
 
         # Remove Activity 0; it is already its own prototype (and there are no matches),
         # so it should cease to be a prototype.
         reduced_activities.pop(0)
-        self.manager_1.delete_activity(0)
-        self.assertRaises(KeyError, lambda: self.manager_1[0])
-        self.assertEqual(len(self.manager_1), len(reduced_activities))
-        for a1, a2 in zip(self.manager_1, reduced_activities):
+        manager.delete_activity(0)
+        self.assertRaises(KeyError, lambda: manager[0])
+        self.assertEqual(len(manager), len(reduced_activities))
+        for a1, a2 in zip(manager, reduced_activities):
             self.assertEqual(a1.metadata.activity_id, a2.metadata.activity_id)
-        self.assertNotIn(0, self.manager_1.prototypes)
+        self.assertNotIn(0, manager.prototypes)
 
         # Try remove an Activity that is not present
         self.assertRaises(ValueError, lambda: self.manager_1.delete_activity(444))
