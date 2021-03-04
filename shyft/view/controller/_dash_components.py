@@ -4,7 +4,7 @@ Most of these are implemented as factory methods which return Dash
 objects, which can be included in the layout of the Dash app.
 """
 import logging
-from typing import Optional, Iterable, List, Dict, Any, Tuple, Union
+from typing import Optional, Iterable, List, Dict, Any, Tuple, Union, Sequence
 
 import pandas as pd
 import plotly.express as px
@@ -15,12 +15,15 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.development.base_component import Component
 
+from shyft.logger import get_logger
 from shyft.config import Config
 from shyft.activity_manager import ActivityManager
 from shyft.activity import ActivityMetaData, Activity
 import shyft.message as msg
 from shyft.metadata import APP_NAME
 from shyft.view.controller.flask_controller import get_footer_rendering_data
+
+logger = get_logger(__name__)
 
 
 class BasicDashComponentFactory:
@@ -211,12 +214,11 @@ class BasicDashComponentFactory:
         reconstruct an equivalent footer using Dash's html components.
         """
         app_metadata = get_footer_rendering_data()
-        return html.Footer([
+        return html.Footer(html.Center([
             html.A(['Main page'], href='/'),
             ' | ',
             html.A(['{app_name} {app_version}'.format(**app_metadata)], href=app_metadata['app_url'])
-        ])
-
+        ]))
 
 class ActivityViewComponentFactory(BasicDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
@@ -562,6 +564,16 @@ class OverviewComponentFactory(BasicDashComponentFactory):
         metadata.sort(key=lambda md: md.date_time, reverse=True)
         return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True)
 
+    def hr_over_time(self) -> List[Component]:
+        df = self.activity_manager.metadata_monthly_time_series(activity_type='run')
+        logger.debug(df['mean_hr'])
+        graph = dcc.Graph(
+            id='hr_over_time',
+            figure=px.line(df,
+                           y='mean_hr')
+        )
+        return [graph]
+
     def graphs_or_no_activity_msg(self, markdown: str = 'No recent activities found. Upload some!') -> List[Component]:
         if self.activity_manager.activity_ids:
             return [
@@ -570,6 +582,7 @@ class OverviewComponentFactory(BasicDashComponentFactory):
                 html.H2('Analysis'),
                 self.weekday_count(),
                 self.distance_pace(),
+                *self.hr_over_time(),
                 *self.custom_graphs(),
             ]
         else:

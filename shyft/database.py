@@ -170,7 +170,8 @@ class DatabaseManager:
 
     def __init__(self, config: shyft.config.Config):
         self.lock = threading.Lock()
-        self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES, check_same_thread=False)
+        self.connection = sql.connect(config.db_file, detect_types=sql.PARSE_DECLTYPES | sql.PARSE_COLNAMES,
+                                      check_same_thread=False)
         #self.connection.set_trace_callback(print)
         self.connection.row_factory = sql.Row
         self.cursor = self.connection.cursor()
@@ -357,6 +358,14 @@ class DatabaseManager:
         if max_id is None:
             max_id = -1
         return max_id
+
+    def get_earliest_datetime(self) -> Optional[datetime]:
+        self.sql_execute('SELECT MIN(date_time) as "date_time [timestamp]" FROM "activities"')
+        return self.cursor.fetchone()[0]
+
+    def get_latest_datetime(self) -> Optional[datetime]:
+        self.sql_execute('SELECT MAX(date_time) as "date_time [timestamp]" FROM "activities"')
+        return self.cursor.fetchone()[0]
 
     def delete_points(self, activity_id: int, commit: bool = True):
         self.sql_execute('DELETE FROM "points" WHERE activity_id=?', (activity_id,))

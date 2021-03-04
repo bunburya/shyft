@@ -4,7 +4,7 @@ multiple times in different places.
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import Optional, Union, List, Sequence
 
 import pandas as pd
@@ -78,7 +78,8 @@ def summarize_metadata(metadata: Sequence[ActivityMetaData]) -> pd.DataFrame:
     ActivityMetaData object.
     """
     df = pd.DataFrame(vars(md) for md in metadata)
-    # print(df.columns)
+
+    #print(df.columns)
     df['center_lat'] = df['center'].str[0]
     df['center_lon'] = df['center'].str[1]
     df['center_elev'] = df['center'].str[2]

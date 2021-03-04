@@ -327,3 +327,45 @@ metadata_summary_schema = DataFrameSchema(
     description='A DataFrame where each row represents an activity and includes summary information about that activity'
                 'taken from the relevant ActivityMetaData object.'
 )
+
+metadata_time_series_schema = DataFrameSchema(
+    columns=ColumnList([
+        Column(
+            name='activity_count',
+            type='integer',
+            description='The number of activities recorded in the relevant time period.'
+        ),
+        Column(
+            name='total_duration',
+            type='timedelta',
+            description='The total duration of all activities.'
+        ),
+        Column(
+            name='total_distance_2d_km',
+            type='number',
+            description='The total distance moved over all activities, in kilometres, ignoring elevation.'
+        ),
+        Column(
+            name='mean_kmph',
+            type='number',
+            description='Simple average speed in kilometres per hour.'
+        ),
+        Column(
+            name='mean_hr',
+            type='number',
+            description='Simple average heart rate in beats per minute.',
+            mandatory=False,
+            nullable=True
+        ),
+        Column(
+            name='mean_cadence',
+            type='number',
+            description='Simple average cadence.',
+            mandatory=False,
+            nullable=True
+        )
+    ]),
+    index_type='datetime',
+    description='A DataFrame where each row contains aggregate information about all the activities in a give'
+                'time period.'
+)

@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 
+from schemas import metadata_time_series_schema
 from shyft.logger import get_logger
 from test.test_common import *
 
@@ -313,13 +314,24 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assert_metadata_iterable_equal(results4, [])
 
     def test_18_get_month(self):
-        """Test getting metadata for all activities in a given week."""
-        results1 = self.manager_1.get_metadata_by_month(2020, 8)
+        """Test getting metadata for all activities in a given month."""
+        results1 = self.manager_1.get_metadata_by_month(datetime(2020, 8, 1))
         self.assert_metadata_iterable_equal(results1, [2, 3])
-        results2 = self.manager_1.get_metadata_by_month(2020, 8, activity_type='walk')
+        results2 = self.manager_1.get_metadata_by_month(datetime(2020, 8, 1), activity_type='walk')
         self.assert_metadata_iterable_equal(results2, [])
-        results3 = self.manager_1.get_metadata_by_month(2020, 8, activity_type='run')
+        results3 = self.manager_1.get_metadata_by_month(datetime(2020, 8, 1), activity_type='run')
         self.assert_metadata_iterable_equal(results3, [2, 3])
+
+    def test_19_time_series(self):
+        """Test generation of time series data."""
+        weekly = self.manager_1.metadata_weekly_time_series(datetime(2019, 1, 1))
+        self.assert_dataframe_valid(weekly, metadata_time_series_schema)
+        weekly_runs = self.manager_1.metadata_weekly_time_series(datetime(2019, 1, 1), activity_type='run')
+        self.assert_dataframe_valid(weekly_runs, metadata_time_series_schema)
+        monthly = self.manager_1.metadata_monthly_time_series(datetime(2019, 1, 1))
+        self.assert_dataframe_valid(monthly, metadata_time_series_schema)
+        monthly_runs = self.manager_1.metadata_monthly_time_series(datetime(2019, 1, 1), activity_type='run')
+        self.assert_dataframe_valid(monthly_runs, metadata_time_series_schema)
 
 if __name__ == '__main__':
     unittest.main()

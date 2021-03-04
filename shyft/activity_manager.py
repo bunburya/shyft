@@ -1,9 +1,10 @@
 import calendar
 import os
 from datetime import datetime, timedelta
-from typing import Tuple, Sequence, Optional, Dict, List
+from typing import Tuple, Sequence, Optional, Dict, List, Generator, Union, Callable, Any
 
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 
 from shyft.config import Config
 from shyft.database import DatabaseManager
@@ -13,6 +14,14 @@ from shyft.df_utils import summarize_metadata
 from shyft.logger import get_logger
 
 logger = get_logger(__name__)
+
+
+def _iter_dates(start: datetime, end_inclusive: datetime,
+                step: Union[timedelta, relativedelta]) -> Generator[datetime, None, None]:
+    current = start
+    while current <= end_inclusive:
+        yield current
+        current += step
 
 
 class ActivityManager:
@@ -34,12 +43,12 @@ class ActivityManager:
         return self.dbm.get_all_prototypes()
 
     def get_activity_by_id(self, activity_id: int, cache: bool = True) -> Optional[Activity]:
-        #logger.info(f'Getting activity with ID {activity_id} .')
+        # logger.info(f'Getting activity with ID {activity_id} .')
         if activity_id in self._cache:
-            #logger.debug(f'Fetching activity from cache.')
+            # logger.debug(f'Fetching activity from cache.')
             return self._cache[activity_id]
         else:
-            #logger.debug(f'Activity not in cache; loading from database.')
+            # logger.debug(f'Activity not in cache; loading from database.')
             points = self.dbm.load_points(activity_id)
             laps = self.dbm.load_laps(activity_id)
             try:
@@ -186,7 +195,7 @@ class ActivityManager:
         self.dbm.change_prototype(old_id, new_id, commit=False)
         self.dbm.commit()
 
-    def get_metadata_by_month(self, year: int, month: int, **kwargs) -> List[ActivityMetaData]:
+    def get_metadata_by_month(self, month: datetime, **kwargs) -> List[ActivityMetaData]:
         """Return a list of ActivityMetaData objects representing all
         activities in the given year and month.
 
@@ -194,10 +203,13 @@ class ActivityManager:
         and start_date) as search_metadata, and will filter the results
         accordingly.
         """
+        #print(month, type(month))
+        year = month.year
+        month = month.month
         _, last = calendar.monthrange(year, month)
         start = datetime(year, month, 1)
         end = datetime(year, month, last, 23, 59, 59)
-        print(start, end)
+        #print(start, end)
         return self.search_metadata(from_date=start, to_date=end, **kwargs)
 
     def get_metadata_by_week(self, start: datetime, **kwargs) -> List[ActivityMetaData]:
@@ -210,6 +222,49 @@ class ActivityManager:
         """
         end = start + timedelta(days=7)
         return self.search_metadata(start, end, **kwargs)
+
+    def _metadata_time_series_df(self, freq: Union[timedelta, relativedelta],
+                                 summary_func: Callable[[datetime, ...], List[ActivityMetaData]],
+                                 from_date: Optional[datetime] = None, to_date: Optional[datetime] = None,
+                                 **kwargs) -> pd.DataFrame:
+        if from_date is None:
+            from_date = self.earliest_datetime
+        if to_date is None:
+            to_date = self.latest_datetime
+        data = []
+        for date in _iter_dates(from_date, to_date, freq):
+            period_data = summary_func(date, **kwargs)
+            if not period_data:
+                continue
+            period_summary = summarize_metadata(period_data)
+            data.append({
+                'date': date,
+                'activity_count': period_summary.shape[0],
+                'total_duration': period_summary['duration'].sum(),
+                'total_distance_2d_km': period_summary['distance_2d_km'].sum(),
+                'mean_kmph': period_summary['mean_kmph'].mean(),
+                'mean_hr': period_summary['mean_hr'].mean(),
+                'mean_cadence': period_summary['mean_cadence'].mean()
+            })
+        return pd.DataFrame(data).set_index('date')
+
+    def metadata_weekly_time_series(self, from_date: Optional[datetime] = None, to_date: Optional[datetime] = None,
+                                    **kwargs) -> pd.DataFrame:
+        return self._metadata_time_series_df(timedelta(weeks=1), self.get_metadata_by_week,
+                                             from_date, to_date, **kwargs)
+
+    def metadata_monthly_time_series(self, from_date: Optional[datetime] = None, to_date: Optional[datetime] = None,
+                                     **kwargs) -> pd.DataFrame:
+        return self._metadata_time_series_df(relativedelta(months=1), self.get_metadata_by_month,
+                                             from_date, to_date, **kwargs)
+
+    @property
+    def earliest_datetime(self) -> Optional[datetime]:
+        return self.dbm.get_earliest_datetime()
+
+    @property
+    def latest_datetime(self) -> Optional[datetime]:
+        return self.dbm.get_latest_datetime()
 
     def __getitem__(self, key: int) -> Activity:
         activity = self.get_activity_by_id(key)

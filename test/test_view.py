@@ -27,8 +27,8 @@ CONFIG = Config(
 )
 
 am = ActivityManager(CONFIG)
-#for fpath in TEST_GPX_FILES:
-#    am.add_activity_from_file(fpath)
+for fpath in TEST_GPX_FILES:
+    am.add_activity_from_file(fpath)
 
 # logging.getLogger().setLevel(logging.INFO)
 

@@ -122,7 +122,7 @@ TEST_DF_3 = pd.DataFrame([{
     'third_column': datetimes[i]
 } for i in range(8)]).set_index('test_index_name_1')
 
-# Should fail all schemes for lack of mandatory column (and, in the case of TEST_SCHEMA_2, also bad index)
+# Should fail all schemas for lack of mandatory column (and, in the case of TEST_SCHEMA_2, also bad index)
 TEST_DF_4 = pd.DataFrame([{
     'test_index_name_1': i,
     'second_column': f'test_string_{i}',
