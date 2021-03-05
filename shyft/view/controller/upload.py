@@ -24,7 +24,7 @@ class UploadController(_BaseController):
     def page_content(self):
         logger.info('Generating page content for upload.')
         return [
-            self.dc_factory.title('Upload'),
+            html.Div('upload_redirect', hidden=True),
             *self.dc_factory.display_all_messages(),
             html.H1('Upload an activity'),
             dcc.Markdown(f'Here you can select one or more GPX, TCX or FIT files to upload to {APP_NAME}. '
@@ -55,7 +55,7 @@ class UploadController(_BaseController):
         logger.debug('Registering callbacks for upload page.')
 
         @self.dash_app.callback(
-            Output('url', 'pathname'),
+            Output('upload_location', 'pathname'),
             Input('upload_data', 'contents'),
             State('upload_data', 'filename')
         )
@@ -66,17 +66,19 @@ class UploadController(_BaseController):
             logger.debug(f'upload_file called with filename: {fname_list}')
             if content_list is None:
                 # Callback seems to fire on page load, with None as args
+                logger.debug('Preventing update.')
                 raise PreventUpdate
-            if len(content_list) > 1:
-                for content, fname in zip(content_list, fname_list):
-                    self.parse_contents(content, fname)
-                return '/upload'
             else:
-                id = self.parse_contents(content_list[0], fname_list[0])
-                if id is None:
+                if len(content_list) > 1:
+                    for content, fname in zip(content_list, fname_list):
+                        self.parse_contents(content, fname)
                     return '/upload'
                 else:
-                    return f'/activity/{id}'
+                    id = self.parse_contents(content_list[0], fname_list[0])
+                    if id is None:
+                        return '/upload'
+                    else:
+                        return f'/activity/{id}'
 
     def parse_contents(self, contents: str, fname: str) -> Optional[int]:
         tmp_dir = os.path.join(self.config.data_dir, 'tmp')

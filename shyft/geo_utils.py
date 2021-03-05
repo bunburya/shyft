@@ -73,7 +73,10 @@ def intersect_points(p1: pd.Series, p2: pd.Series, portion: float) -> pd.Series:
 
     p3 = pd.Series(dtype=np.int64)
     for item in ('latitude', 'longitude', 'elevation'):
-        p3[item] = ((1 - portion) * p1[item]) + (portion * p2[item])
+        if p1[item] or p2[item] is None:
+            p3[item] = None
+        else:
+            p3[item] = ((1 - portion) * p1[item]) + (portion * p2[item])
     p3['time'] = datetime.fromtimestamp(
         ((1 - portion) * p1.time.timestamp()) + (portion * p2.time.timestamp()),
         p1.time.tzinfo

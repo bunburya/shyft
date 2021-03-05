@@ -89,7 +89,6 @@ class ConfigController(_BaseController):
 
     def page_content(self) -> List[Component]:
         return [
-            html.Div('config_dummy_div', hidden=True),
             *self.dc_factory.display_all_messages(),
             html.H1(f'Configure {APP_NAME}'),
             dcc.Markdown(f'Here you can configure how {APP_NAME} behaves. See the [documentation](/user_docs/config) '

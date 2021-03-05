@@ -72,6 +72,7 @@ class BaseParser:
             return None
 
     def _infer_points_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        #logger.debug(df)
         df = df.copy()
         prev_lat = df['latitude'].shift()
         prev_lon = df['longitude'].shift()
@@ -93,11 +94,6 @@ class BaseParser:
         df['km_pace'] = (1000 / interval_distance) * interval_time
         df['mile_pace'] = (MILE / interval_distance) * interval_time
         df['mph'] = (1000 * df['kmph']) / MILE
-        # df['km_pace'] = 3600 / df['kmph']
-        # df['mile_pace'] = 3600 / df['mph']
-
-        # df['kmph'] = (3600 / df['km_pace'].dt.total_seconds())
-        # df['mph'] = df['kmph'] / (MILE / 1000)
 
         return df
 
@@ -202,8 +198,10 @@ class BaseActivityParser(BaseParser):
         # Sometimes, a file will report elevation without reporting lat/lon data. In this case, we store
         # whatever data we find, and once we subsequently receive lat/lon data we "backfill" the missing data with that.
         if (lat is None) or (lon is None):
+            #logger.debug('Missing latitude and/or longitude; adding to backfill list.')
             self._backfill.append(point_data)
         else:
+            #logger.debug(f'Found latitude and longitude; backfilling {len(self._backfill)} entries.')
             if self._backfill:
                 for to_add in self._backfill:
                     for k in point_data:

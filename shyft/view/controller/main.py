@@ -5,6 +5,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+from all_activities import AllActivitiesController
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output
 
@@ -59,6 +60,7 @@ class DashController:
         self.activity_controller = ActivityController(self)
         self.upload_controller = UploadController(self)
         self.config_controller = ConfigController(self)
+        self.all_activities_controller = AllActivitiesController(self)
 
         self.register_callbacks()
         # Initialise with empty layout; content will be added by callbacks.
@@ -69,8 +71,14 @@ class DashController:
         return html.Div(
             id='layout',
             children=[
-                dcc.Location(id='url', refresh=False),
-                html.Div('dummy', hidden=True),
+                # Because Dash only allows each component property (such as the "pathname" property of a dcc.Location)
+                # to be associated with one Output, each part of the app needs to update a separate dcc.Location when
+                # it wants to redirect the user, and the relevant callback needs to fire upon any of those components
+                # being updated. And we need to create all relevant dcc.Location instances at the beginning (ie, here).
+                dcc.Location(id='upload_location', refresh=False),
+                #dcc.Location(id='all_')
+                #html.Div('dummy', hidden=True),
+                #html.Div('redirect', hidden=True)
                 html.Div(id='page_content', children=content or [])
             ]
         )
@@ -103,6 +111,8 @@ class DashController:
             return self.upload_controller.page_content()
         elif tokens[0] == 'config':
             return self.config_controller.page_content()
+        elif tokens[0] == 'all':
+            return self.all_activities_controller.page_content()
 
         return self.overview_controller.page_content()
 
@@ -111,11 +121,17 @@ class DashController:
 
         @self.dash_app.callback(
             Output('page_content', 'children'),
-            Input('url', 'pathname')
+            #Input('url', 'pathname'),
+            Input('upload_location', 'pathname')
         )
-        def update_activity(pathname: str) -> List[Component]:
+        def update_page(*args) -> List[Component]:
             """Display different page on url update."""
-            return self._resolve_pathname(pathname)
+            ctx = dash.callback_context
+            trig = ctx.triggered[0]
+            prop_id = trig['prop_id']
+            value = trig['value']
+            logger.debug(f'update_page called from {prop_id} with value "{value}".')
+            return self._resolve_pathname(value)
 
         # Unfortunately this seems to be the only way to dynamically set the title in Dash.
         # FIXME: Doesn't work...

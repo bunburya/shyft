@@ -1,6 +1,7 @@
+import json
 import os
 import shutil
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -53,6 +54,8 @@ class ActivityMetaData:
     duration: timedelta = None
     prototype_id: Optional[int] = None
     thumbnail_file: Optional[str] = None
+    mean_hr: Optional[float] = None
+    mean_cadence: Optional[float] = None
 
     # The following will be auto-generated when ActivityMetaData is instantiated, if not explicitly provided
     distance_2d_mile: float = None
@@ -63,8 +66,6 @@ class ActivityMetaData:
     day: str = None
     hour: int = None
     month: int = None
-    mean_hr: Optional[float] = None
-    mean_cadence: Optional[float] = None
     calories: Optional[float] = None
 
     def __post_init__(self):
@@ -100,6 +101,12 @@ class ActivityMetaData:
 
         if self.activity_type is None:
             self.activity_type = self.config.default_activity_type
+
+    def to_dict(self):
+        return asdict(self)
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     @property
     def name_or_default(self) -> str:
@@ -162,6 +169,10 @@ class Activity:
                 kwargs['duration'] = self.points.iloc[-1]['time'] - kwargs['date_time']
             if (kwargs.get('thumbnail_file') is None) and config.thumbnail_dir:
                 kwargs['thumbnail_file'] = self.write_thumbnail(activity_id=kwargs['activity_id'])
+            if kwargs.get('mean_hr') is None:
+                kwargs['mean_hr'] = self.points['hr'].mean()
+            if kwargs.get('mean_cadence') is None:
+                kwargs['mean_cadence'] = self.points['cadence'].mean()
 
 
             self.metadata = ActivityMetaData(config, **kwargs)

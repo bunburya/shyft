@@ -237,6 +237,7 @@ class ActivityManager:
             if not period_data:
                 continue
             period_summary = summarize_metadata(period_data)
+            #logger.debug(period_summary['mean_hr'])
             data.append({
                 'date': date,
                 'activity_count': period_summary.shape[0],

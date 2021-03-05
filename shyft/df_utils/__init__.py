@@ -10,12 +10,16 @@ from typing import Optional, Union, List, Sequence
 import pandas as pd
 
 import typing
+
+from logger import get_logger
+
 if typing.TYPE_CHECKING:
     from activity import ActivityMetaData
 
 MILE = 1609.344  # metres in a mile
 MILE_KM = MILE / 1000  # km in a mile
 
+logger = get_logger(__name__)
 
 # Speed-related conversions.
 
@@ -78,9 +82,12 @@ def summarize_metadata(metadata: Sequence[ActivityMetaData]) -> pd.DataFrame:
     ActivityMetaData object.
     """
     df = pd.DataFrame(vars(md) for md in metadata)
+    #for md in metadata:
+    #    logger.debug(md.mean_hr)
 
     #print(df.columns)
     df['center_lat'] = df['center'].str[0]
     df['center_lon'] = df['center'].str[1]
     df['center_elev'] = df['center'].str[2]
+    #logger.debug(df['mean_hr'])
     return df

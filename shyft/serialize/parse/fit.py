@@ -5,8 +5,11 @@ from typing import Optional
 
 import fitdecode
 import pandas as pd
+from logger import get_logger
 from shyft.serialize.parse._base import BaseActivityParser, ShyftParserError
 from shyft.serialize._activity_types import FIT_TO_SHYFT
+
+logger = get_logger(__name__)
 
 
 class FITParserError(ShyftParserError): pass
@@ -69,6 +72,11 @@ class FITParser(BaseActivityParser):
             'kmph': self._convert_speed(speed)
         }
 
+        #if elev is None:
+        #    logger.debug('Adding point without elevation.')
+        #else:
+        #    logger.debug('Adding point with elevation.')
+
         # https://gis.stackexchange.com/questions/122186/convert-garmin-or-iphone-weird-gps-coordinates
         if (lat is not None):
             data['latitude'] = lat / self.LATLON_TO_DECIMAL
@@ -81,11 +89,13 @@ class FITParser(BaseActivityParser):
         """Parse a FitDataMessage of type `record`, which contains
         information about a single point.
         """
-        if frame.has_field('timestamp') and frame.has_field('altitude'):
+        #logger.debug('Encountered record message.')
+        if frame.has_field('timestamp'):# and frame.has_field('altitude'):
+            #logger.debug('Record has timestamp.')
             self._add_point(
                 frame.get_value('position_lat', fallback=None),
                 frame.get_value('position_long', fallback=None),
-                frame.get_value('altitude'),
+                frame.get_value('altitude', fallback=None),
                 frame.get_value('timestamp'),
                 frame.get_value('heart_rate', fallback=None),
                 frame.get_value('cadence', fallback=None),

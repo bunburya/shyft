@@ -26,7 +26,6 @@ class OverviewController(_BaseController):
         """
         logger.info('Generating page content for overview.')
         return [
-            self.dc_factory.title('Overview'),
             *self.dc_factory.display_all_messages(),
             html.H1(f'Activity overview for {self.config.user_name}'),
             dcc.Markdown('[Configure](/config)'),

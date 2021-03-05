@@ -4,7 +4,7 @@ Most of these are implemented as factory methods which return Dash
 objects, which can be included in the layout of the Dash app.
 """
 import logging
-from typing import Optional, Iterable, List, Dict, Any, Tuple, Union, Sequence
+from typing import Optional, Iterable, List, Dict, Any, Tuple
 
 import pandas as pd
 import plotly.express as px
@@ -13,6 +13,8 @@ import dash_table as dt
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+from dash import dash, callback_context
+from dash.dependencies import Output, Input, State
 from dash.development.base_component import Component
 
 from shyft.logger import get_logger
@@ -69,7 +71,8 @@ class BasicDashComponentFactory:
         msg.NOTSET: '#808080'
     }
 
-    def __init__(self, activity_manager: ActivityManager, config: Config, msg_bus: msg.MessageBus):
+    def __init__(self, dash_app: dash.Dash, activity_manager: ActivityManager, config: Config, msg_bus: msg.MessageBus):
+        self.dash_app = dash_app
         self.config = config
         self.activity_manager = activity_manager
         self.msg_bus = msg_bus
@@ -88,12 +91,13 @@ class BasicDashComponentFactory:
         return name
 
     def activities_table(self, metadata_list: Iterable[ActivityMetaData], options_col: bool = False,
-                         **kwargs) -> dt.DataTable:
+                         select: bool = False, **kwargs) -> dt.DataTable:
         """A generic function to return a DataTable containing a list of activities."""
         cols = self.ACTIVITY_TABLE_BASIC_COLS[:]
         data = [{
             'thumb': f'![{md.activity_id}]({self.thumbnail_link(md)})',
             'name': f'[{self.activity_name(md)}]({self.activity_link(md)})',
+            'id': md.activity_id
         } for md in metadata_list]
         if options_col:
             cols.append(
@@ -101,13 +105,63 @@ class BasicDashComponentFactory:
             )
             for md, row in zip(metadata_list, data):
                 row['options'] = f'[Delete]({self.delete_link(md)})'
+        if select:
+            row_selectable = 'multi'
+        else:
+            row_selectable = False
         return dt.DataTable(
             columns=cols,
             data=data,
+            cell_selectable=False,
+            row_selectable=row_selectable,
+            selected_rows=[],
             markdown_options={'link_target': '_self'},
             **self.COMMON_DATATABLE_OPTIONS,
             **kwargs
         )
+
+    def activities_table_with_options(self, base_id: str, metadata_list: List[ActivityMetaData], location_id: str,
+                                      **table_kwargs) -> dbc.Row:
+        """A generic function to create an activities table with a
+        "Select all" button, an "Unselect all" button and a dropdown
+        menu with options to export activities.
+
+        `base_id` should be unique and will be used to generate the id
+        of each component.
+
+        `location_id` should be the id of a dcc.Location object, which
+        should be initialised upon the initialisation of the main
+        controller, and should not be updated by any other callback.
+        """
+        table_id = base_id + '_table'
+        dropdown_id = base_id + '_dropdown'
+        select_id = base_id + '_select_all_button'
+        unselect_id = base_id + '_unselect_all_button'
+        table = self.activities_table(metadata_list, id=table_id, select=True, **table_kwargs)
+        dropdown = dcc.Dropdown(dropdown_id, options=[
+            {'label': 'Select an action', 'value': 'select'},
+            {'label': 'Delete', 'value': 'delete'},
+            {'label': 'Export to GPX', 'value': 'export_gpx'},
+            {'label': 'Export to TCX', 'value': 'export_tcx'},
+            {'label': 'Download source', 'value': 'export_source'}
+        ], value='select')
+        select_all_button = dbc.Button('Select all', id=select_id, n_clicks=0)
+        unselect_all_button = dbc.Button('Unselect all', id=unselect_id, n_clicks=0)
+
+        @self.dash_app.callback(
+            Output(location_id, 'pathname'),
+            Input(dropdown_id, 'value'),
+            Input(select_id, 'n_clicks'),
+            Input(unselect_id, 'n_clicks'),
+            State(table_id, 'selected_rows')
+        )
+        def action(*args) -> str:
+            trig = callback_context.triggered[0]
+            component, prop = trig['prop_id'].split('.')
+            val = trig['value']
+            if component == dropdown_id:
+                #TODO
+                pass
 
     def activities_table_html(self, metadata_list: List[ActivityMetaData], options_col: bool = False) -> html.Table:
         """An experimental alternative to activities_table, which
@@ -471,7 +525,6 @@ class ActivityViewComponentFactory(BasicDashComponentFactory):
         """Return a table listing the given activity's matched activities."""
         matched = self.activity_manager.get_activity_matches(activity.metadata,
                                                              number=self.config.matched_activities_count)
-        print(matched)
         if matched:
             return dbc.Row([
                 dbc.Col([
@@ -562,11 +615,11 @@ class OverviewComponentFactory(BasicDashComponentFactory):
         """Return a table of the most recent activities."""
         metadata = [a.metadata for a in self.activity_manager]
         metadata.sort(key=lambda md: md.date_time, reverse=True)
-        return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True)
+        return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True, select=True)
 
     def hr_over_time(self) -> List[Component]:
         df = self.activity_manager.metadata_monthly_time_series(activity_type='run')
-        logger.debug(df['mean_hr'])
+        #logger.debug(df['mean_hr'])
         graph = dcc.Graph(
             id='hr_over_time',
             figure=px.line(df,

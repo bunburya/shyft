@@ -23,7 +23,7 @@ class _BaseController:
         self.config = main_controller.config
         self.msg_bus = main_controller.msg_bus
         self.dash_app = main_controller.dash_app
-        self.dc_factory = self.DC_FACTORY(self.activity_manager, self.config, self.msg_bus)
+        self.dc_factory = self.DC_FACTORY(self.dash_app, self.activity_manager, self.config, self.msg_bus)
         if register_callbacks:
             self.register_callbacks()
 

@@ -16,7 +16,7 @@ from werkzeug.exceptions import abort
 
 TEST_DATA_DIR = 'test/test_data'
 
-TEST_RUN_DATA_DIR = run_data_dir('view', replace=True)
+TEST_RUN_DATA_DIR = run_data_dir('view', replace=False)
 TEST_CONFIG_FILE = config_file(TEST_RUN_DATA_DIR)
 
 CONFIG = Config(
@@ -27,8 +27,8 @@ CONFIG = Config(
 )
 
 am = ActivityManager(CONFIG)
-for fpath in TEST_GPX_FILES:
-    am.add_activity_from_file(fpath)
+#for fpath in TEST_GPX_FILES:
+#    am.add_activity_from_file(fpath)
 
 # logging.getLogger().setLevel(logging.INFO)
 
