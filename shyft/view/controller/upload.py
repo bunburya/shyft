@@ -24,6 +24,7 @@ class UploadController(_BaseController):
     def page_content(self):
         logger.info('Generating page content for upload.')
         return [
+            html.Div(id={'type': 'redirect', 'context': 'upload', 'index': 'upload'}, hidden=True),
             html.Div('upload_redirect', hidden=True),
             *self.dc_factory.display_all_messages(),
             html.H1('Upload an activity'),
@@ -55,7 +56,7 @@ class UploadController(_BaseController):
         logger.debug('Registering callbacks for upload page.')
 
         @self.dash_app.callback(
-            Output('upload_location', 'pathname'),
+            Output({'type': 'redirect', 'context': 'upload', 'index': 'upload'}, 'children'),
             Input('upload_data', 'contents'),
             State('upload_data', 'filename')
         )

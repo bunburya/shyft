@@ -185,11 +185,16 @@ class DatabaseManager:
 
         NOTE: Does not commit; this must be done separately.
         """
-        try:
-            self.lock.acquire(True)
+        with self.lock:
             self.cursor.execute(*args, **kwargs)
-        finally:
-            self.lock.release()
+
+    def sql_fetchone(self) -> sql.Row:
+        with self.lock:
+            return self.cursor.fetchone()
+
+    def sql_fetchall(self) -> List[sql.Row]:
+        with self.lock:
+            return self.cursor.fetchall()
 
     def commit(self):
         self.connection.commit()
@@ -203,7 +208,7 @@ class DatabaseManager:
             self.commit()
 
     def save_metadata(self, metadata: 'ActivityMetaData', commit: bool = True) -> int:
-        self.cursor.execute(self.SAVE_ACTIVITY_DATA, (
+        self.sql_execute(self.SAVE_ACTIVITY_DATA, (
             metadata.activity_id,
             metadata.activity_type,
             metadata.date_time,
@@ -227,7 +232,8 @@ class DatabaseManager:
         ))
         if commit:
             self.commit()
-        return self.cursor.lastrowid
+        with self.lock:
+            return self.cursor.lastrowid
 
     def save_dataframe(self, table_name: str, data: pd.DataFrame, activity_id: int, commit: bool = True,
                        index_label: str = 'id'):
@@ -242,12 +248,12 @@ class DatabaseManager:
             self.commit()
 
     def save_prototype(self, prototype_id: int, commit: bool = True):
-        self.cursor.execute('INSERT INTO \"prototypes\" (activity_id) VALUES(?)', (prototype_id,))
+        self.sql_execute('INSERT INTO \"prototypes\" (activity_id) VALUES(?)', (prototype_id,))
         if commit:
             self.commit()
 
     def delete_prototype(self, prototype_id: int, commit: bool = True):
-        self.cursor.execute('DELETE from "prototypes" WHERE activity_id=?', (prototype_id,))
+        self.sql_execute('DELETE from "prototypes" WHERE activity_id=?', (prototype_id,))
         if commit:
             self.commit()
 
@@ -263,7 +269,7 @@ class DatabaseManager:
         valid.
         """
         self.sql_execute('SELECT * FROM "activities" WHERE activity_id=?', (activity_id,))
-        result = self.cursor.fetchone()
+        result = self.sql_fetchone()
         if not result:
             raise ValueError(f'No activity found with activity_id {activity_id}.')
         return activity_row_to_dict(result)
@@ -295,7 +301,7 @@ class DatabaseManager:
         if where:
             query += ' WHERE ' + ' AND '.join(where)
         self.sql_execute(query, params)
-        results = self.cursor.fetchall()
+        results = self.sql_fetchall()
         return [activity_row_to_dict(r) for r in results[:number]]
 
     def get_activities_in_timerange(self,
@@ -316,7 +322,7 @@ class DatabaseManager:
             expected.append(f'{dow:02}')
         query = f'SELECT * FROM "activities" WHERE datetime({" ".join(dt_format)}, date_time) = "{" ".join(expected)}"'
         self.sql_execute(query)
-        results = self.cursor.fetchall()
+        results = self.sql_fetchall()
         return [activity_row_to_dict(r) for r in results[:number]]
 
     def load_points(self, activity_id: int) -> pd.DataFrame:
@@ -336,36 +342,32 @@ class DatabaseManager:
             laps['duration'] = pd.to_timedelta(laps['duration'], unit='ns')
             return laps
 
-    #def load_prototype(self, prototype_id: int) -> sql.Row:
-    #    self.sql_execute('SELECT activity_id FROM "prototypes" WHERE id=?', (prototype_id,))
-    #    return self.cursor.fetchone()
-
     def get_all_activity_ids(self) -> List[int]:
         self.sql_execute('SELECT activity_id from "activities"')
         # fetchall returns a sequence of Row objects
-        return [r['activity_id'] for r in self.cursor.fetchall()]
+        return [r['activity_id'] for r in self.sql_fetchall()]
 
     def get_all_prototypes(self) -> List[int]:
         self.sql_execute('SELECT activity_id FROM "prototypes"')
-        return [r['activity_id'] for r in self.cursor.fetchall()]
+        return [r['activity_id'] for r in self.sql_fetchall()]
 
     def get_max_activity_id(self) -> int:
         """Return the highest activity_id in activities.  If activities
         is empty, return -1.
         """
         self.sql_execute('SELECT MAX(activity_id) FROM "activities"')
-        max_id = self.cursor.fetchone()[0]
+        max_id = self.sql_fetchone()[0]
         if max_id is None:
             max_id = -1
         return max_id
 
     def get_earliest_datetime(self) -> Optional[datetime]:
         self.sql_execute('SELECT MIN(date_time) as "date_time [timestamp]" FROM "activities"')
-        return self.cursor.fetchone()[0]
+        return self.sql_fetchone()[0]
 
     def get_latest_datetime(self) -> Optional[datetime]:
         self.sql_execute('SELECT MAX(date_time) as "date_time [timestamp]" FROM "activities"')
-        return self.cursor.fetchone()[0]
+        return self.sql_fetchone()[0]
 
     def delete_points(self, activity_id: int, commit: bool = True):
         self.sql_execute('DELETE FROM "points" WHERE activity_id=?', (activity_id,))

@@ -16,6 +16,7 @@ import dash_bootstrap_components as dbc
 from dash import dash, callback_context
 from dash.dependencies import Output, Input, State
 from dash.development.base_component import Component
+from dash.exceptions import PreventUpdate
 
 from shyft.logger import get_logger
 from shyft.config import Config
@@ -120,8 +121,8 @@ class BasicDashComponentFactory:
             **kwargs
         )
 
-    def activities_table_with_options(self, base_id: str, metadata_list: List[ActivityMetaData], location_id: str,
-                                      **table_kwargs) -> dbc.Row:
+    def activities_table_with_actions(self, index: str, metadata_list: List[ActivityMetaData], location_id: str,
+                                      **table_kwargs) -> List[Component]:
         """A generic function to create an activities table with a
         "Select all" button, an "Unselect all" button and a dropdown
         menu with options to export activities.
@@ -133,35 +134,29 @@ class BasicDashComponentFactory:
         should be initialised upon the initialisation of the main
         controller, and should not be updated by any other callback.
         """
-        table_id = base_id + '_table'
-        dropdown_id = base_id + '_dropdown'
-        select_id = base_id + '_select_all_button'
-        unselect_id = base_id + '_unselect_all_button'
+        table_id = {'type': 'activity_table', 'index': index}
+        dropdown_id = {'type': 'activity_table_dropdown', 'index': index}
+        select_id = {'type': 'select_all_button', 'index': index}
+        unselect_id = {'type': 'unselect_all_button', 'index': index}
         table = self.activities_table(metadata_list, id=table_id, select=True, **table_kwargs)
         dropdown = dcc.Dropdown(dropdown_id, options=[
             {'label': 'Select an action', 'value': 'select'},
+            # The below values should correspond to the pathname to redirect to
             {'label': 'Delete', 'value': 'delete'},
-            {'label': 'Export to GPX', 'value': 'export_gpx'},
-            {'label': 'Export to TCX', 'value': 'export_tcx'},
-            {'label': 'Download source', 'value': 'export_source'}
+            {'label': 'Export to GPX', 'value': 'gpx_files'},
+            {'label': 'Export to TCX', 'value': 'tcx_files'},
+            {'label': 'Download source', 'value': 'source_files'}
         ], value='select')
         select_all_button = dbc.Button('Select all', id=select_id, n_clicks=0)
         unselect_all_button = dbc.Button('Unselect all', id=unselect_id, n_clicks=0)
+        action_row = dbc.Row([
+            dbc.Col(select_all_button),
+            dbc.Col(unselect_all_button),
+            dbc.Col(dropdown)
+        ])
 
-        @self.dash_app.callback(
-            Output(location_id, 'pathname'),
-            Input(dropdown_id, 'value'),
-            Input(select_id, 'n_clicks'),
-            Input(unselect_id, 'n_clicks'),
-            State(table_id, 'selected_rows')
-        )
-        def action(*args) -> str:
-            trig = callback_context.triggered[0]
-            component, prop = trig['prop_id'].split('.')
-            val = trig['value']
-            if component == dropdown_id:
-                #TODO
-                pass
+        return [action_row, table]
+
 
     def activities_table_html(self, metadata_list: List[ActivityMetaData], options_col: bool = False) -> html.Table:
         """An experimental alternative to activities_table, which
@@ -618,6 +613,7 @@ class OverviewComponentFactory(BasicDashComponentFactory):
         return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True, select=True)
 
     def hr_over_time(self) -> List[Component]:
+        logger.debug('Generating graph of average heart rate over time.')
         df = self.activity_manager.metadata_monthly_time_series(activity_type='run')
         #logger.debug(df['mean_hr'])
         graph = dcc.Graph(
@@ -629,6 +625,7 @@ class OverviewComponentFactory(BasicDashComponentFactory):
 
     def graphs_or_no_activity_msg(self, markdown: str = 'No recent activities found. Upload some!') -> List[Component]:
         if self.activity_manager.activity_ids:
+            logger.debug('Activities found; generating graphs.')
             return [
                 html.H2('Recent activities'),
                 self.recent_activities(),
@@ -639,4 +636,5 @@ class OverviewComponentFactory(BasicDashComponentFactory):
                 *self.custom_graphs(),
             ]
         else:
+            logger.debug('No activities found; returning markdown.')
             return [dcc.Markdown(markdown)]
