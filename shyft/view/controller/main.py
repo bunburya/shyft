@@ -44,7 +44,8 @@ class DashController:
     hold instances of the other, page-specific controller classes.
     """
 
-    def __init__(self, dash_app: dash.Dash, config: Config, activity_manager: Optional[ActivityManager] = None):
+    def __init__(self, dash_app: dash.Dash, config: Config, msg_bus: MessageBus,
+                 activity_manager: Optional[ActivityManager] = None):
         logger.debug('Initialising DashController.')
         self.dash_app = dash_app
         # Stop Dash complaining if not all components are present when callbacks are registered
@@ -56,7 +57,7 @@ class DashController:
             self.activity_manager = activity_manager
         self.config = config
         self.config_fpath = config.ini_fpath
-        self.msg_bus = MessageBus()
+        self.msg_bus = msg_bus
 
         self.overview_controller = OverviewController(self)
         self.activity_controller = ActivityController(self)

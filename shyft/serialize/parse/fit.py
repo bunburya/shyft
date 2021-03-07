@@ -7,7 +7,7 @@ import fitdecode
 import pandas as pd
 from logger import get_logger
 from shyft.serialize.parse._base import BaseActivityParser, ShyftParserError
-from shyft.serialize._activity_types import FIT_TO_SHYFT
+from shyft.serialize._activity_types import FIT_TO_SHYFT, DEFAULT_TYPE
 
 logger = get_logger(__name__)
 
@@ -125,7 +125,7 @@ class FITParser(BaseActivityParser):
         information about an activity.
         """
         self._metadata['date_time'] = frame.get_value('start_time')
-        self._metadata['activity_type'] = self.ACTIVITY_TYPES.get(frame.get_value('sport'))
+        self._metadata['activity_type'] = self.ACTIVITY_TYPES.get(frame.get_value('sport'), DEFAULT_TYPE)
         if frame.has_field('total_elapsed_time'):
             self._metadata['duration'] = timedelta(seconds=frame.get_value('total_elapsed_time'))
         if frame.has_field('total_distance'):

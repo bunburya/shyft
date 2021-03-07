@@ -27,3 +27,5 @@ View:
 - Improve documentation
 
 - Calendar (fullCalendar?)
+
+- Export multiple files at once

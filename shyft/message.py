@@ -6,6 +6,10 @@ from typing import Optional, AbstractSet, Callable
 
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, Logger
 
+from logger import get_logger
+
+logger = get_logger(__name__)
+
 @dataclass(frozen=True)
 class Message:
     """A single message to be displayed."""
@@ -25,7 +29,8 @@ class MessageBus:
         self._messages = []
 
     def add_message(self, text: str, severity: int = INFO, views: Optional[AbstractSet[str]] = None,
-                    timestamp: Optional[datetime] = None, logger: Optional[Logger] = None) -> Message:
+                    timestamp: Optional[datetime] = None, logger_: Optional[Logger] = None) -> Message:
+        logger.debug(f'Adding message: {text}')
         if timestamp is None:
             timestamp = datetime.utcnow()
         msg = Message(
@@ -35,8 +40,8 @@ class MessageBus:
             timestamp=timestamp
         )
         self._messages.append(msg)
-        if logger is not None:
-            logger.log(severity, text)
+        if logger_ is not None:
+            logger_.log(severity, text)
         return msg
 
     def _get_predicate(self,
@@ -65,6 +70,7 @@ class MessageBus:
         #print(f'all messages: {self._messages}')
         show_predicate = self._get_predicate(severity, view, exact_severity)
         to_show = list(filter(show_predicate, self._messages))
+        logger.debug(f'Fetched {len(to_show)} messages.')
         #print(f'showing: f{to_show}')
         if discard:
             if discard_less_severe:
