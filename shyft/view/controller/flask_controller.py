@@ -73,6 +73,7 @@ class FlaskController:
     def serve_file(self, id: int, fpath_getter: Callable[[ActivityMetaData], str],
                    not_found_msg: str = 'File not found.'):
         """A generic function to serve a file."""
+        logger.debug(f'serve_file called with getter func: {fpath_getter}')
         metadata = self.am.get_metadata_by_id(id)
         if metadata is not None:
             fpath = fpath_getter(metadata)
@@ -89,6 +90,7 @@ class FlaskController:
     def serve_files(self, ids: List[int], fpath_getter: Callable[[ActivityMetaData], str],
                     attachment_filename: str, not_found_msg: str = 'One or more files could not be found.'):
         """A generic function to serve multiple files as a zip archive."""
+        logger.debug(f'serve_files called with getter func: {fpath_getter}')
         files = [fpath_getter(self.am.get_metadata_by_id(i)) for i in ids]
         zip_bytes = BytesIO()
         try:

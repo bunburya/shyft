@@ -135,24 +135,31 @@ class BasicDashComponentFactory:
         controller, and should not be updated by any other callback.
         """
         table_id = {'type': 'activity_table', 'index': index}
-        dropdown_id = {'type': 'activity_table_dropdown', 'index': index}
         select_id = {'type': 'select_all_button', 'index': index}
         unselect_id = {'type': 'unselect_all_button', 'index': index}
+        delete_id = {'type': 'delete_button', 'index': index}
+        dropdown_id = {'type': 'activity_table_dropdown', 'index': index}
+        download_link_id = {'type': 'download_link', 'index': index}
+        download_button_id = {'type': 'download_button', 'index': index}
         table = self.activities_table(metadata_list, id=table_id, select=True, **table_kwargs)
         dropdown = dcc.Dropdown(dropdown_id, options=[
-            {'label': 'Select an action', 'value': 'select'},
+            {'label': 'Download as...', 'value': 'select'},
             # The below values should correspond to the pathname to redirect to
-            {'label': 'Delete', 'value': 'delete'},
             {'label': 'Export to GPX', 'value': 'gpx_files'},
             {'label': 'Export to TCX', 'value': 'tcx_files'},
             {'label': 'Download source', 'value': 'source_files'}
         ], value='select')
         select_all_button = dbc.Button('Select all', id=select_id, n_clicks=0)
         unselect_all_button = dbc.Button('Unselect all', id=unselect_id, n_clicks=0)
+        delete_button = dbc.Button('Delete', id=delete_id, n_clicks=0)
+        download_button = dbc.Button('Download', id=download_button_id, disabled=True)
+        download_link = dcc.Link(download_button, id=download_link_id, href='', target='_top')
         action_row = dbc.Row([
             dbc.Col(select_all_button),
             dbc.Col(unselect_all_button),
-            dbc.Col(dropdown)
+            dbc.Col(delete_button),
+            dbc.Col(dropdown),
+            dbc.Col(download_link)
         ])
 
         return [action_row, table]

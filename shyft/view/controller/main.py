@@ -5,7 +5,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-from all_activities import AllActivitiesController
+from view_activities import ViewActivitiesController
 from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
@@ -63,7 +63,7 @@ class DashController:
         self.activity_controller = ActivityController(self)
         self.upload_controller = UploadController(self)
         self.config_controller = ConfigController(self)
-        self.all_activities_controller = AllActivitiesController(self)
+        self.all_activities_controller = ViewActivitiesController(self)
         #self.locations = self.init_locations()
         self.register_callbacks()
 
@@ -78,7 +78,7 @@ class DashController:
             # being updated. And we need to create all relevant dcc.Location instances at the beginning.
             dcc.Location(id='upload_location', refresh=False),
             dcc.Location(id='recent_action_location', refresh=True),
-            dcc.Location(id='all_action_location', refresh=True),
+            dcc.Location(id='view_activities_action_location', refresh=True),
         ]
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:
@@ -124,6 +124,7 @@ class DashController:
             elif tokens[0] == 'all':
                 return self.all_activities_controller.page_content()
             elif tokens[0] in {'gpx_files', 'tcx_files', 'source_files'}:
+                logger.debug(f'New pathname contains {tokens[0]}; not updating page content.')
                 raise PreventUpdate
             elif tokens[0]:
                 logger.warning(f'Received possibly unexpected pathname "{tokens[0]}".')
@@ -153,7 +154,33 @@ class DashController:
             value = trig['value']
             logger.debug(f'update_url called from property "{prop}" of component "{component}" with value "{value}".')
             #logger.debug(f'pathnames: {pathnames}')
+            logger.debug(f'Updating URL pathname to "{value}".')
             return value
+
+        @self.dash_app.callback(
+            #Output({'type': 'redirect', 'context': 'activity_table', 'index': MATCH}, 'children'),
+            Output({'type': 'download_link', 'index': MATCH}, 'href'),
+            Output({'type': 'download_button', 'index': MATCH}, 'disabled'),
+            Input({'type': 'activity_table_dropdown', 'index': MATCH}, 'value'),
+            Input({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),
+            State({'type': 'activity_table', 'index': MATCH}, 'data')
+            #State('url', 'pathname')
+        )
+        def set_download_link(value: str, selected_rows, data) -> Tuple[str, bool]:
+            logger.debug(f'Value "{value}" selected from dropdown.')
+            if value == 'select':
+                href = ''
+                disabled = True
+            else:
+                ids = [str(data[i]['id']) for i in selected_rows]
+                if not ids:
+                    raise PreventUpdate
+                ids_str = ','.join(ids)
+                href = f'/{value}/{ids_str}'
+                disabled = False
+            logger.debug(f'Setting download link to "{href}".')
+            return href, disabled
+
 
         # The below callbacks are used for manipulating activity tables. They are registered here in the main controller
         # because activity tables can be manipulated in multiple contexts.
@@ -177,22 +204,6 @@ class DashController:
         #         logger.error(f'Unexpected component: "{component}".')
         #         raise PreventUpdate
 
-        @self.dash_app.callback(
-            Output({'type': 'redirect', 'context': 'activity_table', 'index': MATCH}, 'children'),
-            Input({'type': 'activity_table_dropdown', 'index': MATCH}, 'value'),
-            State({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),
-            State({'type': 'activity_table', 'index': MATCH}, 'data')
-        )
-        def action(value, selected_rows, data) -> str:
-            logger.debug(f'Value "{value}" selected from dropdown.')
-            #logger.debug(f'data: {data}')
-            if value == 'select':
-                raise PreventUpdate
-            ids = [str(data[i]['id']) for i in selected_rows]
-            if not ids:
-                raise PreventUpdate
-            ids_str = ','.join(ids)
-            return f'/{value}/{ids_str}'
 
         # Unfortunately this seems to be the only way to dynamically set the title in Dash.
         # FIXME: Doesn't work...

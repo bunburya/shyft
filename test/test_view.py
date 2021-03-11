@@ -76,6 +76,7 @@ def get_thumbnail(id: str):
 
 @server.route('/gpx_files/<id>')
 def get_gpx_file(id: str):
+    logger.debug(f'gpx_files endpoint reached with id "{id}".')
     return flask_controller.serve_files_from_str(id, lambda md: md.gpx_file,
                                                  f'{APP_NAME}_gpx_files.zip',
                                                  'No GPX file found for activity ID {id}.')
@@ -83,6 +84,7 @@ def get_gpx_file(id: str):
 
 @server.route('/tcx_files/<id>')
 def get_tcx_file(id: str):
+    logger.debug(f'tcx_files endpoint reached with id "{id}".')
     return flask_controller.serve_files_from_str(id, lambda md: md.tcx_file,
                                                  f'{APP_NAME}_tcx_files.zip',
                                                  'No TCX file found for activity ID {id}.')
@@ -90,6 +92,7 @@ def get_tcx_file(id: str):
 
 @server.route('/source_files/<id>')
 def get_source_file(id: str):
+    logger.debug(f'source_files endpoint reached with id "{id}".')
     return flask_controller.serve_files_from_str(id, lambda md: md.source_file,
                                                  f'{APP_NAME}_source_files.zip',
                                                  'No source file found for activity ID {id}.')
