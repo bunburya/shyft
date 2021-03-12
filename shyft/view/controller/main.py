@@ -1,3 +1,4 @@
+import json
 from logging import ERROR
 from typing import List, Dict, Any, Optional, Tuple, Callable
 
@@ -157,52 +158,69 @@ class DashController:
             logger.debug(f'Updating URL pathname to "{value}".')
             return value
 
+        # The below callbacks are used for manipulating activity tables. They are registered here in the main controller
+        # because activity tables can be manipulated in multiple contexts.
+        # TODO: Currently, trying to perform actions on large numbers of activities at once results in very long URLs.
+        # With enough activities, this could cause issues in some browsers:
+        # see https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
+        # One solution could be to save the IDs locally and pass a special value, like "check_file" to the relevant
+        # endpoint (eg, /tcx_files/check_file), which would cause the code at the endpoint to check that file for the
+        # activity IDs to act upon.
+
         @self.dash_app.callback(
             #Output({'type': 'redirect', 'context': 'activity_table', 'index': MATCH}, 'children'),
+            Output({'type': 'delete_link', 'index': MATCH}, 'href'),
+            Output({'type': 'delete_button', 'index': MATCH}, 'disabled'),
             Output({'type': 'download_link', 'index': MATCH}, 'href'),
             Output({'type': 'download_button', 'index': MATCH}, 'disabled'),
             Input({'type': 'activity_table_dropdown', 'index': MATCH}, 'value'),
             Input({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),
             State({'type': 'activity_table', 'index': MATCH}, 'data')
-            #State('url', 'pathname')
         )
-        def set_download_link(value: str, selected_rows, data) -> Tuple[str, bool]:
-            logger.debug(f'Value "{value}" selected from dropdown.')
-            if value == 'select':
-                href = ''
-                disabled = True
+        def set_action_links(download: str, selected_rows: List[int], data: List) -> Tuple[str, bool, str, bool]:
+            """Triggered every time an activity is selected or
+            unselected, or the download dropdown value is changed.
+            Sets the link and disabled status of both the "Delete" and
+            "Download" buttons.
+            """
+            logger.debug(f'Value "{download}" selected from download dropdown.')
+            #logger.debug(f'Selected rows: {selected_rows}')
+            if not selected_rows:
+                return '', True, '', True
+            ids = [str(data[i]['id']) for i in selected_rows]
+            if not ids:
+                raise PreventUpdate
+            ids_str = ','.join(ids)
+            if download == 'select':
+                download_href = ''
+                download_disabled = True
             else:
-                ids = [str(data[i]['id']) for i in selected_rows]
-                if not ids:
-                    raise PreventUpdate
-                ids_str = ','.join(ids)
-                href = f'/{value}/{ids_str}'
-                disabled = False
-            logger.debug(f'Setting download link to "{href}".')
-            return href, disabled
+                download_href = f'/{download}/{ids_str}'
+                download_disabled = False
+            logger.debug(f'Setting download link to "{download_href}".')
+            return f'/delete/{ids_str}', False, download_href, download_disabled
 
-
-        # The below callbacks are used for manipulating activity tables. They are registered here in the main controller
-        # because activity tables can be manipulated in multiple contexts.
-
-        # @self.dash_app.callback(
-        #     Output({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),
-        #     Input({'type': 'select_all_button', 'index': MATCH}, 'n_clicks'),
-        #     Input({'type': 'unselect_all_button', 'index': MATCH}, 'n_clicks'),
-        # )
-        # def un_select(*args) -> List[int]:
-        #     trig = callback_context.triggered[0]
-        #     component, prop = trig['prop_id'].split('.')
-        #     logger.debug(f'un_select called with trigger "{trig["prop_id"]}".')
-        #     if component == select_id:
-        #         logger.debug('Select button clicked.')
-        #         return list(range(len(metadata_list)))
-        #     elif component == unselect_id:
-        #         logger.debug('Unselect button clicked.')
-        #         return []
-        #     else:
-        #         logger.error(f'Unexpected component: "{component}".')
-        #         raise PreventUpdate
+        @self.dash_app.callback(
+            Output({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),
+            Input({'type': 'select_all_button', 'index': MATCH}, 'n_clicks'),
+            Input({'type': 'unselect_all_button', 'index': MATCH}, 'n_clicks'),
+        )
+        def un_select(*args) -> List[int]:
+            trig = callback_context.triggered[0]
+            component_str, prop = trig['prop_id'].split('.')
+            if not component_str:
+                raise PreventUpdate
+            component = json.loads(component_str)
+            logger.debug(f'un_select called with trigger "{trig["prop_id"]}".')
+            if component['type'] == 'select_all_button':
+                logger.debug('Select button clicked.')
+                return list(range(len(self.activity_manager)))
+            elif component['type'] == 'unselect_all_button':
+                logger.debug('Unselect button clicked.')
+                return []
+            else:
+                logger.error(f'Unexpected component: "{component}".')
+                raise PreventUpdate
 
 
         # Unfortunately this seems to be the only way to dynamically set the title in Dash.

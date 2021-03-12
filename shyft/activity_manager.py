@@ -42,13 +42,17 @@ class ActivityManager:
         """Return a sequence of the activity_ids of all Activities which are prototypes."""
         return self.dbm.get_all_prototypes()
 
+    @property
+    def all_metadata(self) -> List[ActivityMetaData]:
+        return [self.get_metadata_by_id(i) for i in self.activity_ids]
+
     def get_activity_by_id(self, activity_id: int, cache: bool = True) -> Optional[Activity]:
         # logger.info(f'Getting activity with ID {activity_id} .')
         if activity_id in self._cache:
-            # logger.debug(f'Fetching activity from cache.')
+            #logger.debug(f'Fetching activity from cache.')
             return self._cache[activity_id]
         else:
-            # logger.debug(f'Activity not in cache; loading from database.')
+            #logger.debug(f'Activity not in cache; loading from database.')
             points = self.dbm.load_points(activity_id)
             laps = self.dbm.load_laps(activity_id)
             try:
@@ -74,7 +78,7 @@ class ActivityManager:
             except ValueError:
                 return None
 
-    def get_new_activity_id(self):
+    def get_new_activity_id(self) -> int:
         return self.dbm.get_max_activity_id() + 1
 
     def add_activity(self, activity: Activity, cache: bool = True) -> int:
@@ -268,6 +272,7 @@ class ActivityManager:
         return self.dbm.get_latest_datetime()
 
     def __getitem__(self, key: int) -> Activity:
+        #logger.debug(f'Getting activity {key}.')
         activity = self.get_activity_by_id(key)
         if activity is None:
             raise KeyError(f'No activity with ID {key}.')

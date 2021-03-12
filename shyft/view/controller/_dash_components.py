@@ -64,6 +64,11 @@ class BasicDashComponentFactory:
         ],
     }
 
+    BOOTSTRAP_ROW_STYLE = {
+        'margin-left': 0,
+        'margin-right': 0
+    }
+
     MSG_FG_COLORS = {
         msg.CRITICAL: '#FF0000',
         msg.ERROR: '#FF0000',
@@ -137,7 +142,8 @@ class BasicDashComponentFactory:
         table_id = {'type': 'activity_table', 'index': index}
         select_id = {'type': 'select_all_button', 'index': index}
         unselect_id = {'type': 'unselect_all_button', 'index': index}
-        delete_id = {'type': 'delete_button', 'index': index}
+        delete_link_id = {'type': 'delete_link', 'index': index}
+        delete_button_id = {'type': 'delete_button', 'index': index}
         dropdown_id = {'type': 'activity_table_dropdown', 'index': index}
         download_link_id = {'type': 'download_link', 'index': index}
         download_button_id = {'type': 'download_button', 'index': index}
@@ -149,18 +155,19 @@ class BasicDashComponentFactory:
             {'label': 'Export to TCX', 'value': 'tcx_files'},
             {'label': 'Download source', 'value': 'source_files'}
         ], value='select')
-        select_all_button = dbc.Button('Select all', id=select_id, n_clicks=0)
-        unselect_all_button = dbc.Button('Unselect all', id=unselect_id, n_clicks=0)
-        delete_button = dbc.Button('Delete', id=delete_id, n_clicks=0)
-        download_button = dbc.Button('Download', id=download_button_id, disabled=True)
+        select_all_button = dbc.Button('Select all', id=select_id, n_clicks=0, style={'width': '100%'})
+        unselect_all_button = dbc.Button('Unselect all', id=unselect_id, n_clicks=0, style={'width': '100%'})
+        delete_button = dbc.Button('Delete', id=delete_button_id, style={'width': '100%'})
+        delete_link = dcc.Link(delete_button, id=delete_link_id, href='', target='_top')
+        download_button = dbc.Button('Download', id=download_button_id, disabled=True, style={'width': '100%'})
         download_link = dcc.Link(download_button, id=download_link_id, href='', target='_top')
         action_row = dbc.Row([
-            dbc.Col(select_all_button),
-            dbc.Col(unselect_all_button),
-            dbc.Col(delete_button),
-            dbc.Col(dropdown),
-            dbc.Col(download_link)
-        ])
+            dbc.Col(select_all_button, width=2),
+            dbc.Col(unselect_all_button, width=2),
+            dbc.Col(delete_link, width=2),
+            dbc.Col(dropdown, width=2),
+            dbc.Col(download_link, width=2)
+        ], style=self.BOOTSTRAP_ROW_STYLE)
 
         return [action_row, table]
 
@@ -550,6 +557,7 @@ class OverviewComponentFactory(BasicDashComponentFactory):
         return dcc.Markdown(f'# Activity overview for {self.config.user_name}')
 
     def weekday_count(self) -> dbc.Row:
+        logger.debug('Generating weekday count graph.')
         counts = self.summary.groupby(['activity_type', 'day']).count()['activity_id'].rename('count')
         for act_type in counts.index.levels[0]:
             for day in self.config.days_of_week:
@@ -568,6 +576,7 @@ class OverviewComponentFactory(BasicDashComponentFactory):
         )
 
     def distance_pace(self) -> dbc.Row:
+        logger.debug('Generating scatterplot of pace vs distance.')
         return dbc.Row(
             dbc.Col(
                 dcc.Graph(
@@ -615,8 +624,12 @@ class OverviewComponentFactory(BasicDashComponentFactory):
 
     def recent_activities(self) -> dt.DataTable:
         """Return a table of the most recent activities."""
-        metadata = [a.metadata for a in self.activity_manager]
+        logger.debug('Generating recent activity table.')
+        #logger.debug('Getting metadata...')
+        metadata = self.activity_manager.all_metadata
+        #logger.debug('Sorting...')
         metadata.sort(key=lambda md: md.date_time, reverse=True)
+        #logger.debug('Creating table...')
         return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True, select=True)
 
     def hr_over_time(self) -> List[Component]:
