@@ -5,7 +5,7 @@ from shyft.view.controller._dash_components import BasicDashComponentFactory
 
 import typing
 if typing.TYPE_CHECKING:
-    from shyft.view.controller.main import DashController
+    from shyft.view.controller.main import MainController
 
 logger = get_logger(__name__)
 
@@ -16,7 +16,7 @@ class _BaseController:
     # likely to be common to multiple pages; subclasses can override if they need a more specific component factory.
     DC_FACTORY = BasicDashComponentFactory
 
-    def __init__(self, main_controller: DashController, register_callbacks: bool = True):
+    def __init__(self, main_controller: MainController, register_callbacks: bool = True):
         logger.info(f'Initialising controller {self.__class__.__name__}.')
         self.main_controller = main_controller
         self.activity_manager = main_controller.activity_manager

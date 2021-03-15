@@ -13,18 +13,15 @@ import dash_table as dt
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from dash import dash, callback_context
-from dash.dependencies import Output, Input, State
+from dash import dash
 from dash.development.base_component import Component
-from dash.exceptions import PreventUpdate
 
 from shyft.logger import get_logger
 from shyft.config import Config
 from shyft.activity_manager import ActivityManager
 from shyft.activity import ActivityMetaData, Activity
 import shyft.message as msg
-from shyft.metadata import APP_NAME
-from shyft.view.controller.flask_controller import get_footer_rendering_data
+from shyft.metadata import APP_NAME, VERSION, URL
 
 logger = get_logger(__name__)
 
@@ -268,6 +265,13 @@ class BasicDashComponentFactory:
         """
         return html.Title(f'{page_title} - {APP_NAME}')
 
+    def _get_footer_data(self) -> Dict[str, Any]:
+        return {
+            'app_name': APP_NAME,
+            'app_version': VERSION,
+            'app_url': URL
+        }
+
     def footer(self):
         """Return a footer element to be displayed at the bottom of
         the page.
@@ -276,7 +280,7 @@ class BasicDashComponentFactory:
         we can't just render the jinja template, but have to
         reconstruct an equivalent footer using Dash's html components.
         """
-        app_metadata = get_footer_rendering_data()
+        app_metadata = self._get_footer_data()
         return html.Footer(html.Center([
             html.A(['Main page'], href='/'),
             ' | ',

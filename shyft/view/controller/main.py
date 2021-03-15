@@ -1,17 +1,21 @@
 import json
+import os
+from io import BytesIO
 from logging import ERROR
 from typing import List, Dict, Any, Optional, Tuple, Callable
+from zipfile import ZipFile
 
 import dash
-import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-from view_activities import ViewActivitiesController
+from flask import send_file
 from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate
+from werkzeug.exceptions import abort
 
+from shyft.metadata import APP_NAME, URL, VERSION
 from shyft.activity import ActivityMetaData, Activity
 from shyft.activity_manager import ActivityManager
 from shyft.config import Config
@@ -21,26 +25,33 @@ from shyft.view.controller.activity import ActivityController
 from shyft.view.controller.config import ConfigController
 from shyft.view.controller.overview import OverviewController
 from shyft.view.controller.upload import UploadController
+from shyft.view.controller.view_activities import ViewActivitiesController
 
 logger = get_logger(__name__)
 
+MIMETYPES = {
+    '.gpx': 'application/gpx+xml',
+    '.fit': 'application/vnd.ant.fit',
+    '.tcx': 'application/vnd.garmin.tcx+xml'
+}
+MIMETYPE_FALLBACK = 'application/octet-stream'
 
-def id_str_to_int(id: str) -> int:
-    """Convert a string activity id to an integer, performing some
-    basic verification and raising a ValueError is the given id is
-    not valid (ie, the string cannot be converted to a valid integer;
-    the returned integer is not necessarily the id of an actual
-    Activity).
+
+def id_str_to_ints(ids: str) -> List[int]:
+    """Convert a string containing comma-separated activity IDs to a
+    list of integers, performing some basic verification and raising a
+    ValueError if one of the given IDs is not valid.
     """
-    try:
-        activity_id = int(id)
-    except (ValueError, TypeError):
-        activity_id = None
-    if activity_id is None:
-        raise ValueError(f'Bad activity id: "{id}".')
-    return activity_id
+    ids = ids.split(',')
+    int_ids = []
+    for i in ids:
+        try:
+            int_ids.append(int(i))
+        except (ValueError, TypeError):
+            raise ValueError(f'Bad activity id: "{i}".')
+    return int_ids
 
-class DashController:
+class MainController:
     """A main controller class for use with our Dash app. This will
     hold instances of the other, page-specific controller classes.
     """
@@ -71,16 +82,16 @@ class DashController:
         # Initialise with empty layout; content will be added by callbacks.
         self.dash_app.layout = self.layout()
 
-    def init_locations(self) -> List[dcc.Location]:
-        return [
-            # Because Dash only allows each component property (such as the "pathname" property of a dcc.Location)
-            # to be associated with one Output, each part of the app needs to update a separate dcc.Location when
-            # it wants to redirect the user, and the relevant callback needs to fire upon any of those components
-            # being updated. And we need to create all relevant dcc.Location instances at the beginning.
-            dcc.Location(id='upload_location', refresh=False),
-            dcc.Location(id='recent_action_location', refresh=True),
-            dcc.Location(id='view_activities_action_location', refresh=True),
-        ]
+
+
+    def get_params_to_ids(self, params: Dict[str, str]) -> List[ActivityMetaData]:
+        """Takes a dict representing parameters of a GET query and
+        returns a list of ActivityMetaData objects that fit the given
+        search criteria.
+        """
+        # TODO
+        pass
+
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:
         logger.debug('Setting page layout.')
@@ -93,11 +104,11 @@ class DashController:
             ]
         )
 
-    def _id_str_to_metadata(self, id: str) -> Optional[ActivityMetaData]:
-        return self.activity_manager.get_metadata_by_id(id_str_to_int(id))
+    def _id_str_to_metadata(self, ids: str) -> List[Optional[ActivityMetaData]]:
+        return [self.activity_manager.get_metadata_by_id(i) for i in id_str_to_ints(ids)]
 
-    def _id_str_to_activity(self, id: str) -> Optional[Activity]:
-        return self.activity_manager.get_activity_by_id(id_str_to_int(id))
+    def _id_str_to_activities(self, ids: str) -> List[Optional[Activity]]:
+        return [self.activity_manager.get_activity_by_id(i) for i in id_str_to_ints(ids)]
 
     def _resolve_pathname(self, path) -> List[Component]:
         """Resolve the URL pathname and return the appropriate page
@@ -109,7 +120,7 @@ class DashController:
             tokens = path.split('/')[1:]
             if tokens[0] == 'activity':
                 try:
-                    return self.activity_controller.page_content(self._id_str_to_activity(tokens[1]))
+                    return self.activity_controller.page_content(self._id_str_to_activities(tokens[1])[0])
                 except IndexError:
                     logger.error('Could not load activity view: No activity ID provided.')
                     self.msg_bus.add_message('Could not display activity. Check the logs for more details.',
@@ -245,3 +256,63 @@ class DashController:
         #     Input('url', 'pathname')
         # )
 
+    def serve_file(self, id: int, fpath_getter: Callable[[ActivityMetaData], str],
+                   not_found_msg: str = 'File not found.'):
+        """A generic function to serve a file."""
+        logger.debug(f'serve_file called with getter func: {fpath_getter}')
+        metadata = self.activity_manager.get_metadata_by_id(id)
+        if metadata is not None:
+            fpath = fpath_getter(metadata)
+        else:
+            fpath = None
+        if fpath:
+            _, ext = os.path.splitext(fpath)
+            mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
+            return send_file(fpath, mimetype=mimetype, as_attachment=True,
+                             attachment_filename=os.path.basename(fpath))
+        else:
+            return abort(404, not_found_msg.format(id=id))
+
+    def serve_files(self, ids: List[int], fpath_getter: Callable[[ActivityMetaData], str],
+                    attachment_filename: str, not_found_msg: str = 'One or more files could not be found.'):
+        """A generic function to serve multiple files as a zip archive."""
+        logger.debug(f'serve_files called with getter func: {fpath_getter}')
+        files = [fpath_getter(self.activity_manager.get_metadata_by_id(i)) for i in ids]
+        zip_bytes = BytesIO()
+        try:
+            with ZipFile(zip_bytes, mode='w') as z:
+                for f in files:
+                    logger.debug(f'Adding {f} to zip archive.')
+                    z.write(f, os.path.basename(f))
+        except FileNotFoundError:
+            return abort(404, not_found_msg)
+        zip_bytes.seek(0)
+        return send_file(zip_bytes, mimetype='application/zip', as_attachment=True,
+                         attachment_filename=attachment_filename)
+
+    def serve_files_from_str(self, id_str: str, fpath_getter: Callable[[ActivityMetaData], str],
+                             attachment_filename: str, not_found_msg: str = 'One or more files could not be found.'):
+        """A generic function to serve a file, or multiple files as a
+        zip archive, based on a string which should consist of comma-
+        delimited activity IDs.
+
+        `fpath_getter` should be a function that takes a single
+        ActivityMetaData instance and returns the path to the file to be
+        served.
+
+        `attachment_filename` should be the name of the zip archive to
+        be served if multiple IDs are provided.
+
+        `not_found_msg` is the message that will be displayed to the
+        user if one or more relevant files is not found.
+        """
+        try:
+            ids = id_str_to_ints(id_str)
+        except ValueError:
+            return abort(404, 'The query contains one or more bad activity IDs.')
+        if len(ids) == 1:
+            return self.serve_file(ids[0], fpath_getter, not_found_msg)
+        elif len(ids) > 1:
+            return self.serve_files(ids, fpath_getter, attachment_filename, not_found_msg)
+        else:
+            return abort(404, 'Must provide one or more activity IDs (separated by commas).')

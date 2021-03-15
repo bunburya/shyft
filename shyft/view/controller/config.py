@@ -121,7 +121,7 @@ class ConfigController(_BaseController):
         def save_config(save_button_clicks: int, close_button_clicks: int, data_dir: str, user_name: str,
                         dist_unit: str, match_center: float, match_length: float, tight_match: float, name_fmt: str,
                         week_start: str) -> bool:
-            ctx = dash.callback_context
+            ctx = main.callback_context
             if not ctx.triggered:
                 return False
             button_id = ctx.triggered[0]['prop_id'].split('.')[0]

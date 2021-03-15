@@ -6,8 +6,7 @@ import dash_bootstrap_components as dbc
 import shyft.message as msg
 from metadata import APP_NAME
 from shyft.logger import get_logger
-from shyft.view.controller.main import DashController
-from shyft.view.controller.flask_controller import id_str_to_ints, FlaskController
+from shyft.view.controller.main import MainController, id_str_to_ints
 
 ### FOR TESTING ONLY
 
@@ -28,12 +27,13 @@ CONFIG = Config(
 )
 
 am = ActivityManager(CONFIG)
-#for fpath in TEST_GPX_FILES:
+# for fpath in TEST_GPX_FILES:
 #    am.add_activity_from_file(fpath)
 
 # logging.getLogger().setLevel(logging.INFO)
 
 ### /TESTING
+
 logger = get_logger(file_level=logging.DEBUG, console_level=logging.DEBUG, config=CONFIG)
 
 DATA_DIR = CONFIG.data_dir
@@ -59,8 +59,7 @@ msg_bus = msg.MessageBus()
 dash_app = dash.Dash(__name__, server=server, external_stylesheets=stylesheets_dash, title='Shyft')
 logger.info('Initialised Dash app.')
 
-flask_controller = FlaskController(am, msg_bus, stylesheets_nondash)
-dash_controller = DashController(dash_app, CONFIG, msg_bus, am)
+main_controller = MainController(dash_app, CONFIG, msg_bus, am)
 
 
 @server.route('/thumbnails/<id>.png')
@@ -77,30 +76,29 @@ def get_thumbnail(id: str):
 @server.route('/gpx_files/<id>')
 def get_gpx_file(id: str):
     logger.debug(f'gpx_files endpoint reached with id "{id}".')
-    return flask_controller.serve_files_from_str(id, lambda md: md.gpx_file,
-                                                 f'{APP_NAME}_gpx_files.zip',
-                                                 'No GPX file found for activity ID {id}.')
+    return main_controller.serve_files_from_str(id, lambda md: md.gpx_file,
+                                                f'{APP_NAME}_gpx_files.zip',
+                                                'No GPX file found for activity ID {id}.')
 
 
 @server.route('/tcx_files/<id>')
 def get_tcx_file(id: str):
     logger.debug(f'tcx_files endpoint reached with id "{id}".')
-    return flask_controller.serve_files_from_str(id, lambda md: md.tcx_file,
-                                                 f'{APP_NAME}_tcx_files.zip',
-                                                 'No TCX file found for activity ID {id}.')
+    return main_controller.serve_files_from_str(id, lambda md: md.tcx_file,
+                                                f'{APP_NAME}_tcx_files.zip',
+                                                'No TCX file found for activity ID {id}.')
 
 
 @server.route('/source_files/<id>')
 def get_source_file(id: str):
     logger.debug(f'source_files endpoint reached with id "{id}".')
-    return flask_controller.serve_files_from_str(id, lambda md: md.source_file,
-                                                 f'{APP_NAME}_source_files.zip',
-                                                 'No source file found for activity ID {id}.')
+    return main_controller.serve_files_from_str(id, lambda md: md.source_file,
+                                                f'{APP_NAME}_source_files.zip',
+                                                'No source file found for activity ID {id}.')
 
 
 @server.route('/delete/<id>')
 def delete(id: str):
-
     try:
         activity_ids = id_str_to_ints(id)
     except ValueError:
@@ -111,10 +109,11 @@ def delete(id: str):
         except ValueError:
             msg_bus.add_message(f'Could not delete activity with ID {i}. It may not exist.', logging.ERROR)
     if len(activity_ids) == 1:
-        msg_bus.add_message(f'Deleted activity with ID {i}.')
+        msg_bus.add_message(f'Deleted activity with ID {activity_ids[0]}.')
     else:
         msg_bus.add_message(f'Deleted {len(activity_ids)} activities.')
     return redirect('/')
+
 
 if __name__ == '__main__':
     dash_app.run_server(debug=True, port=8080, use_reloader=False)

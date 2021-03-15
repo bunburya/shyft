@@ -5,6 +5,10 @@ General:
 - Custom type definitions
 - Logging
 
+Config:
+
+- Additional options
+
 Activity:
 
 - Data editor
@@ -12,9 +16,8 @@ Activity:
 
 Overview:
 
-  - Average heart rate over time
-  - Pace over time
-  - Search/filter activities
+- Pace over time
+- Search/filter activities
 
 View:
 
@@ -24,8 +27,14 @@ View:
   - Improve graph
   - Get auto-scaled map (see https://github.com/plotly/plotly.js/issues/3434 and https://community.plotly.com/t/dynamic-zoom-for-mapbox/32658/9)
 
+- Config
+  
+  - Reset options
+  
+- View all activities
+
+  - Filter
+
 - Improve documentation
 
 - Calendar (fullCalendar?)
-
-- Export multiple files at once

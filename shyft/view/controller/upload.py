@@ -6,8 +6,6 @@ from typing import IO, Optional, List, Tuple
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
-import dash_bootstrap_components as dbc
-from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate
 
 from shyft.logger import get_logger
