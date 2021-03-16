@@ -1,7 +1,7 @@
 import re
 import threading
 from datetime import timezone, timedelta, datetime
-from typing import Any, Dict, Optional, Sequence, List
+from typing import Any, Dict, Optional, Sequence, List, Collection
 
 import warnings
 warnings.simplefilter('ignore', UserWarning)
@@ -279,7 +279,8 @@ class DatabaseManager:
                              to_date: Optional[datetime] = None,
                              prototype: Optional[int] = None,
                              activity_type: Optional[str] = None,
-                             number: Optional[int] = None) -> Sequence[Dict[str, Any]]:
+                             number: Optional[int] = None,
+                             ids: Collection[int] = None) -> Sequence[Dict[str, Any]]:
         where = []
         params = []
         if from_date and to_date:
@@ -297,6 +298,9 @@ class DatabaseManager:
         if activity_type is not None:
             where.append('activity_type = ?')
             params.append(activity_type)
+        if ids:
+            where.append(f'activity_id IN ({",".join("?" * len(ids))})')
+            params.extend(ids)
         query = 'SELECT * FROM "activities"'
         if where:
             query += ' WHERE ' + ' AND '.join(where)

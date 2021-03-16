@@ -138,6 +138,9 @@ class ActivityManagerTestCase(BaseTestCase):
             self.assertFalse(self.manager_1.tight_match_routes(a1, a2)[0])
 
     def test_06_unique_matching(self):
+        """Test that we can determine whether an activity's route is
+        unique (ie, does not match any other activity's route).
+        """
         for i in UNIQUE:
             fpath1 = TEST_GPX_FILES[i]
             id1 = self.fpath_ids[fpath1]
@@ -180,13 +183,20 @@ class ActivityManagerTestCase(BaseTestCase):
             self.assertTrue(self.manager_1.tight_match_routes(a, p))
 
     def test_08_search(self):
-        # print(self.manager_1.get_activity_by_id(1))
+        """Test searching for activities."""
+
+        # Test time range matching
         results = self.manager_1.search_metadata(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
         self.assertSetEqual({a.activity_id for a in results}, set(ACTIVITIES_2019))
-        # print(results)
+
+        # Test prototype matching
         results = self.manager_1.search_metadata(prototype=2)
         self.assertSetEqual({a.activity_id for a in results}, {2, 3})
-        # print(results)
+
+        # Test ID and time range matching
+        results = self.manager_1.search_metadata(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1),
+                                                 ids=[6, 7, 8, 9, 15])
+        self.assertSetEqual({a.activity_id for a in results}, {6, 7, 8, 9})
 
     def test_09_thumbnails(self):
         for i in self.manager_1.activity_ids:

@@ -2,18 +2,19 @@ import json
 import os
 from io import BytesIO
 from logging import ERROR
-from typing import List, Dict, Any, Optional, Tuple, Callable
+from typing import List, Dict, Any, Optional, Tuple, Callable, Union
 from zipfile import ZipFile
 
+import flask
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from flask import send_file
 from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate
 from werkzeug.exceptions import abort
+import dateutil.parser as dp
 
 from shyft.metadata import APP_NAME, URL, VERSION
 from shyft.activity import ActivityMetaData, Activity
@@ -51,6 +52,7 @@ def id_str_to_ints(ids: str) -> List[int]:
             raise ValueError(f'Bad activity id: "{i}".')
     return int_ids
 
+
 class MainController:
     """A main controller class for use with our Dash app. This will
     hold instances of the other, page-specific controller classes.
@@ -76,21 +78,29 @@ class MainController:
         self.upload_controller = UploadController(self)
         self.config_controller = ConfigController(self)
         self.all_activities_controller = ViewActivitiesController(self)
-        #self.locations = self.init_locations()
+        # self.locations = self.init_locations()
         self.register_callbacks()
 
         # Initialise with empty layout; content will be added by callbacks.
         self.dash_app.layout = self.layout()
 
-
-
-    def get_params_to_ids(self, params: Dict[str, str]) -> List[ActivityMetaData]:
+    def get_params_to_metadata(self, params: Dict[str, str]) -> List[ActivityMetaData]:
         """Takes a dict representing parameters of a GET query and
         returns a list of ActivityMetaData objects that fit the given
         search criteria.
         """
-        # TODO
-        pass
+        if (from_date := params.get('from')):
+            from_date = dp.parse(from_date)
+        if (to_date := params.get('to')):
+            to_date = dp.parse(to_date)
+        if (prototype := params.get('prototype')):
+            prototype = int(prototype)
+        activity_type = params.get('type')
+        if (ids := params.get('id')):
+            ids = id_str_to_ints(ids)
+
+        return self.activity_manager.search_metadata(from_date=from_date, to_date=to_date, prototype=prototype,
+                                                     activity_type=activity_type, ids=ids)
 
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:
@@ -98,7 +108,7 @@ class MainController:
         return html.Div(
             id='layout',
             children=[
-                #*self.locations,
+                # *self.locations,
                 dcc.Location('url', refresh=True),
                 html.Div(id='page_content', children=content or [])
             ]
@@ -165,7 +175,7 @@ class MainController:
             component, prop = trig['prop_id'].split('.')
             value = trig['value']
             logger.debug(f'update_url called from property "{prop}" of component "{component}" with value "{value}".')
-            #logger.debug(f'pathnames: {pathnames}')
+            # logger.debug(f'pathnames: {pathnames}')
             logger.debug(f'Updating URL pathname to "{value}".')
             return value
 
@@ -179,7 +189,7 @@ class MainController:
         # activity IDs to act upon.
 
         @self.dash_app.callback(
-            #Output({'type': 'redirect', 'context': 'activity_table', 'index': MATCH}, 'children'),
+            # Output({'type': 'redirect', 'context': 'activity_table', 'index': MATCH}, 'children'),
             Output({'type': 'delete_link', 'index': MATCH}, 'href'),
             Output({'type': 'delete_button', 'index': MATCH}, 'disabled'),
             Output({'type': 'download_link', 'index': MATCH}, 'href'),
@@ -195,7 +205,7 @@ class MainController:
             "Download" buttons.
             """
             logger.debug(f'Value "{download}" selected from download dropdown.')
-            #logger.debug(f'Selected rows: {selected_rows}')
+            # logger.debug(f'Selected rows: {selected_rows}')
             if not selected_rows:
                 return '', True, '', True
             ids = [str(data[i]['id']) for i in selected_rows]
@@ -233,7 +243,6 @@ class MainController:
                 logger.error(f'Unexpected component: "{component}".')
                 raise PreventUpdate
 
-
         # Unfortunately this seems to be the only way to dynamically set the title in Dash.
         # FIXME: Doesn't work...
         # self.dash_app.clientside_callback(
@@ -268,7 +277,7 @@ class MainController:
         if fpath:
             _, ext = os.path.splitext(fpath)
             mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
-            return send_file(fpath, mimetype=mimetype, as_attachment=True,
+            return flask.send_file(fpath, mimetype=mimetype, as_attachment=True,
                              attachment_filename=os.path.basename(fpath))
         else:
             return abort(404, not_found_msg.format(id=id))
@@ -287,7 +296,7 @@ class MainController:
         except FileNotFoundError:
             return abort(404, not_found_msg)
         zip_bytes.seek(0)
-        return send_file(zip_bytes, mimetype='application/zip', as_attachment=True,
+        return flask.send_file(zip_bytes, mimetype='application/zip', as_attachment=True,
                          attachment_filename=attachment_filename)
 
     def serve_files_from_str(self, id_str: str, fpath_getter: Callable[[ActivityMetaData], str],

@@ -1,7 +1,7 @@
 import calendar
 import os
 from datetime import datetime, timedelta
-from typing import Tuple, Sequence, Optional, Dict, List, Generator, Union, Callable, Any
+from typing import Tuple, Sequence, Optional, Dict, List, Generator, Union, Callable, Any, Collection
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -138,9 +138,10 @@ class ActivityManager:
                         to_date: Optional[datetime] = None,
                         prototype: Optional[int] = None,
                         activity_type: Optional[str] = None,
-                        number: Optional[int] = None
+                        number: Optional[int] = None,
+                        ids: Collection[int] = None
                         ) -> List[ActivityMetaData]:
-        results = self.dbm.search_activity_data(from_date, to_date, prototype, activity_type, number)
+        results = self.dbm.search_activity_data(from_date, to_date, prototype, activity_type, number, ids)
         return [ActivityMetaData(self.config, **kwargs) for kwargs in results]
 
     def summarize_metadata(self,
