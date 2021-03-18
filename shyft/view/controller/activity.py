@@ -1,18 +1,14 @@
 from typing import List, Optional, Tuple, Dict, Any
 
 import plotly.graph_objects as go
-import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input, State
 from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate
 
-from shyft.config import Config
-from shyft.activity_manager import ActivityManager
 from shyft.activity import Activity
 from shyft.logger import get_logger
-from shyft.message import MessageBus
 from shyft.view.controller._base import _BaseController
 from shyft.view.controller._dash_components import ActivityViewComponentFactory
 

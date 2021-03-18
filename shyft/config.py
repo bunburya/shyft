@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 import appdirs
+from metadata import APP_NAME
 
 DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
@@ -27,8 +28,8 @@ class Config:
     tight_match_threshold: float
     default_activity_name_format: str
     week_start: str
-    overview_activities_count: int
     speed_measure_interval: int
+    overview_activities_count: int
 
 
     def __init__(self, ini_fpath: str,
@@ -42,6 +43,7 @@ class Config:
         self.ini_fpath = ini_fpath
         self.activity_graphs_fpath = activity_graphs_fpath
         self.overview_graphs_fpath = overview_graphs_fpath
+        self.user_docs_dir = appdirs.user_data_dir(APP_NAME)
         self.kwargs = kwargs
 
         self.load()
@@ -72,9 +74,11 @@ class Config:
 
         self.default_activity_name_format = parser['general']['default_activity_name_format']
         self.week_start = parser['general']['week_start'].capitalize()
+        self.speed_measure_interval = parser['general'].getint('speed_measure_interval')
+
         self.overview_activities_count = parser['general'].getint('overview_activities_count')
         self.matched_activities_count = parser['general'].getint('matched_activities_count')
-        self.speed_measure_interval = parser['general'].getint('speed_measure_interval')
+
 
     def load(self, fpath: Optional[str] = None):
         """Load values from the given files and keyword arguments."""

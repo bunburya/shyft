@@ -1,7 +1,5 @@
 # GET queries
 
-[NOTE: The below GET query system isn't yet implemented.]
-
 Several of Shyft's endpoints, such as `/delete`, `/view_activities`, etc, allow you to specify the activities to be
 acted upon by a GET query in a common format. That format is as follows:
 

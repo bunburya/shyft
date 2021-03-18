@@ -13,6 +13,7 @@ from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate
+from markdown import MarkdownController
 from werkzeug.exceptions import abort
 import dateutil.parser as dp
 
@@ -78,6 +79,7 @@ class MainController:
         self.upload_controller = UploadController(self)
         self.config_controller = ConfigController(self)
         self.all_activities_controller = ViewActivitiesController(self)
+        self.markdown_controller = MarkdownController(self)
         # self.locations = self.init_locations()
         self.register_callbacks()
 
@@ -114,6 +116,9 @@ class MainController:
             ]
         )
 
+    def render_markdown(self, fpath: str) -> List[Component]:
+        pass
+
     def _id_str_to_metadata(self, ids: str) -> List[Optional[ActivityMetaData]]:
         return [self.activity_manager.get_metadata_by_id(i) for i in id_str_to_ints(ids)]
 
@@ -145,6 +150,8 @@ class MainController:
                 return self.config_controller.page_content()
             elif tokens[0] == 'all':
                 return self.all_activities_controller.page_content()
+            elif tokens[0] == 'user_docs':
+                return self.markdown_controller.page_content(tokens[1])
             elif tokens[0] in {'gpx_files', 'tcx_files', 'source_files'}:
                 logger.debug(f'New pathname contains {tokens[0]}; not updating page content.')
                 raise PreventUpdate
@@ -216,10 +223,10 @@ class MainController:
                 download_href = ''
                 download_disabled = True
             else:
-                download_href = f'/{download}/{ids_str}'
+                download_href = f'/{download}?id={ids_str}'
                 download_disabled = False
             logger.debug(f'Setting download link to "{download_href}".')
-            return f'/delete/{ids_str}', False, download_href, download_disabled
+            return f'/delete?id={ids_str}', False, download_href, download_disabled
 
         @self.dash_app.callback(
             Output({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),
@@ -265,15 +272,9 @@ class MainController:
         #     Input('url', 'pathname')
         # )
 
-    def serve_file(self, id: int, fpath_getter: Callable[[ActivityMetaData], str],
-                   not_found_msg: str = 'File not found.'):
+    def serve_file(self, fpath: Optional[str], not_found_msg: str = 'File not found.'):
         """A generic function to serve a file."""
-        logger.debug(f'serve_file called with getter func: {fpath_getter}')
-        metadata = self.activity_manager.get_metadata_by_id(id)
-        if metadata is not None:
-            fpath = fpath_getter(metadata)
-        else:
-            fpath = None
+
         if fpath:
             _, ext = os.path.splitext(fpath)
             mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
@@ -282,32 +283,26 @@ class MainController:
         else:
             return abort(404, not_found_msg.format(id=id))
 
-    def serve_files(self, ids: List[int], fpath_getter: Callable[[ActivityMetaData], str],
-                    attachment_filename: str, not_found_msg: str = 'One or more files could not be found.'):
+    def serve_files(self, fpaths: List[str], attachment_filename: str,
+                    not_found_msg: str = 'One or more files could not be found.'):
         """A generic function to serve multiple files as a zip archive."""
-        logger.debug(f'serve_files called with getter func: {fpath_getter}')
-        files = [fpath_getter(self.activity_manager.get_metadata_by_id(i)) for i in ids]
         zip_bytes = BytesIO()
         try:
             with ZipFile(zip_bytes, mode='w') as z:
-                for f in files:
+                for f in fpaths:
                     logger.debug(f'Adding {f} to zip archive.')
                     z.write(f, os.path.basename(f))
         except FileNotFoundError:
             return abort(404, not_found_msg)
         zip_bytes.seek(0)
         return flask.send_file(zip_bytes, mimetype='application/zip', as_attachment=True,
-                         attachment_filename=attachment_filename)
+                               attachment_filename=attachment_filename)
 
-    def serve_files_from_str(self, id_str: str, fpath_getter: Callable[[ActivityMetaData], str],
-                             attachment_filename: str, not_found_msg: str = 'One or more files could not be found.'):
+    def serve_files_from_get_params(self, params: Dict[str, str], fpath_getter: Callable[[ActivityMetaData], str],
+                                    attachment_filename: str,
+                                    not_found_msg: str = 'One or more files could not be found.'):
         """A generic function to serve a file, or multiple files as a
-        zip archive, based on a string which should consist of comma-
-        delimited activity IDs.
-
-        `fpath_getter` should be a function that takes a single
-        ActivityMetaData instance and returns the path to the file to be
-        served.
+        zip archive, based on the parameters of a GET query (as a dict).
 
         `attachment_filename` should be the name of the zip archive to
         be served if multiple IDs are provided.
@@ -316,12 +311,13 @@ class MainController:
         user if one or more relevant files is not found.
         """
         try:
-            ids = id_str_to_ints(id_str)
+            metadata = self.get_params_to_metadata(params)
         except ValueError:
-            return abort(404, 'The query contains one or more bad activity IDs.')
-        if len(ids) == 1:
-            return self.serve_file(ids[0], fpath_getter, not_found_msg)
-        elif len(ids) > 1:
-            return self.serve_files(ids, fpath_getter, attachment_filename, not_found_msg)
+            return abort(404, 'Bad query. Check logs for more details.')
+        fpaths = [fpath_getter(md) for md in metadata]
+        if len(fpaths) == 1:
+            return self.serve_file(fpaths[0], not_found_msg)
+        elif len(fpaths) > 1:
+            return self.serve_files(fpaths, attachment_filename, not_found_msg)
         else:
-            return abort(404, 'Must provide one or more activity IDs (separated by commas).')
+            return abort(404, 'No activities found for query.')

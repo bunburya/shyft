@@ -1,7 +1,7 @@
 import logging
 
 from dash import dash
-from flask import Flask, redirect, send_file
+from flask import Flask, redirect, send_file, request
 import dash_bootstrap_components as dbc
 import shyft.message as msg
 from metadata import APP_NAME
@@ -23,7 +23,8 @@ CONFIG = Config(
     TEST_CONFIG_FILE,
     TEST_ACTIVITY_GRAPHS_FILE,
     TEST_OVERVIEW_GRAPHS_FILE,
-    data_dir=TEST_RUN_DATA_DIR
+    data_dir=TEST_RUN_DATA_DIR,
+    user_docs_dir='/home/alan/bin/PycharmProjects/shyft/user_docs'
 )
 
 am = ActivityManager(CONFIG)
@@ -73,36 +74,35 @@ def get_thumbnail(id: str):
     return send_file(metadata.thumbnail_file, mimetype='image/png')
 
 
-@server.route('/gpx_files/<id>')
-def get_gpx_file(id: str):
-    logger.debug(f'gpx_files endpoint reached with id "{id}".')
-    return main_controller.serve_files_from_str(id, lambda md: md.gpx_file,
-                                                f'{APP_NAME}_gpx_files.zip',
-                                                'No GPX file found for activity ID {id}.')
+@server.route('/gpx_files')
+def get_gpx_file():
+    logger.debug(f'gpx_files endpoint reached with GET params: "{request.args}".')
+    return main_controller.serve_files_from_get_params(request.args, lambda md: md.gpx_file,
+                                                       f'{APP_NAME}_gpx_files.zip',
+                                                       'No GPX files found for selected activities.')
+
+@server.route('/tcx_files')
+def get_tcx_file():
+    logger.debug(f'tcx_files endpoint reached with GET params: "{request.args}".')
+    return main_controller.serve_files_from_get_params(request.args, lambda md: md.tcx_file,
+                                                       f'{APP_NAME}_tcx_files.zip',
+                                                       'No TCX files found for selected activities.')
 
 
-@server.route('/tcx_files/<id>')
-def get_tcx_file(id: str):
-    logger.debug(f'tcx_files endpoint reached with id "{id}".')
-    return main_controller.serve_files_from_str(id, lambda md: md.tcx_file,
-                                                f'{APP_NAME}_tcx_files.zip',
-                                                'No TCX file found for activity ID {id}.')
+@server.route('/source_files')
+def get_source_file():
+    logger.debug(f'source_files endpoint reached with GET params: "{id}".')
+    return main_controller.serve_files_from_get_params(request.args, lambda md: md.source_file,
+                                                       f'{APP_NAME}_source_files.zip',
+                                                       'No source files found for selected activities.')
 
 
-@server.route('/source_files/<id>')
-def get_source_file(id: str):
-    logger.debug(f'source_files endpoint reached with id "{id}".')
-    return main_controller.serve_files_from_str(id, lambda md: md.source_file,
-                                                f'{APP_NAME}_source_files.zip',
-                                                'No source file found for activity ID {id}.')
-
-
-@server.route('/delete/<id>')
-def delete(id: str):
+@server.route('/delete')
+def delete():
     try:
-        activity_ids = id_str_to_ints(id)
+        activity_ids = [md.activity_id for md in main_controller.get_params_to_metadata(request.args)]
     except ValueError:
-        return abort(404, f'Query contains bad activity IDs.')
+        return abort(404, f'Bad query. Check logs for details.')
     for i in activity_ids:
         try:
             am.delete_activity(i)

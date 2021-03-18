@@ -212,24 +212,24 @@ class BasicDashComponentFactory:
         """Returns a (relative) link to the GPX file associated with the
         given activity.
         """
-        return f'/gpx_files/{metadata.activity_id}'
+        return f'/gpx_files?id={metadata.activity_id}'
 
     def tcx_file_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to the TCX file associated with the
         given activity.
         """
-        return f'/tcx_files/{metadata.activity_id}'
+        return f'/tcx_files?id={metadata.activity_id}'
 
     def source_file_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to the source file associated with
          the given activity (ie, the original data file from which the
          Activity was created).
          """
-        return f'/source_files/{metadata.activity_id}'
+        return f'/source_files?id={metadata.activity_id}'
 
     def delete_link(self, metadata: ActivityMetaData) -> str:
         """Returns a (relative) link to delete the relevant activity."""
-        return f'/delete/{metadata.activity_id}'
+        return f'/delete?id={metadata.activity_id}'
 
     def graph(self, data: pd.DataFrame, graph_type: str, **kwargs) -> go.Figure:
         """A generic function to create a graph object in respect of an Activity.
