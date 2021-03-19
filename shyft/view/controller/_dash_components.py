@@ -139,7 +139,9 @@ class BasicDashComponentFactory:
         table_id = {'type': 'activity_table', 'index': index}
         select_id = {'type': 'select_all_button', 'index': index}
         unselect_id = {'type': 'unselect_all_button', 'index': index}
-        delete_link_id = {'type': 'delete_link', 'index': index}
+        # A hidden div that stores the IDs of the activities to delete (to be send as POST request)
+        delete_hidden_id = {'type': 'delete_hidden', 'index': index}
+        #delete_link_id = {'type': 'delete_link', 'index': index}
         delete_button_id = {'type': 'delete_button', 'index': index}
         dropdown_id = {'type': 'activity_table_dropdown', 'index': index}
         download_link_id = {'type': 'download_link', 'index': index}
@@ -154,14 +156,15 @@ class BasicDashComponentFactory:
         ], value='select')
         select_all_button = dbc.Button('Select all', id=select_id, n_clicks=0, style={'width': '100%'})
         unselect_all_button = dbc.Button('Unselect all', id=unselect_id, n_clicks=0, style={'width': '100%'})
-        delete_button = dbc.Button('Delete', id=delete_button_id, style={'width': '100%'})
-        delete_link = dcc.Link(delete_button, id=delete_link_id, href='', target='_top')
+        delete_hidden = dcc.Input(id=delete_hidden_id, type='hidden', name='id', value='')
+        delete_button = dbc.Button('Delete', id=delete_button_id, type='submit', style={'width': '100%'})
+        delete_form = html.Form([delete_hidden, delete_button], action='/delete', method='POST')
         download_button = dbc.Button('Download', id=download_button_id, disabled=True, style={'width': '100%'})
         download_link = dcc.Link(download_button, id=download_link_id, href='', target='_top')
         action_row = dbc.Row([
             dbc.Col(select_all_button, width=2),
             dbc.Col(unselect_all_button, width=2),
-            dbc.Col(delete_link, width=2),
+            dbc.Col(delete_form, width=2),
             dbc.Col(dropdown, width=2),
             dbc.Col(download_link, width=2)
         ], style=self.BOOTSTRAP_ROW_STYLE)
@@ -169,7 +172,8 @@ class BasicDashComponentFactory:
         return [action_row, table]
 
 
-    def activities_table_html(self, metadata_list: List[ActivityMetaData], options_col: bool = False) -> html.Table:
+    def activities_table_html(self, metadata_list: List[ActivityMetaData], options_col: bool = False,
+                              select: bool = True) -> html.Table:
         """An experimental alternative to activities_table, which
         returns a HTML table rather than a Dash DataTable. This means
         we can use dcc.Link for links, which would allow us to use
@@ -338,6 +342,7 @@ class ActivityViewComponentFactory(BasicDashComponentFactory):
         """Return markdown containing a summary of some key metrics
         about the given activity.
         """
+        # TODO: This needs to handle deletion as POST now.
         if self.config.distance_unit == 'km':
             distance = metadata.distance_2d_km
             mean_pace = metadata.mean_km_pace

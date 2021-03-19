@@ -196,8 +196,8 @@ class MainController:
         # activity IDs to act upon.
 
         @self.dash_app.callback(
-            # Output({'type': 'redirect', 'context': 'activity_table', 'index': MATCH}, 'children'),
-            Output({'type': 'delete_link', 'index': MATCH}, 'href'),
+            #Output({'type': 'delete_link', 'index': MATCH}, 'href'),
+            Output({'type': 'delete_hidden', 'index': MATCH}, 'value'),
             Output({'type': 'delete_button', 'index': MATCH}, 'disabled'),
             Output({'type': 'download_link', 'index': MATCH}, 'href'),
             Output({'type': 'download_button', 'index': MATCH}, 'disabled'),
@@ -226,7 +226,7 @@ class MainController:
                 download_href = f'/{download}?id={ids_str}'
                 download_disabled = False
             logger.debug(f'Setting download link to "{download_href}".')
-            return f'/delete?id={ids_str}', False, download_href, download_disabled
+            return ids_str, False, download_href, download_disabled
 
         @self.dash_app.callback(
             Output({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),

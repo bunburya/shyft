@@ -97,10 +97,11 @@ def get_source_file():
                                                        'No source files found for selected activities.')
 
 
-@server.route('/delete')
+@server.route('/delete', methods=['POST'])
 def delete():
+    logger.debug(f'/delete endpoint reached with args: {request.form}')
     try:
-        activity_ids = [md.activity_id for md in main_controller.get_params_to_metadata(request.args)]
+        activity_ids = [md.activity_id for md in main_controller.get_params_to_metadata(request.form)]
     except ValueError:
         return abort(404, f'Bad query. Check logs for details.')
     for i in activity_ids:

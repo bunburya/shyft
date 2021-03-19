@@ -4,7 +4,6 @@ General:
 
 - Custom type definitions
 - Logging
-- Implement general mechanism for searching activities based on GET query. Refactor delete, export, etc to use this.
 
 Config:
 
