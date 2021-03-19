@@ -341,6 +341,7 @@ class Activity:
                 activity_id=activity_id,
                 **metadata
             )
+            logger.debug(f'Created activity with metadata: {activity.metadata}')
         except Exception as e:
             logger.error('Error creating activity.', exc_info=e)
             raise e

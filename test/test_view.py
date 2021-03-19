@@ -97,23 +97,29 @@ def get_source_file():
                                                        'No source files found for selected activities.')
 
 
-@server.route('/delete', methods=['POST'])
+@server.route('/delete', methods=['POST', 'GET'])
 def delete():
     logger.debug(f'/delete endpoint reached with args: {request.form}')
-    try:
-        activity_ids = [md.activity_id for md in main_controller.get_params_to_metadata(request.form)]
-    except ValueError:
-        return abort(404, f'Bad query. Check logs for details.')
-    for i in activity_ids:
-        try:
-            am.delete_activity(i)
-        except ValueError:
-            msg_bus.add_message(f'Could not delete activity with ID {i}. It may not exist.', logging.ERROR)
-    if len(activity_ids) == 1:
-        msg_bus.add_message(f'Deleted activity with ID {activity_ids[0]}.')
+    if not request.form:
+        logger.warning('delete function received empty request.form. Not deleting anything.')
     else:
-        msg_bus.add_message(f'Deleted {len(activity_ids)} activities.')
-    return redirect('/')
+        try:
+            activity_ids = [md.activity_id for md in main_controller.get_params_to_metadata(request.form)]
+        except ValueError:
+            return abort(404, f'Bad query. Check logs for details.')
+        for i in activity_ids:
+            try:
+                am.delete_activity(i)
+            except ValueError:
+                msg_bus.add_message(f'Could not delete activity with ID {i}. It may not exist.', logging.ERROR)
+        if len(activity_ids) == 1:
+            msg_bus.add_message(f'Deleted activity with ID {activity_ids[0]}.')
+        else:
+            msg_bus.add_message(f'Deleted {len(activity_ids)} activities.')
+    if (send_to := request.args.get('redirect')):
+        return redirect(send_to)
+    else:
+        return redirect('/')
 
 
 if __name__ == '__main__':

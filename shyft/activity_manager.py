@@ -38,7 +38,7 @@ class ActivityManager:
         return self.dbm.get_all_activity_ids()
 
     @property
-    def prototypes(self) -> Sequence[int]:
+    def prototypes(self) -> List[int]:
         """Return a sequence of the activity_ids of all Activities which are prototypes."""
         return self.dbm.get_all_prototypes()
 

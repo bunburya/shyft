@@ -199,22 +199,27 @@ class MainController:
             #Output({'type': 'delete_link', 'index': MATCH}, 'href'),
             Output({'type': 'delete_hidden', 'index': MATCH}, 'value'),
             Output({'type': 'delete_button', 'index': MATCH}, 'disabled'),
+            Output({'type': 'delete_form', 'index': MATCH}, 'action'),
             Output({'type': 'download_link', 'index': MATCH}, 'href'),
             Output({'type': 'download_button', 'index': MATCH}, 'disabled'),
             Input({'type': 'activity_table_dropdown', 'index': MATCH}, 'value'),
             Input({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),
-            State({'type': 'activity_table', 'index': MATCH}, 'data')
+            State({'type': 'activity_table', 'index': MATCH}, 'data'),
+            State('url', 'pathname'),
         )
-        def set_action_links(download: str, selected_rows: List[int], data: List) -> Tuple[str, bool, str, bool]:
+        def set_action_links(download: str, selected_rows: List[int], data: List,
+                             pathname: str) -> Tuple[str, bool, str, str, bool]:
             """Triggered every time an activity is selected or
             unselected, or the download dropdown value is changed.
-            Sets the link and disabled status of both the "Delete" and
-            "Download" buttons.
+            Sets the link and disabled status of the "Download" button,
+            and the disabled status, POST data and form action
+            associated with the "Delete" button.
             """
             logger.debug(f'Value "{download}" selected from download dropdown.')
             # logger.debug(f'Selected rows: {selected_rows}')
+            del_path = f'/delete?redirect={pathname}'
             if not selected_rows:
-                return '', True, '', True
+                return '', True, del_path, '', True
             ids = [str(data[i]['id']) for i in selected_rows]
             if not ids:
                 raise PreventUpdate
@@ -226,7 +231,7 @@ class MainController:
                 download_href = f'/{download}?id={ids_str}'
                 download_disabled = False
             logger.debug(f'Setting download link to "{download_href}".')
-            return ids_str, False, download_href, download_disabled
+            return ids_str, False, del_path, download_href, download_disabled
 
         @self.dash_app.callback(
             Output({'type': 'activity_table', 'index': MATCH}, 'selected_rows'),

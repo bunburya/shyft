@@ -307,6 +307,13 @@ class ActivityManagerTestCase(BaseTestCase):
         # Try remove an Activity that is not present
         self.assertRaises(ValueError, lambda: self.manager_1.delete_activity(444))
 
+        # Delete all activities.
+        for i in manager.activity_ids:
+            manager.delete_activity(i)
+        self.assertListEqual(manager.activity_ids, [])
+        self.assertListEqual(manager.all_metadata, [])
+        self.assertListEqual(manager.prototypes, [])
+
     def test_17_get_week(self):
         """Test getting metadata for all activities in a given week."""
 
