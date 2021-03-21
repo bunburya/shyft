@@ -1,6 +1,6 @@
 import calendar
 import os
-from datetime import datetime, timedelta
+from datetime import date, timedelta, datetime
 from typing import Tuple, Sequence, Optional, Dict, List, Generator, Union, Callable, Any, Collection
 
 import pandas as pd
@@ -16,7 +16,7 @@ from shyft.logger import get_logger
 logger = get_logger(__name__)
 
 
-def _iter_dates(start: datetime, end_inclusive: datetime,
+def _iter_dates(start: date, end_inclusive: date,
                 step: Union[timedelta, relativedelta]) -> Generator[datetime, None, None]:
     current = start
     while current <= end_inclusive:
@@ -134,8 +134,8 @@ class ActivityManager:
             return min(tight_matches, key=lambda p: p[1])[0]
 
     def search_metadata(self,
-                        from_date: Optional[datetime] = None,
-                        to_date: Optional[datetime] = None,
+                        from_date: Optional[date] = None,
+                        to_date: Optional[date] = None,
                         prototype: Optional[int] = None,
                         activity_type: Optional[str] = None,
                         number: Optional[int] = None,
@@ -145,8 +145,8 @@ class ActivityManager:
         return [ActivityMetaData(self.config, **kwargs) for kwargs in results]
 
     def summarize_metadata(self,
-                           from_date: Optional[datetime] = None,
-                           to_date: Optional[datetime] = None,
+                           from_date: Optional[date] = None,
+                           to_date: Optional[date] = None,
                            prototype: Optional[int] = None,
                            activity_type: Optional[str] = None,
                            number: Optional[int] = None
@@ -200,7 +200,7 @@ class ActivityManager:
         self.dbm.change_prototype(old_id, new_id, commit=False)
         self.dbm.commit()
 
-    def get_metadata_by_month(self, month: datetime, **kwargs) -> List[ActivityMetaData]:
+    def get_metadata_by_month(self, month: date, **kwargs) -> List[ActivityMetaData]:
         """Return a list of ActivityMetaData objects representing all
         activities in the given year and month.
 
@@ -212,12 +212,12 @@ class ActivityManager:
         year = month.year
         month = month.month
         _, last = calendar.monthrange(year, month)
-        start = datetime(year, month, 1)
-        end = datetime(year, month, last, 23, 59, 59)
+        start = date(year, month, 1)
+        end = date(year, month, last)
         #print(start, end)
         return self.search_metadata(from_date=start, to_date=end, **kwargs)
 
-    def get_metadata_by_week(self, start: datetime, **kwargs) -> List[ActivityMetaData]:
+    def get_metadata_by_week(self, start: date, **kwargs) -> List[ActivityMetaData]:
         """Return a list of ActivityMetaData objects representing all
         activities week that commenced on the given date.
 
@@ -229,13 +229,13 @@ class ActivityManager:
         return self.search_metadata(start, end, **kwargs)
 
     def _metadata_time_series_df(self, freq: Union[timedelta, relativedelta],
-                                 summary_func: Callable[[datetime, ...], List[ActivityMetaData]],
-                                 from_date: Optional[datetime] = None, to_date: Optional[datetime] = None,
+                                 summary_func: Callable[[date, ...], List[ActivityMetaData]],
+                                 from_date: Optional[date] = None, to_date: Optional[date] = None,
                                  **kwargs) -> pd.DataFrame:
         if from_date is None:
-            from_date = self.earliest_datetime
+            from_date = self.earliest_datetime.date()
         if to_date is None:
-            to_date = self.latest_datetime
+            to_date = self.latest_datetime.date()
         data = []
         for date in _iter_dates(from_date, to_date, freq):
             period_data = summary_func(date, **kwargs)
@@ -244,7 +244,7 @@ class ActivityManager:
             period_summary = summarize_metadata(period_data)
             #logger.debug(period_summary['mean_hr'])
             data.append({
-                'date': date,
+                'date': pd.to_datetime(date),  # Pandas doesn't have its own `date` equivalent so convert to datetime
                 'activity_count': period_summary.shape[0],
                 'total_duration': period_summary['duration'].sum(),
                 'total_distance_2d_km': period_summary['distance_2d_km'].sum(),
@@ -254,12 +254,12 @@ class ActivityManager:
             })
         return pd.DataFrame(data).set_index('date')
 
-    def metadata_weekly_time_series(self, from_date: Optional[datetime] = None, to_date: Optional[datetime] = None,
+    def metadata_weekly_time_series(self, from_date: Optional[date] = None, to_date: Optional[date] = None,
                                     **kwargs) -> pd.DataFrame:
         return self._metadata_time_series_df(timedelta(weeks=1), self.get_metadata_by_week,
                                              from_date, to_date, **kwargs)
 
-    def metadata_monthly_time_series(self, from_date: Optional[datetime] = None, to_date: Optional[datetime] = None,
+    def metadata_monthly_time_series(self, from_date: Optional[date] = None, to_date: Optional[date] = None,
                                      **kwargs) -> pd.DataFrame:
         return self._metadata_time_series_df(relativedelta(months=1), self.get_metadata_by_month,
                                              from_date, to_date, **kwargs)

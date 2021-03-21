@@ -4,7 +4,7 @@ from typing import List
 import dash_core_components as dcc
 from dash.development.base_component import Component
 
-from shyft.dash_app.view.controller._base import _BaseController
+from shyft.app.controllers._base import _BaseController
 
 
 class MarkdownController(_BaseController):

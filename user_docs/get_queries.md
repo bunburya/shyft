@@ -1,17 +1,19 @@
 # GET queries
 
-Several of Shyft's endpoints, such as `/delete`, `/view_activities`, etc, allow you to specify the activities to be
+Several of Shyft's endpoints, such as `/source_files`, `/view_activities`, etc, allow you to specify the activities to be
 acted upon by a GET query in a common format. That format is as follows:
 
-`?from=<date_time>&to=<date_time>&prototype=<integer>&type=<string>&id=<integer>,<integer>,<integer>,[...]`
+`from_date=<date>&to_date=<date>&prototype=<integer>&type=<string>&id=<integer>,<integer>,<integer>,[...]`
+
+Note that `/delete` works in the same way, but the query (in the same format) is sent as a POST request, not a GET request.
 
 As you can see, the possible parameters are:
 
-- `from`: A date and time, specified as a string in the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Only
-  activities that began on or after this date and time will be returned.
+- `from_date`: A date specified as a string in the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Only
+  activities that began on or after this date will be returned.
   
-- `to`: A date and time, specified as a string in the ISO 8601 format. Only activities that began on or before this 
-  date and time will be returned.
+- `to_date`: A date specified as a string in the ISO 8601 format. Only activities that began on or before this 
+  date will be returned.
   
 - `prototype`: An integer, representing an activity ID. Only activities whose [prototype activity](/user_docs/matching)
   is the specified activity will be returned.

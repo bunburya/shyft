@@ -1,13 +1,7 @@
-import os
 from time import time
 
-import numpy as np
-import pandas as pd
-from shyft.config import Config
 from shyft.geo_utils import norm_length_diff, norm_center_diff, norm_dtw
-from shyft.activity_manager import ActivityManager
-from shyft.activity import Activity
-from test.test_common import *
+from test_utils.test_common import *
 
 TEST_RUN_DATA_DIR = run_data_dir('threshold', replace=True)
 TEST_CONFIG_FILE = config_file(TEST_RUN_DATA_DIR)

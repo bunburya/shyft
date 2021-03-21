@@ -8,7 +8,7 @@ from dash.development.base_component import Component
 
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME
-from shyft.dash_app.view.controller._base import _BaseController
+from shyft.app.controllers._base import _BaseController
 
 DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 

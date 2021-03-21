@@ -4,6 +4,7 @@ import os
 from io import BytesIO
 from logging import ERROR
 from typing import List, Dict, Optional, Tuple, Callable
+from urllib.parse import urlparse, parse_qs
 from zipfile import ZipFile
 
 import flask
@@ -14,7 +15,7 @@ from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate
-from json_utils import ShyftJSONEncoder
+
 from werkzeug.exceptions import abort
 import dateutil.parser as dp
 
@@ -23,13 +24,14 @@ from shyft.activity_manager import ActivityManager
 from shyft.config import Config
 from shyft.logger import get_logger
 from shyft.message import MessageBus
-from shyft.dash_app.view.controller.activity import ActivityController
-from shyft.dash_app.view.controller.config import ConfigController
-from shyft.dash_app.view.controller.overview import OverviewController
-from shyft.dash_app.view.controller.upload import UploadController
-from shyft.dash_app.view.controller.view_activities import ViewActivitiesController
-from shyft.dash_app.view.controller.markdown import MarkdownController
-
+from shyft.json_utils import ShyftJSONEncoder
+from shyft.app.controllers.activity import ActivityController
+from shyft.app.controllers.config import ConfigController
+from shyft.app.controllers.overview import OverviewController
+from shyft.app.controllers.upload import UploadController
+from shyft.app.controllers.view_activities import ViewActivitiesController
+from shyft.app.controllers.markdown import MarkdownController
+from shyft.app.utils import id_str_to_ints
 
 logger = get_logger(__name__)
 
@@ -41,46 +43,37 @@ MIMETYPES = {
 MIMETYPE_FALLBACK = 'application/octet-stream'
 
 
-def id_str_to_ints(ids: str) -> List[int]:
-    """Convert a string containing comma-separated activity IDs to a
-    list of integers, performing some basic verification and raising a
-    ValueError if one of the given IDs is not valid.
-    """
-    ids = ids.split(',')
-    int_ids = []
-    for i in ids:
-        try:
-            int_ids.append(int(i))
-        except (ValueError, TypeError):
-            raise ValueError(f'Bad activity id: "{i}".')
-    return int_ids
-
-
 class MainController:
-    """A main controller class for use with our Dash app. This will
-    hold instances of the other, page-specific controller classes.
+    """A main controllers class for use with our Dash app. This will
+    hold instances of the other, page-specific controllers classes.
     """
 
-    def __init__(self, dash_app: dash.Dash, config: Config, msg_bus: MessageBus,
+    def __init__(self, dash_app: dash.Dash, config: Config, msg_bus: Optional[MessageBus] = None,
                  activity_manager: Optional[ActivityManager] = None):
-        logger.debug('Initialising DashController.')
+        logger.debug('Initialising MainController.')
         self.dash_app = dash_app
         # Stop Dash complaining if not all components are present when callbacks are registered
         # https://dash.plotly.com/callback-gotchas
         dash_app.config.suppress_callback_exceptions = True
+        if msg_bus is None:
+            logger.debug('No value provided for msg_bus: Creating new MessageBus.')
+            self.msg_bus = MessageBus()
+            logger.debug(f'msg_bus: {self.msg_bus}')
+        else:
+            self.msg_bus = msg_bus
         if activity_manager is None:
+            logger.debug('No value provided for activity_manager: Creating new ActivityManager.')
             self.activity_manager = ActivityManager(config)
         else:
             self.activity_manager = activity_manager
         self.config = config
         self.config_fpath = config.ini_fpath
-        self.msg_bus = msg_bus
 
         self.overview_controller = OverviewController(self)
         self.activity_controller = ActivityController(self)
         self.upload_controller = UploadController(self)
         self.config_controller = ConfigController(self)
-        self.all_activities_controller = ViewActivitiesController(self)
+        self.view_activities_controller = ViewActivitiesController(self)
         self.markdown_controller = MarkdownController(self)
         # self.locations = self.init_locations()
         self.register_callbacks()
@@ -88,27 +81,45 @@ class MainController:
         # Initialise with empty layout; content will be added by callbacks.
         self.dash_app.layout = self.layout()
 
-    def get_params_to_metadata(self, params: Dict[str, str]) -> List[ActivityMetaData]:
+    def parse_url_query(self, query: str) -> Dict[str, str]:
+        """Parse a string representing the query portion of a URL.
+
+        Returns a dict representing the parameters that can be used by
+        other methods such as get_params_to_metadata.
+
+        Assumes that the query is validly formed and each parameter is
+        specified at most once.
+        """
+        parsed = parse_qs(query)
+        params = {}
+        for k in parsed:
+            if len(parsed[k]) > 1:
+                raise ValueError(
+                    f'Parameter "{k}" passed more than once. Each parameter should be passed at most once.')
+            params[k] = parsed[k][0]
+        return params
+
+    def url_params_to_metadata(self, params: Dict[str, str]) -> List[ActivityMetaData]:
         """Takes a dict representing parameters of a GET query and
         returns a list of ActivityMetaData objects that fit the given
         search criteria.
         """
-        if (from_date := params.get('from')):
+        if from_date := params.get('from_date'):
             from_date = dp.parse(from_date)
-        if (to_date := params.get('to')):
+        if to_date := params.get('to_date'):
             to_date = dp.parse(to_date)
-        if (prototype := params.get('prototype')):
+        if prototype := params.get('prototype'):
             prototype = int(prototype)
         activity_type = params.get('type')
-        if (ids := params.get('id')):
+        if ids := params.get('id'):
             ids = id_str_to_ints(ids)
 
         return self.activity_manager.search_metadata(from_date=from_date, to_date=to_date, prototype=prototype,
                                                      activity_type=activity_type, ids=ids)
 
-    def get_params_to_metadata_json(self, params: Dict[str, str], exclude_filepaths: bool = True,
+    def url_params_to_metadata_json(self, params: Dict[str, str], exclude_filepaths: bool = True,
                                     exclude_config: bool = True) -> str:
-        metadata = self.get_params_to_metadata(params)
+        metadata = self.url_params_to_metadata(params)
         data = []
         for m in metadata:
             d = dataclasses.asdict(m)
@@ -119,7 +130,6 @@ class MainController:
                 d.pop('config')
             data.append(d)
         return json.dumps(data, cls=ShyftJSONEncoder)
-
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:
         logger.debug('Setting page layout.')
@@ -141,13 +151,16 @@ class MainController:
     def _id_str_to_activities(self, ids: str) -> List[Optional[Activity]]:
         return [self.activity_manager.get_activity_by_id(i) for i in id_str_to_ints(ids)]
 
-    def _resolve_pathname(self, path) -> List[Component]:
+    def _resolve_pathname(self, href: str) -> List[Component]:
         """Resolve the URL pathname and return the appropriate page
         content.
         """
-        logger.info(f'Resolving pathname "{path}" for page content.')
+        logger.info(f'Resolving URL "{href}" for page content.')
 
-        if path is not None:
+        if href is not None:
+            parsed = urlparse(href)
+            path = parsed.path
+            params = self.parse_url_query(parsed.query)
             tokens = path.split('/')[1:]
             if tokens[0] == 'activity':
                 try:
@@ -164,8 +177,8 @@ class MainController:
                 return self.upload_controller.page_content()
             elif tokens[0] == 'config':
                 return self.config_controller.page_content()
-            elif tokens[0] == 'all':
-                return self.all_activities_controller.page_content()
+            elif tokens[0] == 'activities':
+                return self.view_activities_controller.page_content(params)
             elif tokens[0] == 'user_docs':
                 return self.markdown_controller.page_content(tokens[1])
             elif tokens[0] in {'gpx_files', 'tcx_files', 'source_files'}:
@@ -181,12 +194,12 @@ class MainController:
 
         @self.dash_app.callback(
             Output('page_content', 'children'),
-            Input('url', 'pathname'),
+            Input('url', 'href'),
         )
-        def update_page(pathname: str) -> List[Component]:
+        def update_page(href: str) -> List[Component]:
             """Display different page on url update."""
-            logger.debug(f'URL change detected: new pathname is "{pathname}".')
-            return self._resolve_pathname(pathname)
+            logger.debug(f'URL change detected: new URL is "{href}".')
+            return self._resolve_pathname(href)
 
         @self.dash_app.callback(
             Output('url', 'pathname'),
@@ -202,8 +215,8 @@ class MainController:
             logger.debug(f'Updating URL pathname to "{value}".')
             return value
 
-        # The below callbacks are used for manipulating activity tables. They are registered here in the main controller
-        # because activity tables can be manipulated in multiple contexts.
+        # The below callbacks are used for manipulating activity tables. They are registered here in MainController
+        # because it is contemplated that activity tables can be manipulated in multiple contexts.
         # TODO: Currently, trying to perform actions on large numbers of activities at once results in very long URLs.
         # With enough activities, this could cause issues in some browsers:
         # see https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
@@ -212,7 +225,6 @@ class MainController:
         # activity IDs to act upon.
 
         @self.dash_app.callback(
-            #Output({'type': 'delete_link', 'index': MATCH}, 'href'),
             Output({'type': 'delete_hidden', 'index': MATCH}, 'value'),
             Output({'type': 'delete_button', 'index': MATCH}, 'disabled'),
             Output({'type': 'delete_form', 'index': MATCH}, 'action'),
@@ -273,7 +285,7 @@ class MainController:
 
         # Unfortunately this seems to be the only way to dynamically set the title in Dash.
         # FIXME: Doesn't work...
-        # self.dash_app.clientside_callback(
+        # self.app.clientside_callback(
         #     """
         #     function(pathname) {
         #         console.log('Callback called with %s', pathname);
@@ -300,7 +312,7 @@ class MainController:
             _, ext = os.path.splitext(fpath)
             mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
             return flask.send_file(fpath, mimetype=mimetype, as_attachment=True,
-                             attachment_filename=os.path.basename(fpath))
+                                   attachment_filename=os.path.basename(fpath))
         else:
             return abort(404, not_found_msg.format(id=id))
 
@@ -332,7 +344,7 @@ class MainController:
         user if one or more relevant files is not found.
         """
         try:
-            metadata = self.get_params_to_metadata(params)
+            metadata = self.url_params_to_metadata(params)
         except ValueError:
             return abort(404, 'Bad query. Check logs for more details.')
         fpaths = [fpath_getter(md) for md in metadata]

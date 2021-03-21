@@ -167,7 +167,6 @@ class BasicDashComponentFactory:
 
         return [action_row, table]
 
-
     def activities_table_html(self, metadata_list: List[ActivityMetaData], options_col: bool = False,
                               select: bool = True) -> html.Table:
         """An experimental alternative to activities_table, which
@@ -287,6 +286,7 @@ class BasicDashComponentFactory:
             html.A(['{app_name} {app_version}'.format(**app_metadata)], href=app_metadata['app_url'])
         ]))
 
+
 class ActivityViewComponentFactory(BasicDashComponentFactory):
     """Methods to generate Dash components used to view a single activity."""
 
@@ -354,14 +354,6 @@ class ActivityViewComponentFactory(BasicDashComponentFactory):
                 **Duration:**\t{metadata.duration}
 
                 **Average pace:**\t{mean_pace}
-
-                [Export to GPX]({self.gpx_file_link(metadata)})
-                
-                [Export to TCX]({self.tcx_file_link(metadata)})
-
-                [Download source file]({self.source_file_link(metadata)})
-
-                [Delete]({self.delete_link(metadata)})
             """)
         )
 
@@ -431,8 +423,8 @@ class ActivityViewComponentFactory(BasicDashComponentFactory):
             row_selectable='multi',
             selected_rows=[],
             style_table={
-                'height': 450,
-                'overflowY': 'scroll'
+                'height': 414,  # height of container (450) - height of dropdown (36)
+                'overflowY': 'scroll',
             },
             **self.COMMON_DATATABLE_OPTIONS,
             **kwargs
@@ -454,7 +446,7 @@ class ActivityViewComponentFactory(BasicDashComponentFactory):
             fig = go.Figure(figure)
         else:
             # TODO: Calculate zoom more intelligently
-            fig = px.line_mapbox(df, lat="latitude", lon="longitude", zoom=11, **kwargs)
+            fig = px.line_mapbox(df, lat="latitude", lon="longitude", zoom=12, **kwargs)
             fig.update_layout(
                 mapbox_style="open-street-map",
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
@@ -498,42 +490,38 @@ class ActivityViewComponentFactory(BasicDashComponentFactory):
         If `splits` is not None, it should be one of `lap`, `km` or
         `mile` and will display the corresponding splits.
         """
-        return dbc.Row(
-            children=[
-                dbc.Col(children=[
-                    dbc.Row(dbc.Col(
-                        dcc.Dropdown(
-                            id='split_type_dropdown',
-                            options=[
-                                {'label': 'km splits', 'value': 'km'},
-                                {'label': 'mile splits', 'value': 'mile'},
-                                {'label': 'laps', 'value': 'lap', 'disabled': activity.laps is None}
-                            ],
-                            value=self.get_split_type(activity)
-                        )
-                    )),
-                    dbc.Row(dbc.Col(
-                        self.splits_table(
-                            id=f'split_summary_table',
-                            activity=activity,
-                        ),
-                        width=12
-                    )),
-                ], width=4),
-
-                dbc.Col(
-                    dcc.Graph(
-                        id='map',
-                        figure=self.map_figure(activity.points)
+        return dbc.Row([
+            dbc.Col([
+                dbc.Row(dbc.Col(
+                    dcc.Dropdown(
+                        id='split_type_dropdown',
+                        options=[
+                            {'label': 'km splits', 'value': 'km'},
+                            {'label': 'mile splits', 'value': 'mile'},
+                            {'label': 'laps', 'value': 'lap', 'disabled': activity.laps is None}
+                        ],
+                        value=self.get_split_type(activity)
                     ),
-                    width=8
-                )
-            ],
-            style={
-                'height': 450
-            },
-            no_gutters=True
-        )
+                    width=12
+                )),
+                dbc.Row(dbc.Col(
+                    self.splits_table(
+                        id=f'split_summary_table',
+                        activity=activity,
+                    ),
+                    width=12
+                )),
+            ], width=4),
+
+            dbc.Col(
+                dcc.Graph(
+                    id='map',
+                    figure=self.map_figure(activity.points)
+                ),
+                width=8
+            )
+        #], style={'height': 450}, no_gutters=True)
+        ], no_gutters=True, id='map_and_splits_row')
 
     def matched_activities(self, activity: Activity) -> dbc.Row:
         """Return a table listing the given activity's matched activities."""
@@ -551,6 +539,29 @@ class ActivityViewComponentFactory(BasicDashComponentFactory):
             ])
         else:
             return dcc.Markdown('No other activities match this route.')
+
+    def download_buttons(self, activity: Activity) -> List[dbc.Col]:
+        source_download = html.A(dbc.Button('Download source file', style={'width': '100%'}),
+                                 href=self.source_file_link(activity.metadata))
+        gpx_download = html.A(dbc.Button('Download GPX file', style={'width': '100%'}),
+                              href=self.gpx_file_link(activity.metadata))
+        tcx_download = html.A(dbc.Button('Download TCX file', style={'width': '100%'}),
+                              href=self.tcx_file_link(activity.metadata))
+        return [
+            dbc.Col(source_download),
+            dbc.Col(gpx_download),
+            dbc.Col(tcx_download)
+        ]
+
+    def delete_button(self, activity: Activity) -> html.Form:
+        hidden = dcc.Input(type='hidden', name='id', value=activity.metadata.activity_id)
+        button = dbc.Button('Delete', type='submit', style={'width': '100%'})
+        return html.Form([hidden, button], action='/delete', method='POST')
+
+    def actions_row(self, activity: Activity) -> dbc.Row:
+        children = self.download_buttons(activity)
+        children.append(dbc.Col(self.delete_button(activity)))
+        return dbc.Row(children)
 
 
 class OverviewComponentFactory(BasicDashComponentFactory):
@@ -630,17 +641,17 @@ class OverviewComponentFactory(BasicDashComponentFactory):
     def recent_activities(self) -> dt.DataTable:
         """Return a table of the most recent activities."""
         logger.debug('Generating recent activity table.')
-        #logger.debug('Getting metadata...')
+        # logger.debug('Getting metadata...')
         metadata = self.activity_manager.all_metadata
-        #logger.debug('Sorting...')
+        # logger.debug('Sorting...')
         metadata.sort(key=lambda md: md.date_time, reverse=True)
-        #logger.debug('Creating table...')
+        # logger.debug('Creating table...')
         return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True, select=True)
 
     def hr_over_time(self) -> List[Component]:
         logger.debug('Generating graph of average heart rate over time.')
         df = self.activity_manager.metadata_monthly_time_series(activity_type='run')
-        #logger.debug(df['mean_hr'])
+        # logger.debug(df['mean_hr'])
         graph = dcc.Graph(
             id='hr_over_time',
             figure=px.line(df,

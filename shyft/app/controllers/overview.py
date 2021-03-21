@@ -5,8 +5,8 @@ import dash_html_components as html
 from dash.development.base_component import Component
 
 from shyft.logger import get_logger
-from shyft.dash_app.view.controller._base import _BaseController
-from shyft.dash_app.view.controller._dash_components import OverviewComponentFactory
+from shyft.app.controllers._base import _BaseController
+from shyft.app.view.dash_components import OverviewComponentFactory
 
 logger = get_logger(__name__)
 

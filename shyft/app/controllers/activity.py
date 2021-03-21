@@ -9,8 +9,8 @@ from dash.exceptions import PreventUpdate
 
 from shyft.activity import Activity
 from shyft.logger import get_logger
-from shyft.dash_app.view.controller._base import _BaseController
-from shyft.dash_app.view.controller._dash_components import ActivityViewComponentFactory
+from shyft.app.controllers._base import _BaseController
+from shyft.app.view.dash_components import ActivityViewComponentFactory
 
 logger = get_logger(__name__)
 
@@ -29,6 +29,7 @@ class ActivityController(_BaseController):
             html.H1(f'View activity: {self.dc_factory.activity_name(activity.metadata)}'),
             html.H2('Activity overview'),
             html.Div([self.dc_factory.activity_overview(activity.metadata)]),
+            self.dc_factory.actions_row(activity),
             html.H2('Route'),
             self.dc_factory.map_and_splits(activity),
             html.H2('Analysis'),

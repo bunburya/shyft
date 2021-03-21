@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from shyft.logger import get_logger
-from shyft.dash_app.view.controller._dash_components import BasicDashComponentFactory
+from shyft.app.view.dash_components import BasicDashComponentFactory
 
 import typing
 if typing.TYPE_CHECKING:
@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 logger = get_logger(__name__)
 
 class _BaseController:
-    """A base class for Dash-related controller classes."""
+    """A base class for Dash-related controllers classes."""
 
     # What component factory class to use. By default, use the basic factory class that can produce components
     # likely to be common to multiple pages; subclasses can override if they need a more specific component factory.
@@ -21,7 +21,9 @@ class _BaseController:
         self.main_controller = main_controller
         self.activity_manager = main_controller.activity_manager
         self.config = main_controller.config
+        logger.debug(f'main controller\'s msg_bus: {main_controller.msg_bus}')
         self.msg_bus = main_controller.msg_bus
+        logger.debug(f'{self.__class__.__name__} msg_bus: {self.msg_bus}')
         self.dash_app = main_controller.dash_app
         self.dc_factory = self.DC_FACTORY(self.dash_app, self.activity_manager, self.config, self.msg_bus)
         if register_callbacks:

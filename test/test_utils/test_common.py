@@ -21,7 +21,7 @@ from shyft.df_utils.validate import DataFrameSchema
 from shyft.df_utils.schemas import points_schema, laps_splits_km_schema, laps_splits_mile_schema, \
     metadata_summary_schema
 
-TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
+TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), '../test_data')
 TEST_GPX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'gpx_files')
 TEST_FIT_FILES_DIR = os.path.join(TEST_DATA_DIR, 'fit_files')
 TEST_TCX_FILES_DIR = os.path.join(TEST_DATA_DIR, 'tcx_files')

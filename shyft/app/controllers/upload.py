@@ -11,7 +11,7 @@ from dash.exceptions import PreventUpdate
 
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME
-from shyft.dash_app.view.controller._base import _BaseController
+from shyft.app.controllers._base import _BaseController
 
 
 logger = get_logger(__name__)

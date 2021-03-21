@@ -1,9 +1,9 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, date
 
-from schemas import metadata_time_series_schema
+from shyft.df_utils.schemas import metadata_time_series_schema
 from shyft.logger import get_logger
-from test.test_common import *
+from test_utils.test_common import *
 
 logger = get_logger(file_level=logging.DEBUG, console_level=logging.WARN,
                     log_file=os.path.join(TEST_LOGS_DIR, 'multi_activity.log'))
@@ -341,13 +341,13 @@ class ActivityManagerTestCase(BaseTestCase):
 
     def test_19_time_series(self):
         """Test generation of time series data."""
-        weekly = self.manager_1.metadata_weekly_time_series(datetime(2019, 1, 1))
+        weekly = self.manager_1.metadata_weekly_time_series(date(2019, 1, 1))
         self.assert_dataframe_valid(weekly, metadata_time_series_schema)
-        weekly_runs = self.manager_1.metadata_weekly_time_series(datetime(2019, 1, 1), activity_type='run')
+        weekly_runs = self.manager_1.metadata_weekly_time_series(date(2019, 1, 1), activity_type='run')
         self.assert_dataframe_valid(weekly_runs, metadata_time_series_schema)
-        monthly = self.manager_1.metadata_monthly_time_series(datetime(2019, 1, 1))
+        monthly = self.manager_1.metadata_monthly_time_series(date(2019, 1, 1))
         self.assert_dataframe_valid(monthly, metadata_time_series_schema)
-        monthly_runs = self.manager_1.metadata_monthly_time_series(datetime(2019, 1, 1), activity_type='run')
+        monthly_runs = self.manager_1.metadata_monthly_time_series(date(2019, 1, 1), activity_type='run')
         self.assert_dataframe_valid(monthly_runs, metadata_time_series_schema)
 
 if __name__ == '__main__':

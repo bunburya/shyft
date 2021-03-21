@@ -1,16 +1,16 @@
-from typing import List
+from typing import List, Dict
 
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.development.base_component import Component
 
-from shyft.dash_app.view.controller._base import _BaseController
+from shyft.app.controllers._base import _BaseController
 
 
 class ViewActivitiesController(_BaseController):
 
-    def page_content(self) -> List[Component]:
-        metadata = self.activity_manager.search_metadata()
+    def page_content(self, params: Dict[str, str]) -> List[Component]:
+        metadata = self.main_controller.url_params_to_metadata(params)
         if metadata:
             #display = self.dc_factory.activities_table(metadata, select=True, id='all_activities_table')
             display = self.dc_factory.activities_table_with_actions('view_activities', metadata,

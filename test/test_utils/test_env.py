@@ -1,6 +1,4 @@
-import shutil
-
-from test.test_common import *
+from test_utils.test_common import *
 
 """Set up a basic test environment, so that running `python -i test_env.py`
 allows us to explore the data and objects interactively.

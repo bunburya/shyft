@@ -1,14 +1,10 @@
 import logging
-import sys
 from argparse import ArgumentParser, Namespace
 from collections import OrderedDict
-from typing import Tuple, List
+from typing import Tuple
 
-import flask
-from shyft.message import MessageBus
-from shyft.dash_app.view.controller.main import MainController
 from shyft.config import Config
-from shyft.dash_app.flask_app import dash_app
+from shyft.app.app import get_apps
 from shyft.logger import get_logger
 
 
@@ -30,8 +26,7 @@ def run_app(ns: Namespace):
     """Run the Dash app."""
     config, logger = handle_universal_options(ns)
     logger.debug('Running "run" command.')
-    flask.g.msg_bus = MessageBus()
-    flask.g.main_controller = MainController(dash_app, config, flask.g.msg_bus)
+    _, dash_app = get_apps(config)
     logger.info(f'Starting dash app on {ns.host}:{ns.port}.{" Debug mode active." if ns.debug else ""}')
     dash_app.run_server(ns.host, ns.port, debug=ns.debug, use_reloader=False)
 
@@ -48,7 +43,7 @@ def mk_config(ns: Namespace):
     for field in Config.__dataclass_fields__:
         if (k := ns_dict.get(field)) is not None:
             setattr(config, field, k)
-    config.to_file(fpath=out_file)
+    config.to_file(fpath=out_file, generate_raw=True)
 
 
 COMMANDS = OrderedDict([
