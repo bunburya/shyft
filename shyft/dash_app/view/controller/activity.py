@@ -9,8 +9,8 @@ from dash.exceptions import PreventUpdate
 
 from shyft.activity import Activity
 from shyft.logger import get_logger
-from shyft.view.controller._base import _BaseController
-from shyft.view.controller._dash_components import ActivityViewComponentFactory
+from shyft.dash_app.view.controller._base import _BaseController
+from shyft.dash_app.view.controller._dash_components import ActivityViewComponentFactory
 
 logger = get_logger(__name__)
 

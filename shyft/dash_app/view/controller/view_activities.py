@@ -4,7 +4,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.development.base_component import Component
 
-from shyft.view.controller._base import _BaseController
+from shyft.dash_app.view.controller._base import _BaseController
 
 
 class ViewActivitiesController(_BaseController):

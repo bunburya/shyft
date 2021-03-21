@@ -5,6 +5,7 @@ TODO:  Implement proper configuration using ConfigParser.
 import getpass
 import json
 import os
+import sys
 from configparser import ConfigParser, Interpolation, BasicInterpolation
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
@@ -17,7 +18,6 @@ DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'
 
 @dataclass(init=False)
 class Config:
-
     # Add these as fields so that they are compared in __eq__
     data_dir: str
     user_name: str
@@ -30,7 +30,6 @@ class Config:
     week_start: str
     speed_measure_interval: int
     overview_activities_count: int
-
 
     def __init__(self, ini_fpath: str,
                  activity_graphs_fpath: Optional[str] = None,
@@ -47,7 +46,6 @@ class Config:
         self.kwargs = kwargs
 
         self.load()
-
 
     def read_file(self, ini_fpath: str):
         parser = ConfigParser(interpolation=self.interpolation)
@@ -78,7 +76,6 @@ class Config:
 
         self.overview_activities_count = parser['general'].getint('overview_activities_count')
         self.matched_activities_count = parser['general'].getint('matched_activities_count')
-
 
     def load(self, fpath: Optional[str] = None):
         """Load values from the given files and keyword arguments."""
@@ -125,10 +122,13 @@ class Config:
         self.gpx_file_dir = os.path.join(new, 'gpx_files')
         self.tcx_file_dir = os.path.join(new, 'tcx_files')
         self.source_file_dir = os.path.join(new, 'source_files')
+        self.tmp_dir = os.path.join(new, 'tmp')
         self.db_file = os.path.join(new, 'shyft.db')
         self.log_file = os.path.join(new, 'shyft.log')
 
-        for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir, self.tcx_file_dir, self.source_file_dir):
+
+        for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir, self.tcx_file_dir, self.source_file_dir,
+                     self.tmp_dir):
             if not os.path.exists(_dir):
                 os.makedirs(_dir)
 
@@ -145,10 +145,11 @@ class Config:
         week_start_i = DAYS_OF_WEEK.index(new)
         self.days_of_week = DAYS_OF_WEEK[week_start_i:] + DAYS_OF_WEEK[:week_start_i]
 
-    def to_file(self, fpath, generate_raw: bool = False):
-        """Save the current configuration options to `fpath` as a .ini file.
+    def to_configparser(self, generate_raw: bool = False) -> ConfigParser:
+        """Save the current configuration options to a ConfigParser
+        object and return it.
 
-        If generate_raw is True, save a new Config instance using the raw()
+        If generate_raw is True, use a new Config instance using the raw()
         method, which will have raw (uninterpolated) versions of the values
         that this instance was initialised with (NOT necessarily its current
         values).
@@ -162,11 +163,21 @@ class Config:
         parser = ConfigParser(interpolation=None)
         parser.add_section('general')
         for _field in to_save.__dataclass_fields__:
-            #print(f'adding to {_field}:')
-            #print(str(getattr(to_save, _field)))
             parser['general'][_field] = str(getattr(to_save, _field))
-        with open(fpath, 'w') as f:
-            parser.write(f)
+        return parser
+
+    def to_file(self, fpath: Optional[str] = None, generate_raw: bool = False):
+        """Save the current configuration options to `fpath` as a .ini
+        file. If `fpath` is not provided, print to stdout.
+        """
+
+        parser = self.to_configparser(generate_raw=generate_raw)
+
+        if fpath:
+            with open(fpath, 'w') as f:
+                parser.write(f)
+        else:
+            parser.write(sys.stdout)
 
     def raw(self) -> 'Config':
         """Return a new Config object initialised with the same values as this

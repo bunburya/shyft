@@ -3,14 +3,12 @@ from typing import List
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-import dash
 from dash.dependencies import Input, Output, State
 from dash.development.base_component import Component
+
 from shyft.logger import get_logger
-
 from shyft.metadata import APP_NAME
-
-from shyft.view.controller._base import _BaseController
+from shyft.dash_app.view.controller._base import _BaseController
 
 DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 

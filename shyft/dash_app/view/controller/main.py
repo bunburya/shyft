@@ -1,8 +1,9 @@
+import dataclasses
 import json
 import os
 from io import BytesIO
 from logging import ERROR
-from typing import List, Dict, Any, Optional, Tuple, Callable, Union
+from typing import List, Dict, Optional, Tuple, Callable
 from zipfile import ZipFile
 
 import flask
@@ -13,21 +14,22 @@ from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate
-from markdown import MarkdownController
+from json_utils import ShyftJSONEncoder
 from werkzeug.exceptions import abort
 import dateutil.parser as dp
 
-from shyft.metadata import APP_NAME, URL, VERSION
 from shyft.activity import ActivityMetaData, Activity
 from shyft.activity_manager import ActivityManager
 from shyft.config import Config
 from shyft.logger import get_logger
 from shyft.message import MessageBus
-from shyft.view.controller.activity import ActivityController
-from shyft.view.controller.config import ConfigController
-from shyft.view.controller.overview import OverviewController
-from shyft.view.controller.upload import UploadController
-from shyft.view.controller.view_activities import ViewActivitiesController
+from shyft.dash_app.view.controller.activity import ActivityController
+from shyft.dash_app.view.controller.config import ConfigController
+from shyft.dash_app.view.controller.overview import OverviewController
+from shyft.dash_app.view.controller.upload import UploadController
+from shyft.dash_app.view.controller.view_activities import ViewActivitiesController
+from shyft.dash_app.view.controller.markdown import MarkdownController
+
 
 logger = get_logger(__name__)
 
@@ -103,6 +105,20 @@ class MainController:
 
         return self.activity_manager.search_metadata(from_date=from_date, to_date=to_date, prototype=prototype,
                                                      activity_type=activity_type, ids=ids)
+
+    def get_params_to_metadata_json(self, params: Dict[str, str], exclude_filepaths: bool = True,
+                                    exclude_config: bool = True) -> str:
+        metadata = self.get_params_to_metadata(params)
+        data = []
+        for m in metadata:
+            d = dataclasses.asdict(m)
+            if exclude_filepaths:
+                for k in ('gpx_file', 'tcx_file', 'source_file', 'thumbnail_file'):
+                    d.pop(k)
+            if exclude_config:
+                d.pop('config')
+            data.append(d)
+        return json.dumps(data, cls=ShyftJSONEncoder)
 
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:

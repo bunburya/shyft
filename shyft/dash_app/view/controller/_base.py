@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from shyft.logger import get_logger
-from shyft.view.controller._dash_components import BasicDashComponentFactory
+from shyft.dash_app.view.controller._dash_components import BasicDashComponentFactory
 
 import typing
 if typing.TYPE_CHECKING:
-    from shyft.view.controller.main import MainController
+    from main import MainController
 
 logger = get_logger(__name__)
 

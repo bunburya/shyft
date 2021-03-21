@@ -4,6 +4,8 @@ General:
 
 - Custom type definitions
 - Logging
+- Prevent duplicates
+  - Store source file hash in metadata
 
 Config:
 

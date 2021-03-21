@@ -1,8 +1,9 @@
 import base64
 import os
 from logging import ERROR
-from typing import IO, Optional, List, Tuple
+from typing import Optional, List
 
+from werkzeug.utils import secure_filename
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
@@ -10,8 +11,8 @@ from dash.exceptions import PreventUpdate
 
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME
-from shyft.view.controller._base import _BaseController
-from werkzeug.utils import secure_filename
+from shyft.dash_app.view.controller._base import _BaseController
+
 
 logger = get_logger(__name__)
 
