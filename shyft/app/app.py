@@ -1,11 +1,12 @@
 import logging
+import os
 from typing import Tuple
 from urllib.parse import urlparse
 
 from shyft.app.controllers.main import MainController
 from dash import Dash
 import dash_bootstrap_components as dbc
-from flask import Flask, redirect, send_file, request, Response, render_template, g
+from flask import Flask, redirect, send_file, request, Response, render_template, g, send_from_directory
 from werkzeug.exceptions import abort
 
 import shyft.message as msg
@@ -16,13 +17,15 @@ from shyft.app.utils import id_str_to_ints
 
 logger = get_logger(__name__)
 
-STYLESHEETS = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.SANDSTONE]
+STYLESHEETS = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.SANDSTONE, '/static/dash_fixes.css']
 
 
 def get_apps(config: Config) -> Tuple[Flask, Dash]:
     """Initialise and return the Flask and Dash apps."""
 
-    flask_app = Flask('shyft', template_folder='shyft/content/templates')
+    flask_app = Flask('shyft', template_folder=os.path.join('app', 'content', 'templates'),
+                      static_folder=os.path.join('app', 'content', 'static'))
+    logger.debug(f'static: {flask_app.static_folder}')
 
     # Prevent caching of files (such as thumbnails)
     # NOTE: We may actually want to cache when not debugging, as there shouldn't be different activities loaded with the
@@ -100,5 +103,6 @@ def get_apps(config: Config) -> Tuple[Flask, Dash]:
     def metadata_json():
         return Response(controller.url_params_to_metadata_json(request.args),
                         mimetype='application/vnd.api+json')
+
 
     return flask_app, dash_app

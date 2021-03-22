@@ -12,6 +12,12 @@ div #main_layout {
     margin: 0px;
 }
 
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+
 /* Prevent leftmost column of splits DataTable from being clipped */
 div.cell.cell-1-1.dash-fixed-content {
     margin-left: 0px !important;

@@ -61,10 +61,6 @@ class BasicDashComponentFactory:
         ],
     }
 
-    BOOTSTRAP_ROW_STYLE = {
-        'margin-left': 0,
-        'margin-right': 0
-    }
 
     MSG_FG_COLORS = {
         msg.CRITICAL: '#FF0000',
@@ -93,8 +89,8 @@ class BasicDashComponentFactory:
             name = self.config.default_activity_name_format.format(**vars(metadata))
         return name
 
-    def activities_table(self, metadata_list: Iterable[ActivityMetaData], options_col: bool = False,
-                         select: bool = False, **kwargs) -> dt.DataTable:
+    def activities_table(self, metadata_list: Iterable[ActivityMetaData], select: bool = False,
+                         **kwargs) -> dt.DataTable:
         """A generic function to return a DataTable containing a list of activities."""
         cols = self.ACTIVITY_TABLE_BASIC_COLS[:]
         data = [{
@@ -102,12 +98,6 @@ class BasicDashComponentFactory:
             'name': f'[{self.activity_name(md)}]({self.activity_link(md)})',
             'id': md.activity_id
         } for md in metadata_list]
-        if options_col:
-            cols.append(
-                {'id': 'options', 'name': 'Options', 'presentation': 'markdown'}
-            )
-            for md, row in zip(metadata_list, data):
-                row['options'] = f'[Delete]({self.delete_link(md)})'
         if select:
             row_selectable = 'multi'
         else:
@@ -163,12 +153,11 @@ class BasicDashComponentFactory:
             dbc.Col(delete_form, width=2),
             dbc.Col(dropdown, width=2),
             dbc.Col(download_link, width=2)
-        ], style=self.BOOTSTRAP_ROW_STYLE)
+        ])
 
         return [action_row, table]
 
-    def activities_table_html(self, metadata_list: List[ActivityMetaData], options_col: bool = False,
-                              select: bool = True) -> html.Table:
+    def activities_table_html(self, metadata_list: List[ActivityMetaData], select: bool = True) -> html.Table:
         """An experimental alternative to activities_table, which
         returns a HTML table rather than a Dash DataTable. This means
         we can use dcc.Link for links, which would allow us to use
@@ -183,8 +172,7 @@ class BasicDashComponentFactory:
             html.Th('', scope='col'),  # thumbnails
             html.Th('Activity', scope='col')  # activity name
         ]
-        if options_col:
-            header_row.append(html.Th('Options', scope='col'))  # options column
+
 
         table_rows = [html.Tr(header_row)]
         for md in metadata_list:
@@ -192,8 +180,6 @@ class BasicDashComponentFactory:
                 html.Th(html.Img(src=self.thumbnail_link(md))),
                 html.Th(dcc.Link(self.activity_name(md), href=self.activity_link(md)))
             ]
-            if options_col:
-                data_cells.append(html.Th(dcc.Link('Delete', href=self.delete_link(md))))
             table_rows.append(html.Tr(data_cells))
         return html.Table(table_rows)
 
@@ -646,7 +632,7 @@ class OverviewComponentFactory(BasicDashComponentFactory):
         # logger.debug('Sorting...')
         metadata.sort(key=lambda md: md.date_time, reverse=True)
         # logger.debug('Creating table...')
-        return self.activities_table(metadata[:self.config.overview_activities_count], options_col=True, select=True)
+        return self.activities_table(metadata[:self.config.overview_activities_count], select=False)
 
     def hr_over_time(self) -> List[Component]:
         logger.debug('Generating graph of average heart rate over time.')
