@@ -17,14 +17,17 @@ from shyft.app.utils import id_str_to_ints
 
 logger = get_logger(__name__)
 
-STYLESHEETS = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.SANDSTONE, '/static/dash_fixes.css']
+#STYLESHEETS = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.SANDSTONE, '/static/dash_fixes.css']
+STYLESHEETS = [dbc.themes.SANDSTONE, '/static/dash_fixes.css']
+
+CONTENT_DIR = os.path.join('app', 'content')
 
 
 def get_apps(config: Config) -> Tuple[Flask, Dash]:
     """Initialise and return the Flask and Dash apps."""
 
-    flask_app = Flask('shyft', template_folder=os.path.join('app', 'content', 'templates'),
-                      static_folder=os.path.join('app', 'content', 'static'))
+    flask_app = Flask('shyft', template_folder=os.path.join(CONTENT_DIR, 'templates'),
+                      static_folder=os.path.join(CONTENT_DIR, 'static'))
     logger.debug(f'static: {flask_app.static_folder}')
 
     # Prevent caching of files (such as thumbnails)
@@ -97,11 +100,11 @@ def get_apps(config: Config) -> Tuple[Flask, Dash]:
 
     @flask_app.route('/calendar')
     def calendar():
-        return render_template('calendar.html', query=urlparse(request.url).query)
+        return render_template('calendar.html', query=urlparse(request.url).query, stylesheets=STYLESHEETS)
 
-    @flask_app.route('/json/metadata')
+    @flask_app.route('/json/calendar_data')
     def metadata_json():
-        return Response(controller.url_params_to_metadata_json(request.args),
+        return Response(controller.url_params_to_calendar_data(request.args),
                         mimetype='application/vnd.api+json')
 
 

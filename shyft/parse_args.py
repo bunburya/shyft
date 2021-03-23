@@ -42,8 +42,9 @@ def mk_config(ns: Namespace):
     out_file = ns_dict.pop('outfile')
     for field in Config.__dataclass_fields__:
         if (k := ns_dict.get(field)) is not None:
+            logger.debug(f'Setting config value "{field}" to "{k}".')
             setattr(config, field, k)
-    config.to_file(fpath=out_file, generate_raw=True)
+    config.to_file(fpath=out_file)
 
 
 COMMANDS = OrderedDict([

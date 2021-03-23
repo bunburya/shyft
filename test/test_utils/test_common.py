@@ -128,7 +128,7 @@ def copy_manager(am: ActivityManager) -> ActivityManager:
         i += 1
         new_data_dir = old_data_dir + f'_copy_{i}'
     config = Config(old_config.ini_fpath, old_config.activity_graphs_fpath, old_config.overview_graphs_fpath,
-                    old_config.interpolation, **old_config.kwargs)
+                    **old_config.kwargs)
     config.data_dir = new_data_dir
     return get_manager(config, files=[a.metadata.source_file for a in am])
 

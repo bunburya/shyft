@@ -281,8 +281,8 @@ class DatabaseManager:
                              activity_type: Optional[str] = None,
                              number: Optional[int] = None,
                              ids: Collection[int] = None) -> Sequence[Dict[str, Any]]:
-        where = []
-        params = []
+        where: List[str] = []
+        params: List[Any] = []
         if from_date and to_date:
             where.append('date_time BETWEEN ? and ?')
             params += [from_date, to_date]
@@ -317,7 +317,7 @@ class DatabaseManager:
         expected = []
         if year is not None:
             dt_format.append('%Y')
-            expected.append(year)
+            expected.append(str(year))
         if month is not None:
             dt_format.append('%m')
             expected.append(f'{month:02}')

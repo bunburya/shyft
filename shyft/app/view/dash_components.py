@@ -84,10 +84,8 @@ class BasicDashComponentFactory:
         """Return an activity's name or, if the activity has no name,
         generate one using the activity's other metadata.
         """
-        name = metadata.name
-        if name is None:
-            name = self.config.default_activity_name_format.format(**vars(metadata))
-        return name
+
+        return metadata.name_or_default
 
     def activities_table(self, metadata_list: Iterable[ActivityMetaData], select: bool = False,
                          **kwargs) -> dt.DataTable:

@@ -39,8 +39,10 @@ def haversine_distance(latitude_1: Union[np.ndarray, pd.Series],
     return d
 
 
-def naive_distance(latitude_1: np.ndarray, longitude_1: np.ndarray,
-                   latitude_2: np.ndarray, longitude_2: np.ndarray) -> np.ndarray:
+def naive_distance(latitude_1: Union[float, np.ndarray],
+                   longitude_1: Union[float, np.ndarray],
+                   latitude_2: Union[float, np.ndarray],
+                   longitude_2: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
     coef = np.cos(np.radians(latitude_1))
     x = latitude_1 - latitude_2
     y = (longitude_1 - longitude_2) * coef

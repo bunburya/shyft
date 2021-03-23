@@ -100,18 +100,18 @@ class MainController:
         return params
 
     def url_params_to_metadata(self, params: Dict[str, str]) -> List[ActivityMetaData]:
-        """Takes a dict representing parameters of a GET query and
-        returns a list of ActivityMetaData objects that fit the given
-        search criteria.
+        """Takes a dict representing parameters of a query and returns
+        a list of ActivityMetaData objects that fit the given search
+        criteria.
         """
-        if from_date := params.get('from_date'):
-            from_date = dp.parse(from_date)
-        if to_date := params.get('to_date'):
-            to_date = dp.parse(to_date)
-        if prototype := params.get('prototype'):
+        if (from_date := params.get('from_date')) is not None:
+            from_date = dp.parse(from_date).date()
+        if (to_date := params.get('to_date')) is not None:
+            to_date = dp.parse(to_date).date()
+        if (prototype := params.get('prototype')) is not None:
             prototype = int(prototype)
         activity_type = params.get('type')
-        if ids := params.get('id'):
+        if (ids := params.get('id')) is not None:
             ids = id_str_to_ints(ids)
 
         return self.activity_manager.search_metadata(from_date=from_date, to_date=to_date, prototype=prototype,
@@ -119,6 +119,11 @@ class MainController:
 
     def url_params_to_metadata_json(self, params: Dict[str, str], exclude_filepaths: bool = True,
                                     exclude_config: bool = True) -> str:
+        """Takes a dict representing parameters of a query and returns
+        a JSON string representing a list of ActivityMetaData objects
+        that fit the given search criteria.
+        """
+        # TODO: Consider if we need this. We don't use it currently - might we need it in the future?
         metadata = self.url_params_to_metadata(params)
         data = []
         for m in metadata:
@@ -129,6 +134,20 @@ class MainController:
             if exclude_config:
                 d.pop('config')
             data.append(d)
+        return json.dumps(data, cls=ShyftJSONEncoder)
+
+    def url_params_to_calendar_data(self, params: Dict[str, str]) -> str:
+        """Takes a dict representing parameters of a query and returns
+        a JSON string, usable by FullCalendar, representing the
+        activities that fit the given search criteria.
+        """
+        metadata = self.url_params_to_metadata(params)
+        data = [{
+            'title': self.activity_controller.dc_factory.activity_name(m),
+            'start': m.date_time,
+            'end': m.date_time + m.duration,
+            'url': f'/activity/{m.activity_id}'
+        } for m in metadata]
         return json.dumps(data, cls=ShyftJSONEncoder)
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:

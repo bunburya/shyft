@@ -3,7 +3,7 @@ from datetime import datetime, date
 
 from shyft.df_utils.schemas import metadata_time_series_schema
 from shyft.logger import get_logger
-from test_utils.test_common import *
+from test.test_utils.test_common import *
 
 logger = get_logger(file_level=logging.DEBUG, console_level=logging.WARN,
                     log_file=os.path.join(TEST_LOGS_DIR, 'multi_activity.log'))
@@ -244,20 +244,8 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assertTrue(self.TEST_CONFIG_1 == self.TEST_CONFIG_1)
         self.assertFalse(self.TEST_CONFIG_1 == self.TEST_CONFIG_2)
         ini_fpath = os.path.join(self.TEST_RUN_DATA_DIR_1, 'test_config.ini')
-        self.TEST_CONFIG_1.to_file(ini_fpath, generate_raw=True)
+        self.TEST_CONFIG_1.to_file(ini_fpath)
         self.assertEqual(self.TEST_CONFIG_1, Config(ini_fpath))
-        raw1 = self.TEST_CONFIG_1.raw()
-        raw1.distance_unit = 'test'
-        raw1.default_activity_name_format = 'test {distance_2d_%(distance_unit)s}'
-        raw1.to_file(ini_fpath)
-        raw2 = self.TEST_CONFIG_1.raw()
-        raw2.load(ini_fpath)
-        interpolated = Config(ini_fpath)
-        self.assertEqual(raw1, raw2)
-        self.assertNotEqual(raw1, self.TEST_CONFIG_1)
-        self.assertNotEqual(raw1, interpolated)
-        self.assertEqual(interpolated.default_activity_name_format, 'test {distance_2d_test}')
-        self.assertEqual(raw1.default_activity_name_format, 'test {distance_2d_%(distance_unit)s}')
 
     def test_15_iter(self):
         """Test iterating through ActivityManager."""

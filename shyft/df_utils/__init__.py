@@ -11,10 +11,10 @@ import pandas as pd
 
 import typing
 
-from logger import get_logger
+from shyft.logger import get_logger
 
 if typing.TYPE_CHECKING:
-    from activity import ActivityMetaData
+    from shyft.activity import ActivityMetaData
 
 MILE = 1609.344  # metres in a mile
 MILE_KM = MILE / 1000  # km in a mile

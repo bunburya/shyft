@@ -59,6 +59,7 @@ class ActivityMetaData:
 
     # The following will be auto-generated when ActivityMetaData is instantiated, if not explicitly provided
     distance_2d_mile: float = None
+    distance_2d: float = None
     mean_kmph: float = None
     mean_km_pace: timedelta = None
     mean_mile_pace: timedelta = None
@@ -72,6 +73,12 @@ class ActivityMetaData:
 
         if self.distance_2d_mile is None:
             self.distance_2d_mile = self.distance_2d_km / MILE_KM
+
+        if self.distance_2d is None:
+            if self.config.distance_unit == 'km':
+                self.distance_2d = self.distance_2d_km
+            elif self.config.distance_unit == 'mile':
+                self.distance_2d = self.distance_2d_mile
 
         # Calculate various speed-related metrics
         if self.mean_kmph is None:
@@ -102,6 +109,8 @@ class ActivityMetaData:
         if self.activity_type is None:
             self.activity_type = self.config.default_activity_type
 
+
+
     def to_dict(self):
         return asdict(self)
 
@@ -124,7 +133,7 @@ class ActivityMetaData:
         """The 'default' name of the activity, determined according to
         the default format specified in the config.
         """
-        return self.config.default_activity_name_format.format(**vars(self))
+        return self.config.default_activity_name_format.format(**vars(self), **vars(self.config))
 
     @property
     def file_name(self) -> str:
@@ -136,6 +145,7 @@ class ActivityMetaData:
             f'{self.distance_2d_km:.2f}km',
             self.date_time.strftime('%Y-%m-%d_%H-%M')
         )))
+
 
 
 @dataclass(init=False)

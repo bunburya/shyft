@@ -2,6 +2,7 @@
 
 TODO:  Implement proper configuration using ConfigParser.
 """
+import dataclasses
 import getpass
 import json
 import os
@@ -11,7 +12,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 import appdirs
-from metadata import APP_NAME
+from shyft.metadata import APP_NAME
 
 DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
@@ -34,24 +35,18 @@ class Config:
     def __init__(self, ini_fpath: str,
                  activity_graphs_fpath: Optional[str] = None,
                  overview_graphs_fpath: Optional[str] = None,
-                 interpolation: Optional[Interpolation] = BasicInterpolation(),
                  **kwargs):
-
-        self.interpolation = interpolation
 
         self.ini_fpath = ini_fpath
         self.activity_graphs_fpath = activity_graphs_fpath
         self.overview_graphs_fpath = overview_graphs_fpath
-        self.user_docs_dir = appdirs.user_data_dir(APP_NAME)
         self.kwargs = kwargs
 
         self.load()
 
     def read_file(self, ini_fpath: str):
-        parser = ConfigParser(interpolation=self.interpolation)
-        self.raw_config = ConfigParser(interpolation=None)
+        parser = ConfigParser(interpolation=None)
         parser.read(ini_fpath)
-        self.raw_config.read(ini_fpath)
 
         if not parser['general']['user_name']:
             self.user_name = getpass.getuser()
@@ -59,7 +54,7 @@ class Config:
             self.user_name = parser['general']['user_name']
 
         if not parser['general']['data_dir']:
-            self.data_dir = appdirs.user_data_dir(appname='shyft')
+            self.data_dir = appdirs.user_data_dir(appname=APP_NAME)
         else:
             self.data_dir = parser['general']['data_dir']
 
@@ -85,10 +80,6 @@ class Config:
 
         for k in self.kwargs:
             setattr(self, k, self.kwargs[k])
-
-        for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir, self.tcx_file_dir, self.source_file_dir):
-            if not os.path.exists(_dir):
-                os.makedirs(_dir)
 
         if self.activity_graphs_fpath is not None:
             try:
@@ -122,13 +113,14 @@ class Config:
         self.gpx_file_dir = os.path.join(new, 'gpx_files')
         self.tcx_file_dir = os.path.join(new, 'tcx_files')
         self.source_file_dir = os.path.join(new, 'source_files')
+        self.user_docs_dir = os.path.join(new, 'user_docs')
         self.tmp_dir = os.path.join(new, 'tmp')
         self.db_file = os.path.join(new, 'shyft.db')
         self.log_file = os.path.join(new, 'shyft.log')
 
 
         for _dir in (self.data_dir, self.thumbnail_dir, self.gpx_file_dir, self.tcx_file_dir, self.source_file_dir,
-                     self.tmp_dir):
+                     self.user_docs_dir, self.tmp_dir):
             if not os.path.exists(_dir):
                 os.makedirs(_dir)
 
@@ -140,25 +132,17 @@ class Config:
             return ''
 
     @week_start.setter
-    def week_start(self, new):
+    def week_start(self, new: str):
         self._week_start = new
         week_start_i = DAYS_OF_WEEK.index(new)
         self.days_of_week = DAYS_OF_WEEK[week_start_i:] + DAYS_OF_WEEK[:week_start_i]
 
-    def to_configparser(self, generate_raw: bool = False) -> ConfigParser:
+    def to_configparser(self) -> ConfigParser:
         """Save the current configuration options to a ConfigParser
         object and return it.
-
-        If generate_raw is True, use a new Config instance using the raw()
-        method, which will have raw (uninterpolated) versions of the values
-        that this instance was initialised with (NOT necessarily its current
-        values).
         """
 
-        if generate_raw:
-            to_save = self.raw()
-        else:
-            to_save = self
+        to_save = self
 
         parser = ConfigParser(interpolation=None)
         parser.add_section('general')
@@ -166,23 +150,15 @@ class Config:
             parser['general'][_field] = str(getattr(to_save, _field))
         return parser
 
-    def to_file(self, fpath: Optional[str] = None, generate_raw: bool = False):
+    def to_file(self, fpath: Optional[str] = None):
         """Save the current configuration options to `fpath` as a .ini
         file. If `fpath` is not provided, print to stdout.
         """
 
-        parser = self.to_configparser(generate_raw=generate_raw)
+        parser = self.to_configparser()
 
         if fpath:
             with open(fpath, 'w') as f:
                 parser.write(f)
         else:
             parser.write(sys.stdout)
-
-    def raw(self) -> 'Config':
-        """Return a new Config object initialised with the same values as this
-        instance, but with no interpolation. It is this raw version that should
-        generally be used when loading and saving configuration settings.
-        """
-        return Config(self.ini_fpath, self.activity_graphs_fpath, self.overview_graphs_fpath, interpolation=None,
-                      **self.kwargs)

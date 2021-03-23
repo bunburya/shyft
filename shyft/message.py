@@ -6,7 +6,7 @@ from typing import Optional, AbstractSet, Callable
 
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, Logger
 
-from logger import get_logger
+from shyft.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -46,8 +46,8 @@ class MessageBus:
 
     def _get_predicate(self,
                        severity: int,
-                       view: str,
-                       exact_severity: bool) -> Callable[[Message], bool]:
+                       view: Optional[str],
+                       exact_severity: bool = False) -> Callable[[Message], bool]:
         def predicate(msg: Message):
             if exact_severity:
                 if msg.severity == severity:

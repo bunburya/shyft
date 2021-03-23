@@ -123,7 +123,7 @@ class BaseParser:
         if is_null.pop('duration'):
             laps_df['duration'] = get_lap_durations(laps_df, points_df)
         if is_null.pop('distance'):
-            laps_df['distance'] = get_lap_distances(laps_df, points_df)
+            laps_df['distance'] = get_lap_distances(points_df)
         null_means = list(filter(lambda c: is_null[c], is_null))
         if null_means:
             #print(f'inferring {null_means}')
