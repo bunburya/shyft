@@ -18,7 +18,8 @@ from shyft.app.utils import id_str_to_ints
 logger = get_logger(__name__)
 
 #STYLESHEETS = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.SANDSTONE, '/static/dash_fixes.css']
-STYLESHEETS = [dbc.themes.SANDSTONE, '/static/dash_fixes.css']
+#STYLESHEETS = [dbc.themes.SANDSTONE, '/static/dash_fixes.css']
+STYLESHEETS = [dbc.themes.SANDSTONE]
 
 CONTENT_DIR = os.path.join('app', 'content')
 

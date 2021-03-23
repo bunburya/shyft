@@ -11,6 +11,7 @@ import flask
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
@@ -157,7 +158,8 @@ class MainController:
             children=[
                 # *self.locations,
                 dcc.Location('url', refresh=True),
-                html.Div(id='page_content', children=content or [])
+                #html.Div(id='page_content', children=content or [])
+                dbc.Container(content or [], id='page_content')
             ]
         )
 
