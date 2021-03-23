@@ -97,7 +97,7 @@ def get_apps(config: Config) -> Tuple[Flask, Dash]:
         else:
             return redirect('/')
 
-    @flask_app.route('/calendar')
+    @flask_app.route('/_calendar')
     def calendar():
         return render_template('calendar.html', query=urlparse(request.url).query, stylesheets=STYLESHEETS)
 

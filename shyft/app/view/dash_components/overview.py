@@ -107,8 +107,8 @@ class OverviewComponentFactory(BaseDashComponentFactory):
             {'label': 'Duration', 'value': 'duration'}
         ], value='mean_speed')
 
-        button = dbc.Button('View selected', id='overview_main_scatterplot_button', disabled=True)
-        link = html.A(button, href='', id='overview_main_scatterplot_link', target='_blank')
+        button = dbc.Button('View selected activities', id='overview_main_scatterplot_button')
+        link = html.A(button, href='/activities', id='overview_main_scatterplot_link', target='_blank')
 
         config_row = dbc.Row([
             dbc.Col(html.Div(['x axis:', x_dropdown])),
@@ -125,11 +125,11 @@ class OverviewComponentFactory(BaseDashComponentFactory):
             html.H2('Scatter plot'), config_row, graph
         ])
 
-    def hr_over_time(self) -> Component:
-        logger.debug('Generating graph of average heart rate over time.')
+    def time_graph(self) -> Component:
+        logger.debug('Generating time graph.')
         df = self.activity_manager.metadata_weekly_time_series(activity_type='run')
         graph = dcc.Graph(
-            id='hr_over_time',
+            id='time_graph',
             figure=px.line(
                 df,
                 y='mean_hr',
@@ -178,7 +178,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
                 html.H2('Analysis'),
                 self.weekday_count(),
                 self.main_scatterplot(),
-                self.hr_over_time(),
+                self.time_graph(),
                 *self.custom_graphs(),
             ])
         else:

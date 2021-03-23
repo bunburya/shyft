@@ -16,6 +16,7 @@ from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate
+from shyft.app.controllers.calendar import CalendarController
 from shyft.app.controllers.landing import LandingPageController
 
 from werkzeug.exceptions import abort
@@ -78,6 +79,7 @@ class MainController:
         self.config_controller = ConfigController(self)
         self.view_activities_controller = ViewActivitiesController(self)
         self.markdown_controller = MarkdownController(self)
+        self.calendar_controller = CalendarController(self)
         # self.locations = self.init_locations()
         self.register_callbacks()
 
@@ -203,6 +205,8 @@ class MainController:
                 return self.view_activities_controller.page_content(params)
             elif tokens[0] == 'overview':
                 return self.overview_controller.page_content()
+            elif tokens[0] == 'calendar':
+                return self.calendar_controller.page_content()
             elif tokens[0] == 'user_docs':
                 return self.markdown_controller.page_content(tokens[1])
             elif tokens[0] in {'gpx_files', 'tcx_files', 'source_files'}:

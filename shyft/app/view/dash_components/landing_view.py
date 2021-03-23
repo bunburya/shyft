@@ -43,7 +43,8 @@ class LandingViewComponentFactory(BaseDashComponentFactory):
             self._link('Overview', '/overview',
                        'Here, you can view data relating to multiple activities, such as progress over time.'),
             self._link('Upload', '/upload', f'Upload one or more activities to {APP_NAME}.'),
-            self._link('Configure', '/config', f'Configure certain aspects of how {APP_NAME} looks ad behaves.')
+            self._link('Configure', '/config', f'Configure certain aspects of how {APP_NAME} looks and behaves.'),
+            self._link('Calendar', '/calendar', 'View your activities in a calendar.')
         ])
 
     def recent_activities(self) -> Component:

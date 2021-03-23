@@ -1,42 +1,31 @@
 # TODO
 
-General:
-
-- Custom type definitions
-- Logging
-- Prevent duplicates
+- More logging
+  
+- Prevent uploading duplicate activities
   - Store source file hash in metadata
+  
+- More parsers:
+  - Gzipped FIT files
+  - FitoTrack
+  - Sportractive
 
-Config:
-
-- Additional options
-
-Activity:
-
-- Data editor
-- Link SQLite schema to DataFrameSchema
-
-Overview:
-
-- Pace over time
-- Search/filter activities
-
-View:
-
-- View single activity
-
+- Config:
+  - Additional options
+  - Allow resetting options in Dash view
+  
+- View single activity:
   - Tidy up
-  - Improve graph
+  - Improve graphs
   - Get auto-scaled map (see https://github.com/plotly/plotly.js/issues/3434 and https://community.plotly.com/t/dynamic-zoom-for-mapbox/32658/9)
-
-- Config
   
-  - Reset options
-  
-- View all activities
-
-  - Filter
+- Implement filtering in overview, activities view
+  - Button linking to same page with query
 
 - Improve documentation
-
-- Calendar (fullCalendar?)
+  - Sphinx
+  
+- Nice to haves
+  - Custom type definitions
+  - Data editor
+  - Learn activity type associations
