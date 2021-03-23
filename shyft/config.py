@@ -16,7 +16,6 @@ from shyft.metadata import APP_NAME
 
 DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-
 @dataclass(init=False)
 class Config:
     # Add these as fields so that they are compared in __eq__

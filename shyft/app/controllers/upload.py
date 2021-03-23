@@ -11,13 +11,13 @@ from dash.exceptions import PreventUpdate
 
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME
-from shyft.app.controllers._base import _BaseController
+from shyft.app.controllers._base import _BaseDashController
 
 
 logger = get_logger(__name__)
 
 
-class UploadController(_BaseController):
+class UploadController(_BaseDashController):
     """Controller for the file upload page."""
 
     def page_content(self):

@@ -4,10 +4,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.development.base_component import Component
 
-from shyft.app.controllers._base import _BaseController
+from shyft.app.controllers._base import _BaseDashController
 
 
-class ViewActivitiesController(_BaseController):
+class ViewActivitiesController(_BaseDashController):
 
     def page_content(self, params: Dict[str, str]) -> List[Component]:
         metadata = self.main_controller.url_params_to_metadata(params)

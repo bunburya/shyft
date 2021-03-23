@@ -4,10 +4,10 @@ from typing import List
 import dash_core_components as dcc
 from dash.development.base_component import Component
 
-from shyft.app.controllers._base import _BaseController
+from shyft.app.controllers._base import _BaseDashController
 
 
-class MarkdownController(_BaseController):
+class MarkdownController(_BaseDashController):
 
     def page_content(self, fname: str) -> List[Component]:
         with open(os.path.join(self.config.user_docs_dir, f'{fname}.md')) as f:

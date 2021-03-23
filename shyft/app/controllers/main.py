@@ -16,6 +16,7 @@ from dash import callback_context
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate
+from shyft.app.controllers.landing import LandingPageController
 
 from werkzeug.exceptions import abort
 import dateutil.parser as dp
@@ -70,6 +71,7 @@ class MainController:
         self.config = config
         self.config_fpath = config.ini_fpath
 
+        self.landing_controller = LandingPageController(self)
         self.overview_controller = OverviewController(self)
         self.activity_controller = ActivityController(self)
         self.upload_controller = UploadController(self)
@@ -158,7 +160,6 @@ class MainController:
             children=[
                 # *self.locations,
                 dcc.Location('url', refresh=True),
-                #html.Div(id='page_content', children=content or [])
                 dbc.Container(content or [], id='page_content')
             ]
         )
@@ -200,6 +201,8 @@ class MainController:
                 return self.config_controller.page_content()
             elif tokens[0] == 'activities':
                 return self.view_activities_controller.page_content(params)
+            elif tokens[0] == 'overview':
+                return self.overview_controller.page_content()
             elif tokens[0] == 'user_docs':
                 return self.markdown_controller.page_content(tokens[1])
             elif tokens[0] in {'gpx_files', 'tcx_files', 'source_files'}:
@@ -208,7 +211,7 @@ class MainController:
             elif tokens[0]:
                 logger.warning(f'Received possibly unexpected pathname "{tokens[0]}".')
 
-        return self.overview_controller.page_content()
+        return self.landing_controller.page_content()
 
     def register_callbacks(self):
         logger.debug('Registering app-level callbacks.')

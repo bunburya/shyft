@@ -9,14 +9,14 @@ from dash.development.base_component import Component
 
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME
-from shyft.app.controllers._base import _BaseController
+from shyft.app.controllers._base import _BaseDashController
 
 DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 logger = get_logger(__name__)
 
 
-class ConfigController(_BaseController):
+class ConfigController(_BaseDashController):
     label_width = 2
     input_width = 10
 
