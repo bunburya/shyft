@@ -346,9 +346,19 @@ metadata_time_series_schema = DataFrameSchema(
             description='The total distance moved over all activities, in kilometres, ignoring elevation.'
         ),
         Column(
+            name='total_distance_2d_mile',
+            type='number',
+            description='The total distance moved over all activities, in miles, ignoring elevation.'
+        ),
+        Column(
             name='mean_kmph',
             type='number',
             description='Simple average speed in kilometres per hour.'
+        ),
+        Column(
+            name='mean_mph',
+            type='number',
+            description='Simple average speed in miles per hour.'
         ),
         Column(
             name='mean_hr',

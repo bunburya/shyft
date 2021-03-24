@@ -252,7 +252,9 @@ class ActivityManager:
                 'activity_count': period_summary.shape[0],
                 'total_duration': period_summary['duration'].sum(),
                 'total_distance_2d_km': period_summary['distance_2d_km'].sum(),
+                'total_distance_2d_mile': period_summary['distance_2d_mile'].sum(),
                 'mean_kmph': period_summary['mean_kmph'].mean(),
+                'mean_mph': period_summary['mean_mph'].mean(),
                 'mean_hr': period_summary['mean_hr'].mean(),
                 'mean_cadence': period_summary['mean_cadence'].mean()
             })

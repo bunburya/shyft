@@ -36,30 +36,50 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         fig.update_layout(barmode='stack', title='Most active days of the week')
         return dcc.Graph(id='weekday_count', figure=fig)
 
-    def _axis_labels_summary(self, data_name: str) -> Tuple[str, str]:
+    def _axis_labels(self, data_name: str) -> Tuple[str, str]:
         """
         Get appropriate DataFrame column name and readable axis label. 
 
         :param data_name: Describes what data we want to display. See
-        docs for `main_scatter_fig` method for permitted values.
+        docs for `main_scatter_fig` and `main_time_fig` methods for
+        permitted values.
         :return: A 2-tuple containing the name of the relevant column in
         the `summary` DataFrame as the first element, and the axis label
         to display to the user as the second element.
         """
+
+        # Single activity attributes (column name must be present in summary dataframe)
         if data_name == 'distance':
             if self.config.distance_unit == 'km':
                 return 'distance_2d_km', 'Distance (km)'
             elif self.config.distance_unit == 'mile':
-                return 'distance_2d_mile', 'Distance(miles)'
+                return 'distance_2d_mile', 'Distance (miles)'
+        elif data_name == 'duration':
+            return 'duration', 'Duration (minutes)'
+
+        # These can be used for either single activities (summary dataframe) or aggregates (time series dataframe)
         elif data_name == 'mean_speed':
             if self.config.distance_unit == 'km':
                 return 'mean_kmph', 'Average speed (km/hour)'
             elif self.config.distance_unit == 'mile':
                 return 'mean_mph', 'Average speed (miles/hour)'
-        elif data_name == 'duration':
-            return 'duration', 'Duration (minutes)'
         elif data_name == 'mean_hr':
             return 'mean_hr', 'Average heart rate (beats/minute)'
+
+        # Aggregate attributes (column name must be present in time series dataframe)
+        elif data_name == 'total_distance':
+            if self.config.distance_unit == 'km':
+                return 'total_distance_2d_km', 'Total distance (km)'
+            elif self.config.distance_unit == 'mile':
+                return 'total_distance_2d_mile', 'Total distance (miles)'
+        elif data_name == 'total_duration':
+            return 'total_duration', 'Total duration (minutes)'
+        elif data_name == 'activity_count':
+            return 'activity_count', 'Number of activities'
+
+        else:
+            raise ValueError(f'Bad value for `data_name`: "{data_name}".')
+
 
     def main_scatter_fig(self, x: str, y: str) -> go.Figure:
         """
@@ -69,10 +89,10 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         `distance`, `mean_speed`, `duration` or `mean_hr`.
         :param y: What to display on the y axis. Has the same
         permitted values as `x`.
-        :return: A Figure object representing the scatter plot.
+        :return: A go.Figure object representing the scatter plot.
         """
-        x_col, x_label = self._axis_labels_summary(x)
-        y_col, y_label = self._axis_labels_summary(y)
+        x_col, x_label = self._axis_labels(x)
+        y_col, y_label = self._axis_labels(y)
         fig = px.scatter(
             self.summary,
             x=x_col,
@@ -90,7 +110,8 @@ class OverviewComponentFactory(BaseDashComponentFactory):
 
 
     def main_scatterplot(self) -> Component:
-        """A configurable scatterplot of all activities.
+        """
+        A configurable scatterplot of all activities.
         """
         logger.debug('Generating main scatterplot.')
 
@@ -125,26 +146,84 @@ class OverviewComponentFactory(BaseDashComponentFactory):
             html.H2('Scatter plot'), config_row, graph
         ])
 
-    def time_graph(self) -> Component:
+    _TIME_CHART_TYPES = {
+        'mean_speed': px.line,
+        'total_distance': px.bar,
+        'total_duration': px.bar,
+        'mean_hr': px.line,
+        'activity_count': px.bar
+    }
+
+    def main_time_fig(self, freq: str, y: str) -> go.Figure:
+        """
+        Generate the chart figure for the main time plot.
+
+        :param freq: What frequency to use for the plot. Should be one
+        of "weekly" or "monthly".
+        :param y: Value to display on the y axis. Should be one of
+        "mean_speed", "total_distance", "total_duration",
+        "mean_hr" or "activity_count".
+        :return: A go.Figure object representing the appropriate chart.
+        The type of the chart will depend on the type of data to be
+        displayed on the y axis.
+        """
+        if freq == 'weekly':
+            df = self.activity_manager.metadata_weekly_time_series()
+            date_label = 'Week of'
+        elif freq == 'monthly':
+            df = self.activity_manager.metadata_monthly_time_series()
+            date_label = 'Month of'
+        else:
+            raise ValueError(f'`freq` must be one of "weekly" or "monthly", not "{freq}".')
+
+        if y == 'total_duration':
+            # Need to convert timedelta to number of minutes
+            df[y] = df[y].dt.total_seconds() / 60
+
+        y_col, y_label = self._axis_labels(y)
+        return self._TIME_CHART_TYPES[y](
+            df,
+            y=y_col,
+            labels={
+                'date': date_label,
+                y_col: y_label
+            },
+        )
+
+    def main_time_chart(self) -> Component:
+        """
+        A line chart plotting some selected value over time.
+        """
         logger.debug('Generating time graph.')
         df = self.activity_manager.metadata_weekly_time_series(activity_type='run')
+
+        freq_dropdown = dcc.Dropdown('overview_main_time_chart_freq_dropdown', options=[
+            {'label': 'Weekly', 'value': 'weekly'},
+            {'label': 'Monthly', 'value': 'monthly'}
+        ], value='monthly')
+
+        y_dropdown = dcc.Dropdown('overview_main_time_chart_y_dropdown', options=[
+            {'label': 'Average speed', 'value': 'mean_speed'},
+            {'label': 'Total distance', 'value': 'total_distance'},
+            {'label': 'Total duration', 'value': 'total_duration'},
+            {'label': 'Average heart rate', 'value': 'mean_hr'},
+            {'label': 'Number of activities', 'value': 'activity_count'}
+        ], value='activity_count')
+
         graph = dcc.Graph(
-            id='time_graph',
-            figure=px.line(
-                df,
-                y='mean_hr',
-                labels={
-                    'date': 'Date',
-                    'mean_hr': 'Average heart rate (beats/minute)'
-                },
-            )
+            id='overview_main_time_chart',
+            figure=self.main_time_fig('weekly', 'activity_count')
         )
         return html.Div([
-            html.H2('Change over time'),
+            html.H2('Progress over time'),
+            dbc.Row([
+                dbc.Col(html.Div(['Frequency:', freq_dropdown])),
+                dbc.Col(html.Div(['y axis:', y_dropdown]))
+            ]),
             graph
         ])
 
-    def custom_graphs(self) -> List[dbc.Row]:
+    def custom_graphs(self) -> List[Component]:
         """Generate all graphs based on the contents of config.overview_graphs
         (which is in turn generated based on the contents of test_overview_graphs.json).
 
@@ -178,7 +257,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
                 html.H2('Analysis'),
                 self.weekday_count(),
                 self.main_scatterplot(),
-                self.time_graph(),
+                self.main_time_chart(),
                 *self.custom_graphs(),
             ])
         else:

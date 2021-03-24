@@ -59,3 +59,13 @@ class OverviewController(_BaseDashController):
             else:
                 href = f'/activities?id={",".join([str(p["customdata"][0]) for p in points])}'
             return href, False
+
+        # Time chart callbacks
+
+        @self.dash_app.callback(
+            Output('overview_main_time_chart', 'figure'),
+            Input('overview_main_time_chart_freq_dropdown', 'value'),
+            Input('overview_main_time_chart_y_dropdown', 'value'),
+        )
+        def update_main_time(x: str, y: str) -> go.Figure:
+            return self.dc_factory.main_time_fig(x, y)
