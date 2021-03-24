@@ -171,7 +171,8 @@ class ActivityManager:
         else:
             return results[:number]
 
-    def delete_activity(self, activity_id: int, delete_gpx_file: bool = True, delete_source_file: bool = True):
+    def delete_activity(self, activity_id: int, delete_gpx_file: bool = True, delete_tcx_file: bool = True,
+                        delete_source_file: bool = True):
         metadata = self.get_metadata_by_id(activity_id)
         if metadata is None:
             raise ValueError(f'Bad _activity_elem ID: {activity_id}')
@@ -185,10 +186,13 @@ class ActivityManager:
                 self.replace_prototype(metadata.activity_id, next_match_id)
             else:
                 self.dbm.delete_prototype(metadata.activity_id)
-        if delete_gpx_file and metadata.gpx_file:
+        if delete_gpx_file and (metadata.gpx_file is not None) and os.path.exists(metadata.gpx_file):
             os.remove(metadata.gpx_file)
-        if delete_source_file and metadata.source_file:
+        if delete_tcx_file and (metadata.tcx_file is not None) and os.path.exists(metadata.tcx_file):
+            os.remove(metadata.tcx_file)
+        if delete_source_file and (metadata.source_file is not None) and os.path.exists(metadata.source_file):
             os.remove(metadata.source_file)
+        logger.info(f'Deleted activity with ID {metadata.activity_id}.')
 
     def replace_prototype(self, old_id: int, new_id: int):
         matches = self.search_metadata(prototype=old_id)

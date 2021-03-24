@@ -36,7 +36,6 @@ class UploadController(_BaseDashController):
                     'Drag and Drop or Select File'
                 ]),
                 style={
-                    'width': '90%',
                     'height': '60px',
                     'lineHeight': '60px',
                     'borderWidth': '1px',
