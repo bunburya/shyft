@@ -23,7 +23,10 @@
   - Button linking to same page with query
 
 - Improve documentation
-  - Sphinx
+  - Add docstrings and rewrite in rST.
+  - Convert markdown docs to rST.
+  - Add more user docs.
+  - Figure out Sphinx.
   
 - Nice to haves
   - Custom type definitions
