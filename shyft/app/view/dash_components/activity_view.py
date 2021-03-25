@@ -97,7 +97,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         """Generate all graphs based on the contents of config.overview_graphs
         (which is in turn generated based on the contents of activity_graphs.json).
 
-        See user_docs/graphs.md for help on how activity_graphs.json is interpreted.
+        See docs/graphs.md for help on how activity_graphs.json is interpreted.
         """
         graphs = []
         for i, go_data in enumerate(self.config.activity_graphs):

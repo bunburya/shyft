@@ -112,7 +112,7 @@ class Config:
         self.gpx_file_dir = os.path.join(new, 'gpx_files')
         self.tcx_file_dir = os.path.join(new, 'tcx_files')
         self.source_file_dir = os.path.join(new, 'source_files')
-        self.user_docs_dir = os.path.join(new, 'user_docs')
+        self.user_docs_dir = os.path.join(new, 'docs')
         self.tmp_dir = os.path.join(new, 'tmp')
         self.db_file = os.path.join(new, 'shyft.db')
         self.log_file = os.path.join(new, 'shyft.log')

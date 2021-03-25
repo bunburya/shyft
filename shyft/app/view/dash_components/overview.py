@@ -227,7 +227,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """Generate all graphs based on the contents of config.overview_graphs
         (which is in turn generated based on the contents of test_overview_graphs.json).
 
-        See user_docs/graphs.md for help on how test_overview_graphs.json is interpreted.
+        See docs/graphs.md for help on how test_overview_graphs.json is interpreted.
         """
         graphs = []
         # TODO: Figure this out

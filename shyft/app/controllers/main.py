@@ -207,7 +207,7 @@ class MainController:
                 return self.overview_controller.page_content()
             elif tokens[0] == 'calendar':
                 return self.calendar_controller.page_content()
-            elif tokens[0] == 'user_docs':
+            elif tokens[0] == 'docs':
                 return self.markdown_controller.page_content(tokens[1])
             elif tokens[0] in {'gpx_files', 'tcx_files', 'source_files'}:
                 logger.debug(f'New pathname contains {tokens[0]}; not updating page content.')
@@ -239,12 +239,12 @@ class MainController:
             component, prop = trig['prop_id'].split('.')
             value = trig['value']
             logger.debug(f'update_url called from property "{prop}" of component "{component}" with value "{value}".')
-            # logger.debug(f'pathnames: {pathnames}')
             logger.debug(f'Updating URL pathname to "{value}".')
             return value
 
         # The below callbacks are used for manipulating activity tables. They are registered here in MainController
         # because it is contemplated that activity tables can be manipulated in multiple contexts.
+        # TODO: We could probably move this to view_activities.py; I don't think we'll need it elsewhere.
         # TODO: Currently, trying to perform actions on large numbers of activities at once results in very long URLs.
         # With enough activities, this could cause issues in some browsers:
         # see https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
