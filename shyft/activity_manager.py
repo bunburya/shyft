@@ -205,12 +205,14 @@ class ActivityManager:
         self.dbm.commit()
 
     def get_metadata_by_month(self, month: date, **kwargs) -> List[ActivityMetaData]:
-        """Return a list of ActivityMetaData objects representing all
-        activities in the given year and month.
-
-        This method also takes the same arguments (other than from_date
-        and start_date) as search_metadata, and will filter the results
-        accordingly.
+        """
+        :param month: The month to search. The `day` component of the
+        `date` object is disregarded.
+        :param kwargs: This method also takes the same arguments (other
+        than from_date and to_date) as search_metadata, and will
+        filter the results accordingly.
+        :return: A list of ActivityMetaData objects representing all
+        (relevant) activities in the week that commences on `start`.
         """
         #print(month, type(month))
         year = month.year
@@ -222,12 +224,13 @@ class ActivityManager:
         return self.search_metadata(from_date=start, to_date=end, **kwargs)
 
     def get_metadata_by_week(self, start: date, **kwargs) -> List[ActivityMetaData]:
-        """Return a list of ActivityMetaData objects representing all
-        activities week that commenced on the given date.
-
-        This method also takes the same arguments (other than from_date
-        and start_date) as search_metadata, and will filter the results
-        accordingly.
+        """
+        :param start: The date on which the week commences.
+        :param kwargs: This method also takes the same arguments (other
+        than from_date and to_date) as search_metadata, and will
+        filter the results accordingly.
+        :return: A list of ActivityMetaData objects representing all
+        (relevant) activities in the week that commences on `start`.
         """
         end = start + timedelta(days=7)
         return self.search_metadata(start, end, **kwargs)
@@ -262,20 +265,50 @@ class ActivityManager:
 
     def metadata_weekly_time_series(self, from_date: Optional[date] = None, to_date: Optional[date] = None,
                                     **kwargs) -> pd.DataFrame:
+        """
+        :param from_date: The start date of the period you want to
+        search.
+        :param to_date: The end date of the period you want to search
+        (inclusive).
+        :param kwargs: This method also takes the same arguments (other
+        than from_date and to_date) as search_metadata, and will
+        filter the results accordingly.
+        :return: A pd.DataFrame, conforming to
+        `metadata_time_series_schema`, containing information about the
+        relevant activities grouped by week.
+        """
         return self._metadata_time_series_df(timedelta(weeks=1), self.get_metadata_by_week,
                                              from_date, to_date, **kwargs)
 
     def metadata_monthly_time_series(self, from_date: Optional[date] = None, to_date: Optional[date] = None,
                                      **kwargs) -> pd.DataFrame:
+        """
+        :param from_date: The start date of the period you want to
+        search.
+        :param to_date: The end date of the period you want to search
+        (inclusive).
+        :param kwargs: This method also takes the same arguments (other
+        than from_date and to_date) as search_metadata, and will
+        filter the results accordingly.
+        :return: A pd.DataFrame, conforming to
+        `metadata_time_series_schema`, containing information about the
+        relevant activities grouped by month.
+        """
         return self._metadata_time_series_df(relativedelta(months=1), self.get_metadata_by_month,
                                              from_date, to_date, **kwargs)
 
     @property
     def earliest_datetime(self) -> Optional[datetime]:
+        """
+        :return: The date and time of the earliest recorded activity.
+        """
         return self.dbm.get_earliest_datetime()
 
     @property
     def latest_datetime(self) -> Optional[datetime]:
+        """
+        :return: The date and time of the latest recorded activity.
+        """
         return self.dbm.get_latest_datetime()
 
     def __getitem__(self, key: int) -> Activity:

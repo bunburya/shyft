@@ -122,6 +122,7 @@ class ActivityMetaData:
         """
         :return: Either the activity's name, if set, or a default name
         based on the format specified in the config.
+
         """
 
         if self.name is not None:
@@ -134,6 +135,7 @@ class ActivityMetaData:
         """
         :return: The 'default' name of the activity, determined
         according to the default format specified in the config.
+
         """
         return self.config.default_activity_name_format.format(**vars(self), **vars(self.config))
 
@@ -142,6 +144,7 @@ class ActivityMetaData:
         """
         :return: A name to be used as a base for the name of data files
         describing the Activity.
+
         """
         # TODO: Move this to config to allow it to be specified by the user.
         return '_'.join(map(str, (
@@ -156,10 +159,10 @@ class ActivityMetaData:
 @dataclass(init=False)
 class Activity:
     """
-    A dataclass representing a single Activity.  Stores the points (as a
-    pd.DataFrame), as well as some metadata about the Activity (as an
-    ActivityMetaData object).  We only separately store data about the
-    Activity which cannot easily and quickly be deduced from the points.
+    A dataclass representing a single activity.  Stores the points (as a
+    `pd.DataFrame`), as well as some metadata about the activity (as an
+    `ActivityMetaData` object).  We only separately store data about the
+    activity which cannot easily and quickly be deduced from the points.
     """
 
     metadata: ActivityMetaData
@@ -242,6 +245,7 @@ class Activity:
         data points into splits. Must be one of "km" or "mile".
         :return: A pd.DataFrame with the summary data, which conforms to
         the `metadata_summary_schema` schema.
+
         """
         # TODO: Use functions in df_utils for this.
         speed_col = self.get_speed_col(split_col)
@@ -288,6 +292,7 @@ class Activity:
         :param activity_id: The `activity_id` of the activity for which
         we want to create the thumbnail.
         :return: A path to the resulting PNG file.
+
         """
         # TODO:  Would be better not to rely on plotly / kaleido for this;
         # maybe roll our own using pillow.
@@ -359,6 +364,7 @@ class Activity:
         the supported activity types. Optional; if not provided, the
         default activity type will be used.
         :return: The new Activity object.
+
         """
         logger.info(f'Generating activity from file: "{fpath}".')
         fname, ext = os.path.splitext(fpath)
