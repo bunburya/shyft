@@ -20,6 +20,7 @@ MILE = 1609.344
 pd.options.plotting.backend = "plotly"
 logger = get_logger(__name__)
 
+
 @dataclass
 class ActivityMetaData:
     """A dataclass representing a brief summary of an activity."""
@@ -109,8 +110,6 @@ class ActivityMetaData:
         if self.activity_type is None:
             self.activity_type = self.config.default_activity_type
 
-
-
     def to_dict(self):
         return asdict(self)
 
@@ -120,8 +119,7 @@ class ActivityMetaData:
     @property
     def name_or_default(self) -> str:
         """
-        :return: Either the activity's name, if set, or a default name
-        based on the format specified in the config.
+        :return: Either the activity's name, if set, or a default name based on the format specified in the config.
 
         """
 
@@ -133,8 +131,7 @@ class ActivityMetaData:
     @property
     def default_name(self) -> str:
         """
-        :return: The 'default' name of the activity, determined
-        according to the default format specified in the config.
+        :return: The 'default' name of the activity, determined according to the default format specified in the config.
 
         """
         return self.config.default_activity_name_format.format(**vars(self), **vars(self.config))
@@ -142,8 +139,7 @@ class ActivityMetaData:
     @property
     def file_name(self) -> str:
         """
-        :return: A name to be used as a base for the name of data files
-        describing the Activity.
+        :return: A name to be used as a base for the name of data files describing the Activity.
 
         """
         # TODO: Move this to config to allow it to be specified by the user.
@@ -155,7 +151,6 @@ class ActivityMetaData:
         )))
 
 
-
 @dataclass(init=False)
 class Activity:
     """
@@ -163,6 +158,7 @@ class Activity:
     `pd.DataFrame`), as well as some metadata about the activity (as an
     `ActivityMetaData` object).  We only separately store data about the
     activity which cannot easily and quickly be deduced from the points.
+
     """
 
     metadata: ActivityMetaData
@@ -194,7 +190,6 @@ class Activity:
             if kwargs.get('mean_cadence') is None:
                 kwargs['mean_cadence'] = self.points['cadence'].mean()
 
-
             self.metadata = ActivityMetaData(config, **kwargs)
 
             if (self.metadata.gpx_file is not None) and (not os.path.exists(self.metadata.gpx_file)):
@@ -203,9 +198,10 @@ class Activity:
                 self.to_tcx_file(self.metadata.tcx_file)
 
     def get_split_markers(self, split_col: str) -> pd.DataFrame:
-        """Takes a DataFrame, calculates the points that lie directly on
+        """Takes a DataFrame, estimates the points that lie directly on
         the boundaries between splits and returns those points as a
         DataFrame.
+
         """
         if split_col == 'km':
             split_len = 1000
@@ -241,10 +237,9 @@ class Activity:
         """
         Get summarised information about splits (km or mile).
 
-        :param split_col: The name of the column to use to group the
-        data points into splits. Must be one of "km" or "mile".
-        :return: A pd.DataFrame with the summary data, which conforms to
-        the `metadata_summary_schema` schema.
+        :param split_col: The name of the column to use to group the data points into splits. Must be one of "km" or
+            "mile".
+        :return: A pd.DataFrame with the summary data, which conforms to the `metadata_summary_schema` schema.
 
         """
         # TODO: Use functions in df_utils for this.
@@ -264,7 +259,7 @@ class Activity:
         summary['start_time'] = pd.Series(start_times)
         summary['duration'] = split_times - split_times.shift(fill_value=self.points.iloc[0]['time'])
         summary.loc[summary.index[-1], 'duration'] = self.points.iloc[-1]['time'] - split_times.iloc[-1]
-        #summary['duration'] = get_lap_durations(summary, self.points)
+        # summary['duration'] = get_lap_durations(summary, self.points)
         if split_col == 'km':
             summary['distance'] = 1000
         elif split_col == 'mile':
@@ -287,10 +282,9 @@ class Activity:
         """
         Create a thumbnail representing the route and write it to a file.
 
-        :param fpath: The path to write the file to. If not provided,
-        this will be determined based on `config.thumbnail_dir`.
-        :param activity_id: The `activity_id` of the activity for which
-        we want to create the thumbnail.
+        :param fpath: The path to write the file to. If not provided, this will be determined based on\
+        `config.thumbnail_dir`.
+        :param activity_id: The `activity_id` of the activity for which we want to create the thumbnail.
         :return: A path to the resulting PNG file.
 
         """
@@ -335,7 +329,7 @@ class Activity:
         # results in the image just being a tiny blue dot.
         # TODO:  Find a way to explicitly specify the dimensions of the output image
         fig.write_image(fpath, format='png', scale=0.1)
-        #print(f'thumbnail fpath is {fpath}')
+        # print(f'thumbnail fpath is {fpath}')
         return fpath
 
     def get_speed_col(self, distance_unit: str) -> str:
@@ -356,13 +350,11 @@ class Activity:
         :param fpath: Path to the file to read.
         :param config: Config object to use when creating the Activity.
         :param activity_id: The ID of the new Activity.
-        :param activity_name: A name to be given to the activity.
-        Optional.
+        :param activity_name: A name to be given to the activity. Optional.
         :param activity_description: A description of the activity.
         Optional.
-        :param activity_type: The type of the activity. Must be one of
-        the supported activity types. Optional; if not provided, the
-        default activity type will be used.
+        :param activity_type: The type of the activity. Must be one of the supported activity types. Optional; if not\
+        provided, the default activity type will be used.
         :return: The new Activity object.
 
         """

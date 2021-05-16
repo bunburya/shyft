@@ -1,7 +1,7 @@
 import calendar
 import os
 from datetime import date, timedelta, datetime
-from typing import Tuple, Sequence, Optional, Dict, List, Generator, Union, Callable, Any, Collection
+from typing import Tuple, Sequence, Optional, Dict, List, Generator, Union, Callable, Any, Collection, Set
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -35,16 +35,20 @@ class ActivityManager:
 
     @property
     def activity_ids(self):
-        return self.dbm.get_all_activity_ids()
+        return self.dbm.all_activity_ids
 
     @property
     def prototypes(self) -> List[int]:
         """Return a sequence of the activity_ids of all Activities which are prototypes."""
-        return self.dbm.get_all_prototypes()
+        return self.dbm.all_prototypes
 
     @property
     def all_metadata(self) -> List[ActivityMetaData]:
         return [self.get_metadata_by_id(i) for i in self.activity_ids]
+
+    @property
+    def activity_types(self) -> Set[str]:
+        return self.dbm.all_activity_types
 
     def get_activity_by_id(self, activity_id: int, cache: bool = True) -> Optional[Activity]:
         # logger.info(f'Getting activity with ID {activity_id} .')
@@ -79,7 +83,7 @@ class ActivityManager:
                 return None
 
     def get_new_activity_id(self) -> int:
-        return self.dbm.get_max_activity_id() + 1
+        return self.dbm.max_activity_id + 1
 
     def add_activity(self, activity: Activity, cache: bool = True) -> int:
         """Add an Activity instance, including finding and assigning its
@@ -206,13 +210,11 @@ class ActivityManager:
 
     def get_metadata_by_month(self, month: date, **kwargs) -> List[ActivityMetaData]:
         """
-        :param month: The month to search. The `day` component of the
-        `date` object is disregarded.
-        :param kwargs: This method also takes the same arguments (other
-        than from_date and to_date) as search_metadata, and will
-        filter the results accordingly.
-        :return: A list of ActivityMetaData objects representing all
-        (relevant) activities in the week that commences on `start`.
+        :param month: The month to search. The `day` component of the `date` object is disregarded.
+        :param kwargs: This method also takes the same arguments (other than from_date and to_date) as search_metadata,\
+        and will filter the results accordingly.
+        :return: A list of ActivityMetaData objects representing all (relevant) activities in the week that commences\
+        on `start`.
         """
         #print(month, type(month))
         year = month.year
@@ -226,11 +228,10 @@ class ActivityManager:
     def get_metadata_by_week(self, start: date, **kwargs) -> List[ActivityMetaData]:
         """
         :param start: The date on which the week commences.
-        :param kwargs: This method also takes the same arguments (other
-        than from_date and to_date) as search_metadata, and will
-        filter the results accordingly.
-        :return: A list of ActivityMetaData objects representing all
-        (relevant) activities in the week that commences on `start`.
+        :param kwargs: This method also takes the same arguments (other than `from_date` and `to_date`) as\
+        search_metadata, and will filter the results accordingly.
+        :return: A list of ActivityMetaData objects representing all (relevant) activities in the week that commences\
+        on `start`.
         """
         end = start + timedelta(days=7)
         return self.search_metadata(start, end, **kwargs)
@@ -266,16 +267,12 @@ class ActivityManager:
     def metadata_weekly_time_series(self, from_date: Optional[date] = None, to_date: Optional[date] = None,
                                     **kwargs) -> pd.DataFrame:
         """
-        :param from_date: The start date of the period you want to
-        search.
-        :param to_date: The end date of the period you want to search
-        (inclusive).
-        :param kwargs: This method also takes the same arguments (other
-        than from_date and to_date) as search_metadata, and will
-        filter the results accordingly.
-        :return: A pd.DataFrame, conforming to
-        `metadata_time_series_schema`, containing information about the
-        relevant activities grouped by week.
+        :param from_date: The start date of the period you want to search.
+        :param to_date: The end date of the period you want to search (inclusive).
+        :param kwargs: This method also takes the same arguments (other than from_date and to_date) as search_metadata,\
+        and will filter the results accordingly.
+        :return: A pd.DataFrame, conforming to `metadata_time_series_schema`, containing information about the relevant\
+        activities grouped by week.
         """
         return self._metadata_time_series_df(timedelta(weeks=1), self.get_metadata_by_week,
                                              from_date, to_date, **kwargs)
@@ -283,16 +280,12 @@ class ActivityManager:
     def metadata_monthly_time_series(self, from_date: Optional[date] = None, to_date: Optional[date] = None,
                                      **kwargs) -> pd.DataFrame:
         """
-        :param from_date: The start date of the period you want to
-        search.
-        :param to_date: The end date of the period you want to search
-        (inclusive).
-        :param kwargs: This method also takes the same arguments (other
-        than from_date and to_date) as search_metadata, and will
-        filter the results accordingly.
-        :return: A pd.DataFrame, conforming to
-        `metadata_time_series_schema`, containing information about the
-        relevant activities grouped by month.
+        :param from_date: The start date of the period you want to search.
+        :param to_date: The end date of the period you want to search (inclusive).
+        :param kwargs: This method also takes the same arguments (other than from_date and to_date) as search_metadata,\
+        and will filter the results accordingly.
+        :return: A pd.DataFrame, conforming to `metadata_time_series_schema`, containing information about the relevant\
+        activities grouped by month.
         """
         return self._metadata_time_series_df(relativedelta(months=1), self.get_metadata_by_month,
                                              from_date, to_date, **kwargs)
@@ -302,14 +295,14 @@ class ActivityManager:
         """
         :return: The date and time of the earliest recorded activity.
         """
-        return self.dbm.get_earliest_datetime()
+        return self.dbm.earliest_datetime
 
     @property
     def latest_datetime(self) -> Optional[datetime]:
         """
         :return: The date and time of the latest recorded activity.
         """
-        return self.dbm.get_latest_datetime()
+        return self.dbm.latest_datetime
 
     def __getitem__(self, key: int) -> Activity:
         #logger.debug(f'Getting activity {key}.')

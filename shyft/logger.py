@@ -9,13 +9,16 @@ def get_logger(name: Optional[str] = None, file_level: Optional[int] = None,
                log_file: Optional[str] = None) -> logging.Logger:
     """Return an appropriately configured Logger instance.
 
-    If `name` is not specified, creates a root logger. In this case,
-    `config`, `file_level` and/or `console_level` should be provided
-    so that the root logger can be configured.
+    :param name: The name of the logger. If not specified, this function will create a root logger. In this case,
+        `config`, `file_level` and/or `console_level` should be provided so that the root logger can be configured. If
+        `name` is specified, in the absence of explicit configuration options, the resulting logger will have the same
+        configuration as the root logger.
+    :param file_level: What severity level to log to the specified file.
+    :param console_level: What severity level to log to the console.
+    :param config: A Config object that can be used to configure the logger.
+    :param log_file: Path to the file to log to.
 
-    If `name` is specified, in the absence of explicit configuration
-    options, the resulting logger will have the same configuration
-    as the root logger.
+    :return: A new, appropriately configured logging.Logger object.
     """
 
     if name is not None:

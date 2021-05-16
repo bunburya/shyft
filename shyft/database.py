@@ -1,15 +1,16 @@
 import re
 import threading
 from datetime import timezone, timedelta, datetime
-from typing import Any, Dict, Optional, Sequence, List, Collection
+from typing import Any, Dict, Optional, Sequence, List, Collection, Set
+import sqlite3 as sql
+
+import numpy as np
+import pandas as pd
+
+import shyft.config
 
 import warnings
 warnings.simplefilter('ignore', UserWarning)
-
-import shyft.config
-import sqlite3 as sql
-import numpy as np
-import pandas as pd
 
 # The below code is taken from Django's codebase (with some minor
 # adjustments) and is intended to address the fact that sqlite3
@@ -346,16 +347,24 @@ class DatabaseManager:
             laps['duration'] = pd.to_timedelta(laps['duration'], unit='ns')
             return laps
 
-    def get_all_activity_ids(self) -> List[int]:
+    @property
+    def all_activity_ids(self) -> List[int]:
         self.sql_execute('SELECT activity_id from "activities"')
         # fetchall returns a sequence of Row objects
         return [r['activity_id'] for r in self.sql_fetchall()]
 
-    def get_all_prototypes(self) -> List[int]:
+    @property
+    def all_prototypes(self) -> List[int]:
         self.sql_execute('SELECT activity_id FROM "prototypes"')
         return [r['activity_id'] for r in self.sql_fetchall()]
 
-    def get_max_activity_id(self) -> int:
+    @property
+    def all_activity_types(self) -> Set[str]:
+        self.sql_execute('SELECT DISTINCT activity_type FROM "activities"')
+        return {r['activity_type'] for r in self.sql_fetchall()}
+
+    @property
+    def max_activity_id(self) -> int:
         """Return the highest activity_id in activities.  If activities
         is empty, return -1.
         """
@@ -365,11 +374,13 @@ class DatabaseManager:
             max_id = -1
         return max_id
 
-    def get_earliest_datetime(self) -> Optional[datetime]:
+    @property
+    def earliest_datetime(self) -> Optional[datetime]:
         self.sql_execute('SELECT MIN(date_time) as "date_time [timestamp]" FROM "activities"')
         return self.sql_fetchone()[0]
 
-    def get_latest_datetime(self) -> Optional[datetime]:
+    @property
+    def latest_datetime(self) -> Optional[datetime]:
         self.sql_execute('SELECT MAX(date_time) as "date_time [timestamp]" FROM "activities"')
         return self.sql_fetchone()[0]
 

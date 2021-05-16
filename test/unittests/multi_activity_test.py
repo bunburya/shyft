@@ -338,5 +338,21 @@ class ActivityManagerTestCase(BaseTestCase):
         monthly_runs = self.manager_1.metadata_monthly_time_series(date(2019, 1, 1), activity_type='run')
         self.assert_dataframe_valid(monthly_runs, metadata_time_series_schema)
 
+    def test_20_activity_types(self):
+        """Test fetching all present activity types."""
+        manager = copy_manager(self.manager_1)
+        types = set()
+        for a in manager:
+            types.add(a.metadata.activity_type)
+        self.assertTrue(types)
+        self.assertSetEqual(types, manager.activity_types)
+        for t in ('walk', 'run'):
+            types.remove(t)
+            for a in manager:
+                if a.metadata.activity_type == t:
+                    manager.delete_activity(a.metadata.activity_id)
+            self.assertSetEqual(types, manager.activity_types)
+
+
 if __name__ == '__main__':
     unittest.main()

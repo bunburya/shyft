@@ -21,6 +21,9 @@ class ViewActivitiesController(_BaseDashController):
             html.Div(id={'type': 'redirect', 'context': 'activity_table', 'index': 'view_activities'}, hidden=True),
             *self.dc_factory.display_all_messages(),
             html.H1('View activities'),
+            html.H2('Filter'),
+            self.dc_factory.activities_filter_menu('view_activities'),
+            html.H2('Activities'),
             html.Div(id='view_activities_display_container', children=display),
             self.dc_factory.footer()
         ]

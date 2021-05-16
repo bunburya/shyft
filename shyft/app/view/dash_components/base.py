@@ -19,6 +19,7 @@ from shyft.metadata import APP_NAME, VERSION, URL
 
 logger = get_logger(__name__)
 
+
 class BaseDashComponentFactory:
     """A base for classes that generate Dash various components
     depending on the configuration and the given activity data.
@@ -53,7 +54,6 @@ class BaseDashComponentFactory:
             }
         ],
     }
-
 
     MSG_FG_COLORS = {
         msg.CRITICAL: '#FF0000',
@@ -164,7 +164,6 @@ class BaseDashComponentFactory:
             html.Th('Activity', scope='col')  # activity name
         ]
 
-
         table_rows = [html.Tr(header_row)]
         for md in metadata_list:
             data_cells = [
@@ -248,7 +247,7 @@ class BaseDashComponentFactory:
             'app_url': URL
         }
 
-    def footer(self):
+    def footer(self) -> html.Footer:
         """Return a footer element to be displayed at the bottom of
         the page.
 
@@ -262,3 +261,28 @@ class BaseDashComponentFactory:
             ' | ',
             html.A(['{app_name} {app_version}'.format(**app_metadata)], href=app_metadata['app_url'])
         ]))
+
+    def activities_filter_menu(self, id: str) -> Component:
+        """Return a menu that provides a number of options for filtering
+        activities.
+        """
+        date_range = dcc.DatePickerRange(
+            id=f'filter_activities_date_range_{id}',
+            start_date=self.activity_manager.earliest_datetime,
+            end_date=self.activity_manager.latest_datetime,
+            display_format='YYYY-MM-DD'
+        )
+        type_options = [{'label': 'all types', 'value': ''}]
+        for t in self.activity_manager.activity_types:
+            type_options.append({'label': t, 'value': t})
+        type_dropdown = dcc.Dropdown(f'filter_activities_type_{id}', options=type_options, value='')
+        apply_button = dbc.Button('Apply filters', id=f'filter_activities_apply_button_{id}', style={'width': '100%'})
+        clear_button = dbc.Button('Clear filters', id=f'filter_activities_clear_button_{id}', style={'width': '100%'})
+        return dbc.Row([
+            dbc.Col(date_range, width=4),
+            dbc.Col(type_dropdown, width=4),
+            dbc.Col(apply_button, width=2),
+            dbc.Col(clear_button, width=2)
+        ])
+
+

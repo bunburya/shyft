@@ -40,12 +40,10 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """
         Get appropriate DataFrame column name and readable axis label. 
 
-        :param data_name: Describes what data we want to display. See
-        docs for `main_scatter_fig` and `main_time_fig` methods for
-        permitted values.
-        :return: A 2-tuple containing the name of the relevant column in
-        the `summary` DataFrame as the first element, and the axis label
-        to display to the user as the second element.
+        :param data_name: Describes what data we want to display. See docs for `main_scatter_fig` and `main_time_fig`
+            methods for permitted values.
+        :return: A 2-tuple containing the name of the relevant column in the `summary` DataFrame as the first element,
+            and the axis label to display to the user as the second element.
         """
 
         # Single activity attributes (column name must be present in summary dataframe)
@@ -85,10 +83,8 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """
         Generate the main scatter plot figure.
 
-        :param x: What to display on the x axis. Should be one of
-        `distance`, `mean_speed`, `duration` or `mean_hr`.
-        :param y: What to display on the y axis. Has the same
-        permitted values as `x`.
+        :param x: What to display on the x axis. Should be one of `distance`, `mean_speed`, `duration` or `mean_hr`.
+        :param y: What to display on the y axis. Has the same permitted values as `x`.
         :return: A go.Figure object representing the scatter plot.
         """
         x_col, x_label = self._axis_labels(x)

@@ -29,3 +29,4 @@ class _BaseDashController:
 
     def register_callbacks(self):
         pass
+
