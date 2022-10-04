@@ -6,7 +6,7 @@ import pandas as pd
 from shyft.df_utils.validate import DataFrameSchema, Column
 
 # Make test schemas
-from test_utils.test_common import BaseDataFrameValidateTestCase
+from test.test_utils.test_common import BaseDataFrameValidateTestCase
 
 TEST_COL_1 = Column(
     name='first_column',

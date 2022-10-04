@@ -2,8 +2,8 @@
 
 # Script to run Shyft as a test user
 
-CONFIG="test/test_data/dash_config.ini"
-DATA_DIR="/home/alan/bin/PycharmProjects/shyft/test/test_data/run/dash/"
+CONFIG="/home/alan/PycharmProjects/shyft/test/test_data/dash_config.ini"
+DATA_DIR="/home/alan/PycharmProjects/shyft/test/test_data/run/dash/"
 
 # Make a custom configuration file for this run based on the standard test configuration
 if [ ! -f "$CONFIG" ]; then

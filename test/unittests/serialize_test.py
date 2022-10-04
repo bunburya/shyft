@@ -4,7 +4,7 @@ import lxml.etree
 from shyft.logger import get_logger
 from shyft.serialize.parse import parser_factory, FITParser, TCXParser
 from shyft.serialize.parse.gpx import BaseGPXParser
-from test_utils.test_common import *
+from test.test_utils.test_common import *
 
 RUN_DIR_BASE = '../../shyft/serialize'
 

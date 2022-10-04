@@ -11,6 +11,7 @@ from typing import List, Optional, Collection, Iterable
 
 import numpy as np
 import pandas as pd
+
 import gpxpy
 
 from shyft.config import Config
