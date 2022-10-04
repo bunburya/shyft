@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset='utf-8' />
+		{% for s in stylesheets %}
+			<link href="{{ s }}" rel="stylesheet" />
+		{% endfor %}
+		<link href="{{ url_for('static', filename='lib/fullcalendar/main.min.css') }}" rel="stylesheet" />
+    	<script src="{{ url_for('static', filename='lib/fullcalendar/main.min.js') }}"></script>
+    	<script>
+
+			document.addEventListener('DOMContentLoaded', function() {
+				var calendarEl = document.getElementById('calendar');
+				var calendar = new FullCalendar.Calendar(calendarEl, {
+					initialView: 'dayGridMonth',
+					displayEventTime: false,
+					headerToolbar: {
+						left: 'prev,next today',
+						center: 'title',
+						right: 'dayGridMonth,timeGridWeek,timeGridDay'
+					},
+					editable: false,
+					dayMaxEvents: true, // allow "more" link when too many events
+					events: {
+						url: 'json/calendar_data?{{ query }}',
+					},
+					eventClick: function(info) {
+						info.jsEvent.preventDefault();
+						if (info.event.url) {
+							window.open(info.event.url);
+						}
+					}
+				});
+				calendar.render();
+			});
+
+    </script>
+  	</head>
+  	<body>
+  		<div id='calendar'></div>
+  	</body>
+</html>

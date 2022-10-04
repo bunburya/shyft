@@ -1,0 +1,33 @@
+div #main_layout {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.dash-spreadsheet .row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.dash-table-container .row {
+    margin: 0px;
+}
+
+/* Prevent leftmost column of splits DataTable from being clipped */
+div.cell.cell-1-1.dash-fixed-content {
+    margin-left: 0px !important;
+}
+
+/* Disable cell highlighting in DataTables
+.dash-spreadsheet-container .dash-spreadsheet-inner table {
+    border-collapse: collapse;
+    --accent: transparent  !important;
+    --border: transparent !important;
+    --text-color: transparent !important;
+    --hover: transparent !important;
+    --background-color-ellipses: transparent !important;
+    --faded-text: transparent !important;
+    --faded-text-header: transparent !important;
+    --selected-background: transparent !important;
+    --faded-dropdown: transparent !important;
+    --muted: transparent !important;
+} */

@@ -1,0 +1,5461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:garmin_tpe="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="Shyft 0.1a1">
+  <metadata>
+    <time>2020-10-03T14:59:11Z</time>
+  </metadata>
+  <trk>
+    <type>run</type>
+    <trkseg>
+      <trkpt lat="53.353091" lon="-6.288697">
+        <ele>24.6</ele>
+        <time>2020-10-03T14:59:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>83</garmin_tpe:hr>
+            <garmin_tpe:cad>0</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353097" lon="-6.288713">
+        <ele>23.4</ele>
+        <time>2020-10-03T14:59:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>83</garmin_tpe:hr>
+            <garmin_tpe:cad>0</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353102" lon="-6.288739">
+        <ele>21.8</ele>
+        <time>2020-10-03T14:59:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>83</garmin_tpe:hr>
+            <garmin_tpe:cad>79</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353107" lon="-6.288761">
+        <ele>21.6</ele>
+        <time>2020-10-03T14:59:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>82</garmin_tpe:hr>
+            <garmin_tpe:cad>79</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353118" lon="-6.288816">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:16Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>86</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353123" lon="-6.288841">
+        <ele>21.6</ele>
+        <time>2020-10-03T14:59:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>90</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353132" lon="-6.288871">
+        <ele>20.6</ele>
+        <time>2020-10-03T14:59:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>93</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353138" lon="-6.288901">
+        <ele>21.0</ele>
+        <time>2020-10-03T14:59:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>96</garmin_tpe:hr>
+            <garmin_tpe:cad>81</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353144" lon="-6.288933">
+        <ele>21.6</ele>
+        <time>2020-10-03T14:59:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>96</garmin_tpe:hr>
+            <garmin_tpe:cad>81</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353166" lon="-6.288985">
+        <ele>21.0</ele>
+        <time>2020-10-03T14:59:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>102</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353166" lon="-6.288997">
+        <ele>20.6</ele>
+        <time>2020-10-03T14:59:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>103</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353164" lon="-6.289003">
+        <ele>20.4</ele>
+        <time>2020-10-03T14:59:25Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>104</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353145" lon="-6.289031">
+        <ele>21.2</ele>
+        <time>2020-10-03T14:59:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>108</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353117" lon="-6.289072">
+        <ele>19.6</ele>
+        <time>2020-10-03T14:59:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>109</garmin_tpe:hr>
+            <garmin_tpe:cad>80</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353066" lon="-6.289141">
+        <ele>20.6</ele>
+        <time>2020-10-03T14:59:32Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>113</garmin_tpe:hr>
+            <garmin_tpe:cad>82</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353019" lon="-6.289243">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>117</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352989" lon="-6.289301">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>118</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352964" lon="-6.289342">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>115</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35294" lon="-6.289382">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>118</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352899" lon="-6.28949">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>120</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352892" lon="-6.289526">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:45Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>121</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352902" lon="-6.289607">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>124</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352915" lon="-6.289642">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:48Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>125</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352952" lon="-6.289766">
+        <ele>20.8</ele>
+        <time>2020-10-03T14:59:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>129</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353025" lon="-6.289934">
+        <ele>20.4</ele>
+        <time>2020-10-03T14:59:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>131</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353081" lon="-6.290063">
+        <ele>20.2</ele>
+        <time>2020-10-03T15:00:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>134</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353175" lon="-6.29023">
+        <ele>21.0</ele>
+        <time>2020-10-03T15:00:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>135</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353294" lon="-6.290461">
+        <ele>21.6</ele>
+        <time>2020-10-03T15:00:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>133</garmin_tpe:hr>
+            <garmin_tpe:cad>82</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353321" lon="-6.290505">
+        <ele>21.8</ele>
+        <time>2020-10-03T15:00:16Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>133</garmin_tpe:hr>
+            <garmin_tpe:cad>82</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35338" lon="-6.290594">
+        <ele>22.4</ele>
+        <time>2020-10-03T15:00:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>133</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353491" lon="-6.290855">
+        <ele>22.6</ele>
+        <time>2020-10-03T15:00:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>135</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353505" lon="-6.290885">
+        <ele>22.8</ele>
+        <time>2020-10-03T15:00:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>135</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35352" lon="-6.290915">
+        <ele>22.8</ele>
+        <time>2020-10-03T15:00:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>135</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353574" lon="-6.29105">
+        <ele>23.2</ele>
+        <time>2020-10-03T15:00:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>138</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353625" lon="-6.291144">
+        <ele>23.4</ele>
+        <time>2020-10-03T15:00:37Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>139</garmin_tpe:hr>
+            <garmin_tpe:cad>82</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353714" lon="-6.291362">
+        <ele>23.8</ele>
+        <time>2020-10-03T15:00:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>142</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35373" lon="-6.291394">
+        <ele>23.8</ele>
+        <time>2020-10-03T15:00:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>142</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353783" lon="-6.291489">
+        <ele>24.0</ele>
+        <time>2020-10-03T15:00:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>145</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353832" lon="-6.291636">
+        <ele>24.2</ele>
+        <time>2020-10-03T15:00:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>147</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353864" lon="-6.291731">
+        <ele>24.2</ele>
+        <time>2020-10-03T15:00:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353891" lon="-6.291868">
+        <ele>24.2</ele>
+        <time>2020-10-03T15:00:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353983" lon="-6.292064">
+        <ele>24.4</ele>
+        <time>2020-10-03T15:01:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354092" lon="-6.292242">
+        <ele>24.2</ele>
+        <time>2020-10-03T15:01:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>149</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354174" lon="-6.292476">
+        <ele>24.2</ele>
+        <time>2020-10-03T15:01:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>82</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354273" lon="-6.292656">
+        <ele>24.6</ele>
+        <time>2020-10-03T15:01:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354399" lon="-6.292754">
+        <ele>25.0</ele>
+        <time>2020-10-03T15:01:31Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>147</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35445" lon="-6.292793">
+        <ele>25.0</ele>
+        <time>2020-10-03T15:01:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>147</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354576" lon="-6.292928">
+        <ele>25.0</ele>
+        <time>2020-10-03T15:01:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>84</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354686" lon="-6.293089">
+        <ele>25.0</ele>
+        <time>2020-10-03T15:01:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354744" lon="-6.293233">
+        <ele>26.0</ele>
+        <time>2020-10-03T15:01:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354793" lon="-6.293377">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:01:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>82</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354921" lon="-6.29363">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:02:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354918" lon="-6.293699">
+        <ele>26.2</ele>
+        <time>2020-10-03T15:02:03Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>149</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354887" lon="-6.293736">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:02:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>83</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354756" lon="-6.293938">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:02:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.3546" lon="-6.294152">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:02:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>152</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354477" lon="-6.294357">
+        <ele>26.6</ele>
+        <time>2020-10-03T15:02:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35435" lon="-6.294563">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:02:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354332" lon="-6.29459">
+        <ele>27.2</ele>
+        <time>2020-10-03T15:02:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35424" lon="-6.294774">
+        <ele>27.4</ele>
+        <time>2020-10-03T15:02:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354108" lon="-6.294988">
+        <ele>27.4</ele>
+        <time>2020-10-03T15:02:48Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35409" lon="-6.295015">
+        <ele>27.4</ele>
+        <time>2020-10-03T15:02:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35394" lon="-6.295209">
+        <ele>27.4</ele>
+        <time>2020-10-03T15:02:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>149</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353785" lon="-6.295409">
+        <ele>27.6</ele>
+        <time>2020-10-03T15:03:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353748" lon="-6.295458">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:03:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353639" lon="-6.295634">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:03:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>152</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353523" lon="-6.295836">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:03:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353472" lon="-6.295919">
+        <ele>28.0</ele>
+        <time>2020-10-03T15:03:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>147</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353381" lon="-6.296058">
+        <ele>28.0</ele>
+        <time>2020-10-03T15:03:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>146</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353287" lon="-6.296246">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:03:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353252" lon="-6.296294">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:03:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353135" lon="-6.296492">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:03:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>149</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353071" lon="-6.29665">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:03:48Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353073" lon="-6.296681">
+        <ele>28.6</ele>
+        <time>2020-10-03T15:03:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>149</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353064" lon="-6.296923">
+        <ele>28.6</ele>
+        <time>2020-10-03T15:03:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>147</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352972" lon="-6.297064">
+        <ele>28.8</ele>
+        <time>2020-10-03T15:04:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>149</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352823" lon="-6.297278">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:04:09Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352803" lon="-6.297321">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:04:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352739" lon="-6.297422">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:04:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>153</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352664" lon="-6.297529">
+        <ele>28.0</ele>
+        <time>2020-10-03T15:04:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>156</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352535" lon="-6.297711">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:04:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>156</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352489" lon="-6.29777">
+        <ele>27.0</ele>
+        <time>2020-10-03T15:04:25Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>155</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352369" lon="-6.297909">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:04:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>154</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352233" lon="-6.298142">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:04:37Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>156</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352226" lon="-6.298189">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:04:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>153</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352218" lon="-6.298447">
+        <ele>26.6</ele>
+        <time>2020-10-03T15:04:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>153</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352233" lon="-6.29864">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:04:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>148</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352243" lon="-6.298743">
+        <ele>26.0</ele>
+        <time>2020-10-03T15:04:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>146</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352251" lon="-6.298793">
+        <ele>26.0</ele>
+        <time>2020-10-03T15:04:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>145</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352317" lon="-6.299115">
+        <ele>26.0</ele>
+        <time>2020-10-03T15:04:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>147</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352339" lon="-6.299192">
+        <ele>26.0</ele>
+        <time>2020-10-03T15:04:59Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>150</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352438" lon="-6.299484">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:05:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352494" lon="-6.299734">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:05:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>152</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352502" lon="-6.299781">
+        <ele>27.0</ele>
+        <time>2020-10-03T15:05:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>151</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352521" lon="-6.300083">
+        <ele>27.2</ele>
+        <time>2020-10-03T15:05:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>152</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352526" lon="-6.300128">
+        <ele>27.2</ele>
+        <time>2020-10-03T15:05:21Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>155</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352545" lon="-6.300257">
+        <ele>27.4</ele>
+        <time>2020-10-03T15:05:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>154</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35257" lon="-6.300429">
+        <ele>27.6</ele>
+        <time>2020-10-03T15:05:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>153</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352635" lon="-6.300604">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:05:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>153</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352654" lon="-6.300632">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:05:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>152</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352727" lon="-6.300783">
+        <ele>28.8</ele>
+        <time>2020-10-03T15:05:39Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>156</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352742" lon="-6.300817">
+        <ele>28.8</ele>
+        <time>2020-10-03T15:05:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>154</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352833" lon="-6.300977">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:05:45Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>157</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352874" lon="-6.301033">
+        <ele>28.8</ele>
+        <time>2020-10-03T15:05:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>158</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353001" lon="-6.30126">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:05:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>159</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353017" lon="-6.301292">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:05:55Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>160</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353058" lon="-6.30135">
+        <ele>29.4</ele>
+        <time>2020-10-03T15:05:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>160</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353101" lon="-6.301396">
+        <ele>30.0</ele>
+        <time>2020-10-03T15:05:59Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>163</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353171" lon="-6.301453">
+        <ele>30.0</ele>
+        <time>2020-10-03T15:06:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>160</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35335" lon="-6.301604">
+        <ele>30.2</ele>
+        <time>2020-10-03T15:06:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>160</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353369" lon="-6.301626">
+        <ele>30.2</ele>
+        <time>2020-10-03T15:06:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>161</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353524" lon="-6.301811">
+        <ele>30.2</ele>
+        <time>2020-10-03T15:06:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>164</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353641" lon="-6.301908">
+        <ele>30.4</ele>
+        <time>2020-10-03T15:06:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>161</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353689" lon="-6.301951">
+        <ele>30.6</ele>
+        <time>2020-10-03T15:06:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>161</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353713" lon="-6.301973">
+        <ele>30.8</ele>
+        <time>2020-10-03T15:06:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>162</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35387" lon="-6.302119">
+        <ele>31.2</ele>
+        <time>2020-10-03T15:06:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35395" lon="-6.302209">
+        <ele>31.8</ele>
+        <time>2020-10-03T15:06:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354035" lon="-6.302283">
+        <ele>32.0</ele>
+        <time>2020-10-03T15:06:42Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354226" lon="-6.302392">
+        <ele>32.2</ele>
+        <time>2020-10-03T15:06:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>169</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354328" lon="-6.302438">
+        <ele>32.8</ele>
+        <time>2020-10-03T15:06:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>167</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35446" lon="-6.30248">
+        <ele>33.0</ele>
+        <time>2020-10-03T15:06:59Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354642" lon="-6.302535">
+        <ele>33.4</ele>
+        <time>2020-10-03T15:07:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35483" lon="-6.302616">
+        <ele>33.4</ele>
+        <time>2020-10-03T15:07:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>167</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354857" lon="-6.302631">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:07:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354908" lon="-6.302657">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:07:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>164</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354933" lon="-6.302669">
+        <ele>33.4</ele>
+        <time>2020-10-03T15:07:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>167</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355096" lon="-6.302721">
+        <ele>33.8</ele>
+        <time>2020-10-03T15:07:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355289" lon="-6.302775">
+        <ele>34.0</ele>
+        <time>2020-10-03T15:07:31Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355469" lon="-6.302847">
+        <ele>34.0</ele>
+        <time>2020-10-03T15:07:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>164</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355668" lon="-6.302906">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:07:46Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355692" lon="-6.302923">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:07:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355859" lon="-6.303071">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:07:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355932" lon="-6.303122">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:07:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356064" lon="-6.303223">
+        <ele>34.0</ele>
+        <time>2020-10-03T15:08:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356144" lon="-6.30327">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:08:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356327" lon="-6.303373">
+        <ele>34.4</ele>
+        <time>2020-10-03T15:08:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>167</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35641" lon="-6.30339">
+        <ele>34.4</ele>
+        <time>2020-10-03T15:08:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35652" lon="-6.303399">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:08:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356628" lon="-6.303413">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:08:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356807" lon="-6.303496">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:08:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356985" lon="-6.303602">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:08:37Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357033" lon="-6.303624">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:08:39Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357206" lon="-6.303701">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:08:46Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357376" lon="-6.303814">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:08:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35757" lon="-6.303885">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:09:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357599" lon="-6.303893">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:09:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357773" lon="-6.304005">
+        <ele>34.6</ele>
+        <time>2020-10-03T15:09:08Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>167</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357947" lon="-6.304095">
+        <ele>34.6</ele>
+        <time>2020-10-03T15:09:16Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358082" lon="-6.304267">
+        <ele>34.4</ele>
+        <time>2020-10-03T15:09:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>164</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358242" lon="-6.304466">
+        <ele>34.4</ele>
+        <time>2020-10-03T15:09:31Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358286" lon="-6.304521">
+        <ele>34.4</ele>
+        <time>2020-10-03T15:09:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358429" lon="-6.304719">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:09:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358584" lon="-6.304921">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:09:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35863" lon="-6.304982">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:09:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358751" lon="-6.305156">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:09:55Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>169</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358787" lon="-6.305218">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:09:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>167</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358918" lon="-6.305458">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:10:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>165</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35894" lon="-6.305494">
+        <ele>34.6</ele>
+        <time>2020-10-03T15:10:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>166</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359077" lon="-6.305701">
+        <ele>34.6</ele>
+        <time>2020-10-03T15:10:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>168</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359096" lon="-6.30573">
+        <ele>34.6</ele>
+        <time>2020-10-03T15:10:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>167</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359178" lon="-6.305922">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:10:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>170</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359213" lon="-6.306004">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:10:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>171</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359348" lon="-6.30624">
+        <ele>35.2</ele>
+        <time>2020-10-03T15:10:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>171</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359506" lon="-6.306456">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:10:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>172</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359647" lon="-6.306675">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:10:42Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>172</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359688" lon="-6.306744">
+        <ele>35.2</ele>
+        <time>2020-10-03T15:10:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>171</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359811" lon="-6.306979">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:10:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>172</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359846" lon="-6.307051">
+        <ele>35.2</ele>
+        <time>2020-10-03T15:10:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>174</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359946" lon="-6.30734">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:11:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>172</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359964" lon="-6.307376">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:11:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>172</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360035" lon="-6.307515">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:11:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>173</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360102" lon="-6.30764">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:11:09Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>175</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360236" lon="-6.307861">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:11:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>173</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360255" lon="-6.307893">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:11:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>173</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360394" lon="-6.308137">
+        <ele>34.0</ele>
+        <time>2020-10-03T15:11:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>174</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360412" lon="-6.30817">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:11:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>174</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360542" lon="-6.308405">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:11:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>174</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360558" lon="-6.30844">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:11:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>174</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360682" lon="-6.308716">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:11:42Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>175</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360719" lon="-6.308785">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:11:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>175</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360823" lon="-6.309008">
+        <ele>34.6</ele>
+        <time>2020-10-03T15:11:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>174</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360962" lon="-6.309247">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:11:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360985" lon="-6.309278">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:11:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361082" lon="-6.309446">
+        <ele>33.8</ele>
+        <time>2020-10-03T15:12:03Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361124" lon="-6.309516">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:12:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36125" lon="-6.309778">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:12:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361267" lon="-6.309816">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:12:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361383" lon="-6.310084">
+        <ele>33.4</ele>
+        <time>2020-10-03T15:12:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361498" lon="-6.310369">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:12:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361612" lon="-6.310618">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:12:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.3617" lon="-6.310827">
+        <ele>34.0</ele>
+        <time>2020-10-03T15:12:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361823" lon="-6.311108">
+        <ele>34.0</ele>
+        <time>2020-10-03T15:12:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361917" lon="-6.311412">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:12:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361932" lon="-6.311449">
+        <ele>34.0</ele>
+        <time>2020-10-03T15:12:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362037" lon="-6.31168">
+        <ele>34.4</ele>
+        <time>2020-10-03T15:13:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362134" lon="-6.311951">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:13:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362146" lon="-6.311991">
+        <ele>34.8</ele>
+        <time>2020-10-03T15:13:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362252" lon="-6.312247">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:13:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362266" lon="-6.312282">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:13:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362373" lon="-6.312564">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:13:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362385" lon="-6.3126">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:13:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362474" lon="-6.312862">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:13:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362486" lon="-6.312903">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:13:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362508" lon="-6.312993">
+        <ele>36.2</ele>
+        <time>2020-10-03T15:13:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36258" lon="-6.313199">
+        <ele>36.8</ele>
+        <time>2020-10-03T15:13:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362687" lon="-6.313473">
+        <ele>36.8</ele>
+        <time>2020-10-03T15:13:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362795" lon="-6.313746">
+        <ele>37.0</ele>
+        <time>2020-10-03T15:13:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362808" lon="-6.313784">
+        <ele>37.0</ele>
+        <time>2020-10-03T15:13:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362859" lon="-6.313944">
+        <ele>37.2</ele>
+        <time>2020-10-03T15:14:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362881" lon="-6.314013">
+        <ele>37.2</ele>
+        <time>2020-10-03T15:14:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362965" lon="-6.314215">
+        <ele>37.2</ele>
+        <time>2020-10-03T15:14:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362981" lon="-6.314255">
+        <ele>37.0</ele>
+        <time>2020-10-03T15:14:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363089" lon="-6.314524">
+        <ele>36.8</ele>
+        <time>2020-10-03T15:14:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.3631" lon="-6.31456">
+        <ele>36.8</ele>
+        <time>2020-10-03T15:14:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363222" lon="-6.314732">
+        <ele>37.0</ele>
+        <time>2020-10-03T15:14:25Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363252" lon="-6.314948">
+        <ele>37.0</ele>
+        <time>2020-10-03T15:14:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363295" lon="-6.315216">
+        <ele>37.2</ele>
+        <time>2020-10-03T15:14:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363398" lon="-6.315491">
+        <ele>37.6</ele>
+        <time>2020-10-03T15:14:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363501" lon="-6.315753">
+        <ele>38.0</ele>
+        <time>2020-10-03T15:14:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363626" lon="-6.315936">
+        <ele>38.2</ele>
+        <time>2020-10-03T15:14:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363642" lon="-6.315975">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:14:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36375" lon="-6.316224">
+        <ele>38.2</ele>
+        <time>2020-10-03T15:15:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363789" lon="-6.316307">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:15:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363898" lon="-6.316555">
+        <ele>39.0</ele>
+        <time>2020-10-03T15:15:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363912" lon="-6.316593">
+        <ele>39.0</ele>
+        <time>2020-10-03T15:15:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36393" lon="-6.316627">
+        <ele>38.8</ele>
+        <time>2020-10-03T15:15:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364034" lon="-6.316835">
+        <ele>39.2</ele>
+        <time>2020-10-03T15:15:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364157" lon="-6.317046">
+        <ele>39.0</ele>
+        <time>2020-10-03T15:15:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364205" lon="-6.31715">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:15:32Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36428" lon="-6.317354">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:15:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364414" lon="-6.317613">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:15:46Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364497" lon="-6.317837">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:15:52Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36452" lon="-6.317906">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:15:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364652" lon="-6.318147">
+        <ele>40.0</ele>
+        <time>2020-10-03T15:16:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364711" lon="-6.318307">
+        <ele>40.0</ele>
+        <time>2020-10-03T15:16:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364736" lon="-6.318395">
+        <ele>39.8</ele>
+        <time>2020-10-03T15:16:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364817" lon="-6.318682">
+        <ele>39.6</ele>
+        <time>2020-10-03T15:16:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364828" lon="-6.318725">
+        <ele>39.6</ele>
+        <time>2020-10-03T15:16:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364906" lon="-6.318985">
+        <ele>40.0</ele>
+        <time>2020-10-03T15:16:21Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364909" lon="-6.31911">
+        <ele>40.0</ele>
+        <time>2020-10-03T15:16:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364887" lon="-6.319195">
+        <ele>40.2</ele>
+        <time>2020-10-03T15:16:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364875" lon="-6.319236">
+        <ele>40.4</ele>
+        <time>2020-10-03T15:16:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364805" lon="-6.319486">
+        <ele>40.6</ele>
+        <time>2020-10-03T15:16:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36476" lon="-6.319686">
+        <ele>40.8</ele>
+        <time>2020-10-03T15:16:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364778" lon="-6.319779">
+        <ele>40.8</ele>
+        <time>2020-10-03T15:16:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364815" lon="-6.319981">
+        <ele>40.6</ele>
+        <time>2020-10-03T15:16:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364877" lon="-6.320173">
+        <ele>40.8</ele>
+        <time>2020-10-03T15:16:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364946" lon="-6.320434">
+        <ele>41.0</ele>
+        <time>2020-10-03T15:16:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364995" lon="-6.320626">
+        <ele>41.0</ele>
+        <time>2020-10-03T15:17:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365001" lon="-6.320669">
+        <ele>41.0</ele>
+        <time>2020-10-03T15:17:03Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365052" lon="-6.32096">
+        <ele>41.2</ele>
+        <time>2020-10-03T15:17:08Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36507" lon="-6.321065">
+        <ele>41.2</ele>
+        <time>2020-10-03T15:17:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365086" lon="-6.321162">
+        <ele>41.4</ele>
+        <time>2020-10-03T15:17:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365133" lon="-6.321444">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:17:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365162" lon="-6.321782">
+        <ele>41.8</ele>
+        <time>2020-10-03T15:17:25Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365162" lon="-6.321831">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:17:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365112" lon="-6.322037">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:17:31Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.365068" lon="-6.322233">
+        <ele>41.8</ele>
+        <time>2020-10-03T15:17:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364997" lon="-6.322542">
+        <ele>42.0</ele>
+        <time>2020-10-03T15:17:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364925" lon="-6.322805">
+        <ele>42.4</ele>
+        <time>2020-10-03T15:17:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364912" lon="-6.322847">
+        <ele>42.4</ele>
+        <time>2020-10-03T15:17:52Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36482" lon="-6.323091">
+        <ele>42.8</ele>
+        <time>2020-10-03T15:17:59Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364693" lon="-6.323365">
+        <ele>43.0</ele>
+        <time>2020-10-03T15:18:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364627" lon="-6.323499">
+        <ele>43.4</ele>
+        <time>2020-10-03T15:18:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36457" lon="-6.323602">
+        <ele>43.6</ele>
+        <time>2020-10-03T15:18:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364424" lon="-6.323851">
+        <ele>44.0</ele>
+        <time>2020-10-03T15:18:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364403" lon="-6.323885">
+        <ele>44.0</ele>
+        <time>2020-10-03T15:18:21Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364261" lon="-6.324138">
+        <ele>44.0</ele>
+        <time>2020-10-03T15:18:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364239" lon="-6.324172">
+        <ele>44.0</ele>
+        <time>2020-10-03T15:18:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364078" lon="-6.324397">
+        <ele>43.0</ele>
+        <time>2020-10-03T15:18:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.364027" lon="-6.32445">
+        <ele>42.8</ele>
+        <time>2020-10-03T15:18:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363875" lon="-6.324682">
+        <ele>42.6</ele>
+        <time>2020-10-03T15:18:45Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363766" lon="-6.324824">
+        <ele>42.6</ele>
+        <time>2020-10-03T15:18:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363717" lon="-6.324865">
+        <ele>42.8</ele>
+        <time>2020-10-03T15:18:52Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363561" lon="-6.324996">
+        <ele>43.2</ele>
+        <time>2020-10-03T15:18:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363445" lon="-6.32502">
+        <ele>43.6</ele>
+        <time>2020-10-03T15:19:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363366" lon="-6.32503">
+        <ele>43.8</ele>
+        <time>2020-10-03T15:19:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.363176" lon="-6.325043">
+        <ele>44.0</ele>
+        <time>2020-10-03T15:19:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362987" lon="-6.325074">
+        <ele>44.0</ele>
+        <time>2020-10-03T15:19:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362807" lon="-6.325166">
+        <ele>44.0</ele>
+        <time>2020-10-03T15:19:25Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362785" lon="-6.325176">
+        <ele>44.2</ele>
+        <time>2020-10-03T15:19:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362691" lon="-6.325229">
+        <ele>44.4</ele>
+        <time>2020-10-03T15:19:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362622" lon="-6.325266">
+        <ele>44.6</ele>
+        <time>2020-10-03T15:19:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36247" lon="-6.325336">
+        <ele>45.4</ele>
+        <time>2020-10-03T15:19:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362447" lon="-6.325345">
+        <ele>45.6</ele>
+        <time>2020-10-03T15:19:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362298" lon="-6.325409">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:19:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.362102" lon="-6.325494">
+        <ele>46.2</ele>
+        <time>2020-10-03T15:19:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361899" lon="-6.325552">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:20:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361702" lon="-6.325638">
+        <ele>45.8</ele>
+        <time>2020-10-03T15:20:08Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361514" lon="-6.325698">
+        <ele>46.2</ele>
+        <time>2020-10-03T15:20:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36145" lon="-6.325722">
+        <ele>46.4</ele>
+        <time>2020-10-03T15:20:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361395" lon="-6.32572">
+        <ele>46.6</ele>
+        <time>2020-10-03T15:20:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361265" lon="-6.325733">
+        <ele>46.6</ele>
+        <time>2020-10-03T15:20:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.361096" lon="-6.325682">
+        <ele>46.2</ele>
+        <time>2020-10-03T15:20:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360915" lon="-6.325668">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:20:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360856" lon="-6.325668">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:20:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360669" lon="-6.325658">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:20:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36057" lon="-6.325656">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:20:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36054" lon="-6.325655">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:20:48Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360397" lon="-6.325589">
+        <ele>45.8</ele>
+        <time>2020-10-03T15:20:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360271" lon="-6.325452">
+        <ele>46.2</ele>
+        <time>2020-10-03T15:20:59Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360163" lon="-6.325423">
+        <ele>46.2</ele>
+        <time>2020-10-03T15:21:03Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360149" lon="-6.325259">
+        <ele>46.2</ele>
+        <time>2020-10-03T15:21:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360139" lon="-6.324969">
+        <ele>46.0</ele>
+        <time>2020-10-03T15:21:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.36013" lon="-6.324933">
+        <ele>45.6</ele>
+        <time>2020-10-03T15:21:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360073" lon="-6.324751">
+        <ele>44.8</ele>
+        <time>2020-10-03T15:21:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.360044" lon="-6.324685">
+        <ele>44.6</ele>
+        <time>2020-10-03T15:21:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359984" lon="-6.324534">
+        <ele>44.4</ele>
+        <time>2020-10-03T15:21:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359918" lon="-6.324382">
+        <ele>44.4</ele>
+        <time>2020-10-03T15:21:31Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359781" lon="-6.324101">
+        <ele>44.6</ele>
+        <time>2020-10-03T15:21:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359683" lon="-6.323843">
+        <ele>44.4</ele>
+        <time>2020-10-03T15:21:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359671" lon="-6.323809">
+        <ele>44.4</ele>
+        <time>2020-10-03T15:21:45Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359575" lon="-6.323544">
+        <ele>44.2</ele>
+        <time>2020-10-03T15:21:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359557" lon="-6.323497">
+        <ele>44.2</ele>
+        <time>2020-10-03T15:21:52Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359442" lon="-6.323199">
+        <ele>43.6</ele>
+        <time>2020-10-03T15:21:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.3594" lon="-6.323098">
+        <ele>43.4</ele>
+        <time>2020-10-03T15:22:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359381" lon="-6.323055">
+        <ele>43.4</ele>
+        <time>2020-10-03T15:22:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35927" lon="-6.322797">
+        <ele>43.0</ele>
+        <time>2020-10-03T15:22:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359181" lon="-6.322566">
+        <ele>43.0</ele>
+        <time>2020-10-03T15:22:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>175</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359166" lon="-6.322527">
+        <ele>43.0</ele>
+        <time>2020-10-03T15:22:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359055" lon="-6.322281">
+        <ele>43.2</ele>
+        <time>2020-10-03T15:22:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>175</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.359036" lon="-6.322236">
+        <ele>43.4</ele>
+        <time>2020-10-03T15:22:21Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>174</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358953" lon="-6.322057">
+        <ele>43.6</ele>
+        <time>2020-10-03T15:22:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.3589" lon="-6.32193">
+        <ele>43.4</ele>
+        <time>2020-10-03T15:22:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358777" lon="-6.321658">
+        <ele>42.8</ele>
+        <time>2020-10-03T15:22:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358708" lon="-6.32152">
+        <ele>42.4</ele>
+        <time>2020-10-03T15:22:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358673" lon="-6.321439">
+        <ele>42.4</ele>
+        <time>2020-10-03T15:22:42Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358569" lon="-6.321176">
+        <ele>41.8</ele>
+        <time>2020-10-03T15:22:48Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358537" lon="-6.32109">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:22:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358489" lon="-6.320979">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:22:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358457" lon="-6.320912">
+        <ele>41.4</ele>
+        <time>2020-10-03T15:22:55Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358422" lon="-6.320836">
+        <ele>41.2</ele>
+        <time>2020-10-03T15:22:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358308" lon="-6.320565">
+        <ele>41.2</ele>
+        <time>2020-10-03T15:23:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358277" lon="-6.320484">
+        <ele>41.2</ele>
+        <time>2020-10-03T15:23:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358182" lon="-6.320257">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:23:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.358081" lon="-6.320027">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:23:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357971" lon="-6.319795">
+        <ele>41.6</ele>
+        <time>2020-10-03T15:23:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357868" lon="-6.319545">
+        <ele>41.4</ele>
+        <time>2020-10-03T15:23:32Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357839" lon="-6.31946">
+        <ele>41.4</ele>
+        <time>2020-10-03T15:23:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357736" lon="-6.319175">
+        <ele>40.6</ele>
+        <time>2020-10-03T15:23:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.3577" lon="-6.319089">
+        <ele>40.6</ele>
+        <time>2020-10-03T15:23:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357624" lon="-6.318903">
+        <ele>40.4</ele>
+        <time>2020-10-03T15:23:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357556" lon="-6.318742">
+        <ele>40.4</ele>
+        <time>2020-10-03T15:23:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357447" lon="-6.318499">
+        <ele>40.4</ele>
+        <time>2020-10-03T15:23:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357415" lon="-6.318443">
+        <ele>40.4</ele>
+        <time>2020-10-03T15:23:59Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357301" lon="-6.318218">
+        <ele>40.0</ele>
+        <time>2020-10-03T15:24:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>93</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357188" lon="-6.317963">
+        <ele>39.6</ele>
+        <time>2020-10-03T15:24:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357124" lon="-6.317807">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:24:16Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>185</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357087" lon="-6.317697">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:24:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>187</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.357073" lon="-6.317659">
+        <ele>39.4</ele>
+        <time>2020-10-03T15:24:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>187</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356975" lon="-6.317381">
+        <ele>39.0</ele>
+        <time>2020-10-03T15:24:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>185</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356862" lon="-6.317118">
+        <ele>38.8</ele>
+        <time>2020-10-03T15:24:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356846" lon="-6.317082">
+        <ele>38.6</ele>
+        <time>2020-10-03T15:24:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>184</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356769" lon="-6.316896">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:24:39Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>186</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356711" lon="-6.316735">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:24:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>186</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356644" lon="-6.316557">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:24:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356611" lon="-6.31647">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:24:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356594" lon="-6.316426">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:24:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356488" lon="-6.316162">
+        <ele>38.2</ele>
+        <time>2020-10-03T15:24:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356417" lon="-6.315992">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:25:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356306" lon="-6.315735">
+        <ele>38.6</ele>
+        <time>2020-10-03T15:25:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356287" lon="-6.315691">
+        <ele>38.6</ele>
+        <time>2020-10-03T15:25:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356177" lon="-6.315416">
+        <ele>38.8</ele>
+        <time>2020-10-03T15:25:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356164" lon="-6.315378">
+        <ele>38.8</ele>
+        <time>2020-10-03T15:25:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356056" lon="-6.315124">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:25:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.356037" lon="-6.315083">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:25:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355923" lon="-6.314816">
+        <ele>38.2</ele>
+        <time>2020-10-03T15:25:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355864" lon="-6.314711">
+        <ele>38.2</ele>
+        <time>2020-10-03T15:25:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355745" lon="-6.31444">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:25:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355656" lon="-6.314226">
+        <ele>39.0</ele>
+        <time>2020-10-03T15:25:46Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355607" lon="-6.314127">
+        <ele>39.2</ele>
+        <time>2020-10-03T15:25:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355475" lon="-6.313864">
+        <ele>39.0</ele>
+        <time>2020-10-03T15:25:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355457" lon="-6.313825">
+        <ele>39.0</ele>
+        <time>2020-10-03T15:25:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355346" lon="-6.313549">
+        <ele>38.8</ele>
+        <time>2020-10-03T15:26:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355327" lon="-6.313499">
+        <ele>38.8</ele>
+        <time>2020-10-03T15:26:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355213" lon="-6.31324">
+        <ele>38.8</ele>
+        <time>2020-10-03T15:26:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355182" lon="-6.313172">
+        <ele>38.4</ele>
+        <time>2020-10-03T15:26:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355078" lon="-6.312923">
+        <ele>37.8</ele>
+        <time>2020-10-03T15:26:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.355029" lon="-6.312807">
+        <ele>37.8</ele>
+        <time>2020-10-03T15:26:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354912" lon="-6.312537">
+        <ele>37.8</ele>
+        <time>2020-10-03T15:26:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354866" lon="-6.312389">
+        <ele>37.8</ele>
+        <time>2020-10-03T15:26:32Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354769" lon="-6.312122">
+        <ele>37.8</ele>
+        <time>2020-10-03T15:26:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354733" lon="-6.312031">
+        <ele>37.8</ele>
+        <time>2020-10-03T15:26:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354621" lon="-6.311767">
+        <ele>37.6</ele>
+        <time>2020-10-03T15:26:46Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354604" lon="-6.31172">
+        <ele>37.6</ele>
+        <time>2020-10-03T15:26:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35452" lon="-6.311514">
+        <ele>37.2</ele>
+        <time>2020-10-03T15:26:52Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354465" lon="-6.311397">
+        <ele>37.0</ele>
+        <time>2020-10-03T15:26:55Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354347" lon="-6.311117">
+        <ele>36.6</ele>
+        <time>2020-10-03T15:27:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354317" lon="-6.311042">
+        <ele>36.6</ele>
+        <time>2020-10-03T15:27:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354208" lon="-6.310771">
+        <ele>36.4</ele>
+        <time>2020-10-03T15:27:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354172" lon="-6.310683">
+        <ele>36.2</ele>
+        <time>2020-10-03T15:27:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354103" lon="-6.310518">
+        <ele>36.0</ele>
+        <time>2020-10-03T15:27:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354011" lon="-6.310312">
+        <ele>36.0</ele>
+        <time>2020-10-03T15:27:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353936" lon="-6.310132">
+        <ele>35.6</ele>
+        <time>2020-10-03T15:27:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353895" lon="-6.31004">
+        <ele>35.4</ele>
+        <time>2020-10-03T15:27:31Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35383" lon="-6.309925">
+        <ele>35.2</ele>
+        <time>2020-10-03T15:27:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353774" lon="-6.309775">
+        <ele>35.0</ele>
+        <time>2020-10-03T15:27:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353663" lon="-6.309498">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:27:46Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353646" lon="-6.309464">
+        <ele>34.2</ele>
+        <time>2020-10-03T15:27:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353532" lon="-6.309204">
+        <ele>33.8</ele>
+        <time>2020-10-03T15:27:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353477" lon="-6.309079">
+        <ele>33.6</ele>
+        <time>2020-10-03T15:27:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353411" lon="-6.308934">
+        <ele>33.2</ele>
+        <time>2020-10-03T15:28:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353396" lon="-6.308898">
+        <ele>33.0</ele>
+        <time>2020-10-03T15:28:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353291" lon="-6.308649">
+        <ele>32.8</ele>
+        <time>2020-10-03T15:28:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353274" lon="-6.308615">
+        <ele>32.8</ele>
+        <time>2020-10-03T15:28:08Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35317" lon="-6.308394">
+        <ele>32.2</ele>
+        <time>2020-10-03T15:28:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353139" lon="-6.308318">
+        <ele>32.2</ele>
+        <time>2020-10-03T15:28:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353044" lon="-6.3081">
+        <ele>32.0</ele>
+        <time>2020-10-03T15:28:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352944" lon="-6.307819">
+        <ele>32.2</ele>
+        <time>2020-10-03T15:28:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352831" lon="-6.307549">
+        <ele>32.4</ele>
+        <time>2020-10-03T15:28:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>184</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352761" lon="-6.307276">
+        <ele>32.6</ele>
+        <time>2020-10-03T15:28:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352765" lon="-6.307245">
+        <ele>32.6</ele>
+        <time>2020-10-03T15:28:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352762" lon="-6.30721">
+        <ele>32.4</ele>
+        <time>2020-10-03T15:28:42Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352737" lon="-6.307157">
+        <ele>32.2</ele>
+        <time>2020-10-03T15:28:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352657" lon="-6.30705">
+        <ele>31.6</ele>
+        <time>2020-10-03T15:28:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352581" lon="-6.306942">
+        <ele>31.0</ele>
+        <time>2020-10-03T15:28:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352532" lon="-6.306818">
+        <ele>30.8</ele>
+        <time>2020-10-03T15:28:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352421" lon="-6.306546">
+        <ele>30.6</ele>
+        <time>2020-10-03T15:29:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352394" lon="-6.306458">
+        <ele>30.4</ele>
+        <time>2020-10-03T15:29:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352301" lon="-6.306201">
+        <ele>30.0</ele>
+        <time>2020-10-03T15:29:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352282" lon="-6.306164">
+        <ele>30.0</ele>
+        <time>2020-10-03T15:29:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352152" lon="-6.305951">
+        <ele>29.6</ele>
+        <time>2020-10-03T15:29:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351994" lon="-6.305919">
+        <ele>29.4</ele>
+        <time>2020-10-03T15:29:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351918" lon="-6.305767">
+        <ele>29.4</ele>
+        <time>2020-10-03T15:29:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351807" lon="-6.305467">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:29:32Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351777" lon="-6.305388">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:29:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351655" lon="-6.305123">
+        <ele>29.0</ele>
+        <time>2020-10-03T15:29:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351592" lon="-6.304877">
+        <ele>28.6</ele>
+        <time>2020-10-03T15:29:47Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351489" lon="-6.304623">
+        <ele>28.6</ele>
+        <time>2020-10-03T15:29:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351469" lon="-6.304589">
+        <ele>28.6</ele>
+        <time>2020-10-03T15:29:55Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351358" lon="-6.304334">
+        <ele>29.0</ele>
+        <time>2020-10-03T15:30:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351321" lon="-6.304244">
+        <ele>29.0</ele>
+        <time>2020-10-03T15:30:03Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351206" lon="-6.303954">
+        <ele>28.8</ele>
+        <time>2020-10-03T15:30:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351132" lon="-6.303708">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:30:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351131" lon="-6.303664">
+        <ele>27.6</ele>
+        <time>2020-10-03T15:30:16Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351156" lon="-6.303435">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:30:21Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351183" lon="-6.303367">
+        <ele>26.6</ele>
+        <time>2020-10-03T15:30:23Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351183" lon="-6.30317">
+        <ele>26.2</ele>
+        <time>2020-10-03T15:30:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351195" lon="-6.302997">
+        <ele>26.2</ele>
+        <time>2020-10-03T15:30:32Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>85</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351233" lon="-6.302864">
+        <ele>26.2</ele>
+        <time>2020-10-03T15:30:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>175</garmin_tpe:hr>
+            <garmin_tpe:cad>88</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351268" lon="-6.302789">
+        <ele>26.2</ele>
+        <time>2020-10-03T15:30:37Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351372" lon="-6.302614">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:30:42Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351521" lon="-6.302397">
+        <ele>26.6</ele>
+        <time>2020-10-03T15:30:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351678" lon="-6.302214">
+        <ele>26.6</ele>
+        <time>2020-10-03T15:30:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351817" lon="-6.302038">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:31:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351944" lon="-6.301768">
+        <ele>27.0</ele>
+        <time>2020-10-03T15:31:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352035" lon="-6.301496">
+        <ele>27.4</ele>
+        <time>2020-10-03T15:31:17Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352044" lon="-6.301454">
+        <ele>27.4</ele>
+        <time>2020-10-03T15:31:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352089" lon="-6.301281">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:31:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352125" lon="-6.301105">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:31:26Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352182" lon="-6.300813">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:31:33Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352201" lon="-6.300724">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:31:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352265" lon="-6.300411">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:31:42Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352266" lon="-6.300364">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:31:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35227" lon="-6.300087">
+        <ele>29.0</ele>
+        <time>2020-10-03T15:31:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352266" lon="-6.300038">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:31:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352213" lon="-6.299761">
+        <ele>29.8</ele>
+        <time>2020-10-03T15:31:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352166" lon="-6.299584">
+        <ele>30.0</ele>
+        <time>2020-10-03T15:32:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35216" lon="-6.299347">
+        <ele>30.0</ele>
+        <time>2020-10-03T15:32:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352151" lon="-6.299211">
+        <ele>29.8</ele>
+        <time>2020-10-03T15:32:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352123" lon="-6.29902">
+        <ele>29.4</ele>
+        <time>2020-10-03T15:32:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352084" lon="-6.298733">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:32:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352103" lon="-6.298675">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:32:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352142" lon="-6.298637">
+        <ele>28.8</ele>
+        <time>2020-10-03T15:32:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352177" lon="-6.298472">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:32:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>86</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352199" lon="-6.298347">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:32:31Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352228" lon="-6.298236">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:32:34Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352337" lon="-6.298115">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:32:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352455" lon="-6.2979">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:32:46Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35261" lon="-6.297694">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:32:54Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35274" lon="-6.29749">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:33:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352754" lon="-6.297449">
+        <ele>29.2</ele>
+        <time>2020-10-03T15:33:01Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352883" lon="-6.297244">
+        <ele>29.4</ele>
+        <time>2020-10-03T15:33:08Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353003" lon="-6.297025">
+        <ele>29.8</ele>
+        <time>2020-10-03T15:33:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353071" lon="-6.296903">
+        <ele>30.2</ele>
+        <time>2020-10-03T15:33:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353157" lon="-6.296747">
+        <ele>30.4</ele>
+        <time>2020-10-03T15:33:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353275" lon="-6.296527">
+        <ele>30.4</ele>
+        <time>2020-10-03T15:33:30Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353397" lon="-6.296305">
+        <ele>30.4</ele>
+        <time>2020-10-03T15:33:37Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353539" lon="-6.296098">
+        <ele>30.6</ele>
+        <time>2020-10-03T15:33:45Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353702" lon="-6.295894">
+        <ele>31.0</ele>
+        <time>2020-10-03T15:33:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353821" lon="-6.295633">
+        <ele>30.8</ele>
+        <time>2020-10-03T15:33:57Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353838" lon="-6.295597">
+        <ele>30.8</ele>
+        <time>2020-10-03T15:33:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353951" lon="-6.295416">
+        <ele>30.4</ele>
+        <time>2020-10-03T15:34:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>87</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354052" lon="-6.295156">
+        <ele>29.8</ele>
+        <time>2020-10-03T15:34:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354061" lon="-6.295074">
+        <ele>29.8</ele>
+        <time>2020-10-03T15:34:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354167" lon="-6.294837">
+        <ele>29.8</ele>
+        <time>2020-10-03T15:34:20Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354285" lon="-6.294603">
+        <ele>29.4</ele>
+        <time>2020-10-03T15:34:27Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35433" lon="-6.294543">
+        <ele>29.4</ele>
+        <time>2020-10-03T15:34:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35447" lon="-6.294362">
+        <ele>29.0</ele>
+        <time>2020-10-03T15:34:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>93</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354525" lon="-6.294305">
+        <ele>28.8</ele>
+        <time>2020-10-03T15:34:37Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354604" lon="-6.294213">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:34:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354644" lon="-6.294127">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:34:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354765" lon="-6.293883">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:34:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354777" lon="-6.293865">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:34:52Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354786" lon="-6.293843">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:34:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354802" lon="-6.293707">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:34:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>175</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354698" lon="-6.293429">
+        <ele>28.4</ele>
+        <time>2020-10-03T15:35:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>176</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354689" lon="-6.293339">
+        <ele>28.2</ele>
+        <time>2020-10-03T15:35:07Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354662" lon="-6.293261">
+        <ele>28.0</ele>
+        <time>2020-10-03T15:35:09Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354653" lon="-6.293222">
+        <ele>28.0</ele>
+        <time>2020-10-03T15:35:10Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>177</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35458" lon="-6.293014">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:35:16Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354504" lon="-6.292734">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:35:21Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354487" lon="-6.292689">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:35:22Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354352" lon="-6.292433">
+        <ele>28.0</ele>
+        <time>2020-10-03T15:35:29Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354216" lon="-6.2922">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:35:36Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354195" lon="-6.292162">
+        <ele>27.8</ele>
+        <time>2020-10-03T15:35:37Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354125" lon="-6.292039">
+        <ele>27.0</ele>
+        <time>2020-10-03T15:35:40Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.354047" lon="-6.291939">
+        <ele>26.8</ele>
+        <time>2020-10-03T15:35:43Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353922" lon="-6.291714">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:35:49Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353901" lon="-6.29168">
+        <ele>26.4</ele>
+        <time>2020-10-03T15:35:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353776" lon="-6.291475">
+        <ele>26.0</ele>
+        <time>2020-10-03T15:35:56Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353684" lon="-6.291196">
+        <ele>25.6</ele>
+        <time>2020-10-03T15:36:02Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353554" lon="-6.290995">
+        <ele>25.6</ele>
+        <time>2020-10-03T15:36:08Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353459" lon="-6.290735">
+        <ele>25.4</ele>
+        <time>2020-10-03T15:36:14Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353377" lon="-6.29058">
+        <ele>25.2</ele>
+        <time>2020-10-03T15:36:19Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353284" lon="-6.290417">
+        <ele>24.8</ele>
+        <time>2020-10-03T15:36:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353214" lon="-6.290283">
+        <ele>24.6</ele>
+        <time>2020-10-03T15:36:28Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.353075" lon="-6.290028">
+        <ele>24.2</ele>
+        <time>2020-10-03T15:36:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35294" lon="-6.289823">
+        <ele>23.8</ele>
+        <time>2020-10-03T15:36:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352881" lon="-6.289718">
+        <ele>24.0</ele>
+        <time>2020-10-03T15:36:44Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352711" lon="-6.289514">
+        <ele>24.0</ele>
+        <time>2020-10-03T15:36:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352684" lon="-6.289478">
+        <ele>24.0</ele>
+        <time>2020-10-03T15:36:52Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35255" lon="-6.289279">
+        <ele>23.8</ele>
+        <time>2020-10-03T15:36:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352433" lon="-6.289051">
+        <ele>22.8</ele>
+        <time>2020-10-03T15:37:04Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352416" lon="-6.289003">
+        <ele>22.6</ele>
+        <time>2020-10-03T15:37:05Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352302" lon="-6.288763">
+        <ele>22.4</ele>
+        <time>2020-10-03T15:37:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352169" lon="-6.288619">
+        <ele>22.0</ele>
+        <time>2020-10-03T15:37:18Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.352008" lon="-6.288423">
+        <ele>21.6</ele>
+        <time>2020-10-03T15:37:24Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351987" lon="-6.288397">
+        <ele>21.6</ele>
+        <time>2020-10-03T15:37:25Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351825" lon="-6.288178">
+        <ele>21.0</ele>
+        <time>2020-10-03T15:37:32Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351743" lon="-6.288094">
+        <ele>20.6</ele>
+        <time>2020-10-03T15:37:35Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>180</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351666" lon="-6.288003">
+        <ele>20.0</ele>
+        <time>2020-10-03T15:37:38Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351589" lon="-6.287907">
+        <ele>19.6</ele>
+        <time>2020-10-03T15:37:41Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>179</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351482" lon="-6.287766">
+        <ele>19.6</ele>
+        <time>2020-10-03T15:37:45Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>178</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351364" lon="-6.287571">
+        <ele>19.4</ele>
+        <time>2020-10-03T15:37:50Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>181</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351349" lon="-6.287523">
+        <ele>19.4</ele>
+        <time>2020-10-03T15:37:51Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>93</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351349" lon="-6.287441">
+        <ele>19.2</ele>
+        <time>2020-10-03T15:37:53Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351359" lon="-6.287368">
+        <ele>19.2</ele>
+        <time>2020-10-03T15:37:55Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>182</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351377" lon="-6.287241">
+        <ele>18.6</ele>
+        <time>2020-10-03T15:37:58Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>183</garmin_tpe:hr>
+            <garmin_tpe:cad>92</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351372" lon="-6.287164">
+        <ele>18.2</ele>
+        <time>2020-10-03T15:38:00Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>184</garmin_tpe:hr>
+            <garmin_tpe:cad>90</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351423" lon="-6.286928">
+        <ele>17.8</ele>
+        <time>2020-10-03T15:38:06Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>184</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351514" lon="-6.286755">
+        <ele>17.8</ele>
+        <time>2020-10-03T15:38:11Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>186</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.35154" lon="-6.286759">
+        <ele>17.8</ele>
+        <time>2020-10-03T15:38:12Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>187</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351574" lon="-6.286783">
+        <ele>17.8</ele>
+        <time>2020-10-03T15:38:13Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>185</garmin_tpe:hr>
+            <garmin_tpe:cad>91</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="53.351618" lon="-6.286841">
+        <ele>17.8</ele>
+        <time>2020-10-03T15:38:15Z</time>
+        <extensions>
+          <garmin_tpe:TrackPointExtension>
+            <garmin_tpe:hr>186</garmin_tpe:hr>
+            <garmin_tpe:cad>89</garmin_tpe:cad>
+          </garmin_tpe:TrackPointExtension>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
