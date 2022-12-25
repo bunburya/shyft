@@ -105,16 +105,16 @@ class ConfigController(_BaseDashController):
 
         @self.dash_app.callback(
             Output('config_saved_modal', 'is_open'),
-            [Input('save_button', 'n_clicks'),
-             Input('close_config_saved_modal', 'n_clicks')],
-            [State('data_dir', 'value'),
-             State('user_name', 'value'),
-             State('dist_unit', 'value'),
-             State('match_center', 'value'),
-             State('match_length', 'value'),
-             State('tight_match', 'value'),
-             State('name_fmt', 'value'),
-             State('week_start', 'value')]
+            Input('save_button', 'n_clicks'),
+            Input('close_config_saved_modal', 'n_clicks'),
+            State('data_dir', 'value'),
+            State('user_name', 'value'),
+            State('dist_unit', 'value'),
+            State('match_center', 'value'),
+            State('match_length', 'value'),
+            State('tight_match', 'value'),
+            State('name_fmt', 'value'),
+            State('week_start', 'value')
         )
         def save_config(save_button_clicks: int, close_button_clicks: int, data_dir: str, user_name: str,
                         dist_unit: str, match_center: float, match_length: float, tight_match: float, name_fmt: str,
@@ -139,3 +139,26 @@ class ConfigController(_BaseDashController):
                 return True
             elif button_id == 'close_config_saved_modal':
                 return False
+
+        @self.dash_app.callback(
+            Output('data_dir', 'value'),
+            Output('user_name', 'value'),
+            Output('dist_unit', 'value'),
+            Output('match_center', 'value'),
+            Output('match_length', 'value'),
+            Output('tight_match', 'value'),
+            Output('name_fmt', 'value'),
+            Output('week_start', 'value'),
+            Input('reset_button', 'n_clicks')
+        )
+        def reset_form(reset_button_clicks: int) -> tuple[str, str, str, float, float, float, str, str]:
+            return (
+                self.config.data_dir,
+                self.config.user_name,
+                self.config.distance_unit,
+                self.config.match_center_threshold,
+                self.config.match_length_threshold,
+                self.config.tight_match_threshold,
+                self.config.default_activity_name_format,
+                self.config.week_start
+            )
