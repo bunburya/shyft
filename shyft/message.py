@@ -66,12 +66,9 @@ class MessageBus:
     def get_messages(self, severity: int = INFO,
                      view: Optional[str] = None, exact_severity: bool = False,
                      discard: bool = True, discard_less_severe: bool = True):
-        #print('getting messages.')
-        #print(f'all messages: {self._messages}')
         show_predicate = self._get_predicate(severity, view, exact_severity)
         to_show = list(filter(show_predicate, self._messages))
         logger.debug(f'Fetched {len(to_show)} messages.')
-        #print(f'showing: f{to_show}')
         if discard:
             if discard_less_severe:
                 keep_predicate = self._get_predicate(NOTSET, view, False)

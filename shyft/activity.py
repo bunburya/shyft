@@ -3,6 +3,7 @@ import os
 import shutil
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
+from hashlib import md5
 from typing import Optional
 
 import pandas as pd
@@ -68,9 +69,20 @@ class ActivityMetaData:
     day: str = None
     hour: int = None
     month: int = None
-    calories: Optional[float] = None
+    calories: Optional[float] = None  # Not implemented
+    source_hash: str = None
 
     def __post_init__(self):
+
+        # Copy source file to standardised location and use that file path
+        if self.source_file is not None:
+            fname, ext = os.path.splitext(self.source_file)
+            correct_src_file = os.path.join(self.config.source_file_dir, f'{self.file_name}{ext}')
+            if (self.source_file != correct_src_file) and not os.path.exists (correct_src_file):
+                logger.info(f'Copying source file to "{correct_src_file}".')
+                shutil.copyfile(self.source_file, correct_src_file)
+                self.source_file = correct_src_file
+
 
         if self.distance_2d_mile is None:
             self.distance_2d_mile = self.distance_2d_km / MILE_KM
@@ -106,6 +118,11 @@ class ActivityMetaData:
             self.gpx_file = os.path.join(self.config.gpx_file_dir, f'{self.file_name}.gpx')
         if self.tcx_file is None:
             self.tcx_file = os.path.join(self.config.tcx_file_dir, f'{self.file_name}.tcx')
+
+        # Generate md5 hash of source file for duplicate-checking
+        if (self.source_hash is None) and (self.source_file is not None):
+            with open(self.source_file, 'rb') as f:
+                self.source_hash = md5(f.read()).hexdigest()
 
         if self.activity_type is None:
             self.activity_type = self.config.default_activity_type
@@ -359,7 +376,6 @@ class Activity:
 
         """
         logger.info(f'Generating activity from file: "{fpath}".')
-        fname, ext = os.path.splitext(fpath)
         try:
             parser = parser_factory(fpath, config)
         except Exception as e:
@@ -367,6 +383,7 @@ class Activity:
             raise e
 
         metadata = parser.metadata
+        metadata['source_file'] = fpath
         if activity_type is not None:
             metadata['activity_type'] = activity_type
         if activity_name is not None:
@@ -386,11 +403,6 @@ class Activity:
         except Exception as e:
             logger.error('Error creating activity.', exc_info=e)
             raise e
-        source_file = os.path.join(config.source_file_dir, f'{activity.metadata.file_name}{ext}')
-        if not os.path.exists(source_file):
-            logger.info(f'Copying source file to "{source_file}".')
-            shutil.copyfile(fpath, source_file)
-        activity.metadata.source_file = source_file
         return activity
 
     def to_gpx_file(self, fpath: str):

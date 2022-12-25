@@ -78,9 +78,9 @@ class FITParser(BaseActivityParser):
         #    logger.debug('Adding point with elevation.')
 
         # https://gis.stackexchange.com/questions/122186/convert-garmin-or-iphone-weird-gps-coordinates
-        if (lat is not None):
+        if lat is not None:
             data['latitude'] = lat / self.LATLON_TO_DECIMAL
-        if (lon is not None):
+        if lon is not None:
             data['longitude'] = lon / self.LATLON_TO_DECIMAL
 
         self._handle_backfill(data, self._points_data, lat, lon)

@@ -1,6 +1,6 @@
 import base64
 import os
-from logging import ERROR
+from logging import ERROR, INFO
 from typing import Optional, List
 
 from werkzeug.utils import secure_filename
@@ -9,19 +9,20 @@ import dash_html_components as html
 import dash_core_components as dcc
 from dash.exceptions import PreventUpdate
 
+from shyft.exceptions import ActivityExistsError
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME
 from shyft.app.controllers._base import _BaseDashController
 
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 class UploadController(_BaseDashController):
     """Controller for the file upload page."""
 
     def page_content(self):
-        logger.info('Generating page content for upload.')
+        _logger.info('Generating page content for upload.')
         return [
             html.Div(id={'type': 'redirect', 'context': 'upload', 'index': 'upload'}, hidden=True),
             html.Div('upload_redirect', hidden=True),
@@ -51,7 +52,7 @@ class UploadController(_BaseDashController):
         ]
 
     def register_callbacks(self):
-        logger.debug('Registering callbacks for upload page.')
+        _logger.debug('Registering callbacks for upload page.')
 
         @self.dash_app.callback(
             Output({'type': 'redirect', 'context': 'upload', 'index': 'upload'}, 'children'),
@@ -62,10 +63,10 @@ class UploadController(_BaseDashController):
             """Initiate the file upload process, upon the user
             providing one of more files to upload.
             """
-            logger.debug(f'upload_file called with filename: {fname_list}')
+            _logger.debug(f'upload_file called with filename: {fname_list}')
             if content_list is None:
                 # Callback seems to fire on page load, with None as args
-                logger.debug('Preventing update.')
+                _logger.debug('Preventing update.')
                 raise PreventUpdate
             else:
                 if len(content_list) > 1:
@@ -83,19 +84,23 @@ class UploadController(_BaseDashController):
         tmp_dir = os.path.join(self.config.data_dir, 'tmp')
         if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir)
-        logger.info(f'Received uploaded file "{fname}".')
+        _logger.info(f'Received uploaded file "{fname}".')
         content_type, content_string = contents.split(',')
         tmp_fpath = os.path.join(tmp_dir, secure_filename(fname))
         with open(tmp_fpath, 'wb') as f:
-            logger.info(f'Saving file to "{tmp_fpath}".')
+            _logger.info(f'Saving file to "{tmp_fpath}".')
             f.write(base64.b64decode(content_string))
         try:
             id = self.activity_manager.add_activity_from_file(tmp_fpath)
-            logger.info(f'Added new activity with ID {id}.')
+            _logger.info(f'Added new activity with ID {id}.')
             self.msg_bus.add_message(f'Uploaded new activity from file {fname}.')
             return id
+        except ActivityExistsError:
+            self.msg_bus.add_message(f'Activity for file {fname} already exists in database.',
+                                     severity=INFO, logger_=_logger)
+            return None
         except Exception as e:
-            logger.error('Error adding activity.', exc_info=e)
+            _logger.error('Error adding activity.', exc_info=e)
             self.msg_bus.add_message(f'Could not upload activity from file "{fname}". '
                                      'Check the logs for details.', severity=ERROR)
             return None

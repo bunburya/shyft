@@ -2,6 +2,7 @@ import logging
 from datetime import datetime, date
 
 from shyft.df_utils.schemas import metadata_time_series_schema
+from shyft.exceptions import ActivityExistsError
 from shyft.logger import get_logger
 from test.test_utils.test_common import *
 
@@ -353,6 +354,12 @@ class ActivityManagerTestCase(BaseTestCase):
                     manager.delete_activity(a.metadata.activity_id)
             self.assertSetEqual(types, manager.activity_types)
 
+    def test_21_duplicate_activities(self):
+        """Test adding activities that are already present in the database."""
+        ids = self.manager_1.activity_ids[:]
+        for a in self.activities:
+            self.assertRaises(ActivityExistsError, self.manager_1.add_activity, a)
+        self.assertListEqual(ids, self.manager_1.activity_ids)
 
 if __name__ == '__main__':
     unittest.main()

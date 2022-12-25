@@ -116,6 +116,7 @@ class DatabaseManager:
         calories FLOAT,
         mean_hr FLOAT,
         mean_cadence FLOAT,
+        source_hash TEXT,
         FOREIGN KEY(prototype_id) REFERENCES prototypes(id)
     )"""
 
@@ -165,8 +166,8 @@ class DatabaseManager:
     SAVE_ACTIVITY_DATA = """INSERT OR REPLACE INTO \"activities\"
         (activity_id, activity_type, date_time, distance_2d_km, center_lat, center_lon, center_elev, std_lat, std_lon,
         std_elev, duration, mean_kmph, prototype_id, name, description, thumbnail_file, gpx_file, tcx_file,
-        source_file, source_format, calories, mean_hr, mean_cadence)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        source_file, source_format, calories, mean_hr, mean_cadence, source_hash)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     def __init__(self, config: shyft.config.Config):
@@ -229,7 +230,8 @@ class DatabaseManager:
             metadata.source_format,
             metadata.calories,
             metadata.mean_hr,
-            metadata.mean_cadence
+            metadata.mean_cadence,
+            metadata.source_hash
         ))
         if commit:
             self.commit()
@@ -357,6 +359,11 @@ class DatabaseManager:
     def all_prototypes(self) -> List[int]:
         self.sql_execute('SELECT activity_id FROM "prototypes"')
         return [r['activity_id'] for r in self.sql_fetchall()]
+
+    @property
+    def all_source_hashes(self) -> Set[str]:
+        self.sql_execute('SELECT source_hash FROM "activities" WHERE source_hash IS NOT NULL')
+        return {r['source_hash'] for r in self.sql_fetchall()}
 
     @property
     def all_activity_types(self) -> Set[str]:

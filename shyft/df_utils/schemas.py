@@ -320,6 +320,11 @@ metadata_summary_schema = DataFrameSchema(
             description='The total recorded calories burned during the activity.',
             mandatory=False,
             nullable=True
+        ),
+        Column(
+            name='source_hash',
+            type='string',
+            description='The MD5 digest of the source file (in hexadecimal form).'
         )
     ]),
     extra_cols_ok=True,

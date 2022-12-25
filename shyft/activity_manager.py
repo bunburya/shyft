@@ -1,6 +1,7 @@
 import calendar
 import os
 from datetime import date, timedelta, datetime
+from hashlib import md5
 from typing import Tuple, Sequence, Optional, Dict, List, Generator, Union, Callable, Any, Collection, Set
 
 import pandas as pd
@@ -8,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 
 from shyft.config import Config
 from shyft.database import DatabaseManager
+from shyft.exceptions import ActivityExistsError
 from shyft.geo_utils import norm_dtw, norm_length_diff, norm_center_diff
 from shyft.activity import Activity, ActivityMetaData
 from shyft.df_utils import summarize_metadata
@@ -50,6 +52,12 @@ class ActivityManager:
     def activity_types(self) -> Set[str]:
         return self.dbm.all_activity_types
 
+    def check_activity_exists(self, activity: Activity) -> bool:
+        """Check whether the given activity is already in the database."""
+        # For now we just check if the given activity has a source hash that matches that of an existing activity.
+        source_hash = activity.metadata.source_hash
+        return (source_hash is not None) and (source_hash in self.dbm.all_source_hashes)
+
     def get_activity_by_id(self, activity_id: int, cache: bool = True) -> Optional[Activity]:
         # logger.info(f'Getting activity with ID {activity_id} .')
         if activity_id in self._cache:
@@ -91,6 +99,8 @@ class ActivityManager:
         Activity should be instantiated correctly (including with an
         activity_id) before being passed to this method.
         """
+        if self.check_activity_exists(activity):
+            raise ActivityExistsError(f'Activity {activity.metadata.activity_id} already exists in database.')
         if activity.metadata.prototype_id is None:
             activity.metadata.prototype_id = self.find_route_match(activity)
         self.save_activity_to_db(activity)
@@ -122,12 +132,14 @@ class ActivityManager:
     def find_route_match(self, a: Activity) -> int:
         prototypes = (self.get_activity_by_id(i) for i in self.prototypes)
         # First, find loose matches
-        loose_matches = filter(lambda p: self.loose_match_routes(p, a), prototypes)
+        loose_matches = list(filter(lambda p: self.loose_match_routes(p, a), prototypes))
         tight_matches = []
+        logger.debug(f'Activity {a.metadata.activity_id} loose matches: {loose_matches}')
         for p in loose_matches:
             match, dist = self.tight_match_routes(p, a)
             if match:
                 tight_matches.append((p.metadata.activity_id, dist))
+        logger.debug(f'Activity {a.metadata.activity_id} tight matches: {tight_matches}')
         if not tight_matches:
             # No matches; make this _activity_elem a prototype
             self.dbm.save_prototype(a.metadata.activity_id)
