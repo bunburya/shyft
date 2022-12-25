@@ -15,7 +15,7 @@ from shyft.activity import Activity, ActivityMetaData
 from shyft.df_utils import summarize_metadata
 from shyft.logger import get_logger
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 def _iter_dates(start: date, end_inclusive: date,
@@ -78,7 +78,7 @@ class ActivityManager:
                     self._cache[activity_id] = activity
                 return activity
             except ValueError:
-                logger.warning(f'No activity with ID {activity_id} found in database.')
+                _logger.warning(f'No activity with ID {activity_id} found in database.')
                 return None
 
     def get_metadata_by_id(self, activity_id: int) -> Optional[ActivityMetaData]:
@@ -119,8 +119,7 @@ class ActivityManager:
 
     def loose_match_routes(self, a1: Activity, a2: Activity) -> bool:
         return (
-                (norm_center_diff(a1.metadata.center, a2.metadata.center, a1.metadata.points_std,
-                                  a2.metadata.points_std) < self.config.match_center_threshold)
+                (norm_center_diff(a1.metadata.center, a2.metadata.center) < self.config.match_center_threshold)
                 and (norm_length_diff(a1.metadata.distance_2d_km,
                                       a2.metadata.distance_2d_km) < self.config.match_length_threshold)
         )
@@ -134,12 +133,12 @@ class ActivityManager:
         # First, find loose matches
         loose_matches = list(filter(lambda p: self.loose_match_routes(p, a), prototypes))
         tight_matches = []
-        logger.debug(f'Activity {a.metadata.activity_id} loose matches: {loose_matches}')
+        _logger.debug(f'Activity {a.metadata.activity_id} loose matches: {loose_matches}')
         for p in loose_matches:
             match, dist = self.tight_match_routes(p, a)
             if match:
                 tight_matches.append((p.metadata.activity_id, dist))
-        logger.debug(f'Activity {a.metadata.activity_id} tight matches: {tight_matches}')
+        _logger.debug(f'Activity {a.metadata.activity_id} tight matches: {tight_matches}')
         if not tight_matches:
             # No matches; make this _activity_elem a prototype
             self.dbm.save_prototype(a.metadata.activity_id)
@@ -208,7 +207,7 @@ class ActivityManager:
             os.remove(metadata.tcx_file)
         if delete_source_file and (metadata.source_file is not None) and os.path.exists(metadata.source_file):
             os.remove(metadata.source_file)
-        logger.info(f'Deleted activity with ID {metadata.activity_id}.')
+        _logger.info(f'Deleted activity with ID {metadata.activity_id}.')
 
     def replace_prototype(self, old_id: int, new_id: int):
         matches = self.search_metadata(prototype=old_id)

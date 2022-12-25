@@ -8,7 +8,7 @@ from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, Logger
 
 from shyft.logger import get_logger
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 @dataclass(frozen=True)
 class Message:
@@ -29,8 +29,8 @@ class MessageBus:
         self._messages = []
 
     def add_message(self, text: str, severity: int = INFO, views: Optional[AbstractSet[str]] = None,
-                    timestamp: Optional[datetime] = None, logger_: Optional[Logger] = None) -> Message:
-        logger.debug(f'Adding message: {text}')
+                    timestamp: Optional[datetime] = None, logger: Optional[Logger] = None) -> Message:
+        _logger.debug(f'Adding message: {text}')
         if timestamp is None:
             timestamp = datetime.utcnow()
         msg = Message(
@@ -40,8 +40,8 @@ class MessageBus:
             timestamp=timestamp
         )
         self._messages.append(msg)
-        if logger_ is not None:
-            logger_.log(severity, text)
+        if logger is not None:
+            logger.log(severity, text)
         return msg
 
     def _get_predicate(self,
@@ -68,7 +68,7 @@ class MessageBus:
                      discard: bool = True, discard_less_severe: bool = True):
         show_predicate = self._get_predicate(severity, view, exact_severity)
         to_show = list(filter(show_predicate, self._messages))
-        logger.debug(f'Fetched {len(to_show)} messages.')
+        _logger.debug(f'Fetched {len(to_show)} messages.')
         if discard:
             if discard_less_severe:
                 keep_predicate = self._get_predicate(NOTSET, view, False)

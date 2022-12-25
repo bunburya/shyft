@@ -7,7 +7,7 @@ import typing
 if typing.TYPE_CHECKING:
     from main import MainController
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 class _BaseDashController:
     """A base class for Dash-related controllers classes."""
@@ -17,7 +17,7 @@ class _BaseDashController:
     DC_FACTORY = BaseDashComponentFactory
 
     def __init__(self, main_controller: MainController, register_callbacks: bool = True):
-        logger.info(f'Initialising controller {self.__class__.__name__}.')
+        _logger.info(f'Initialising controller {self.__class__.__name__}.')
         self.main_controller = main_controller
         self.activity_manager = main_controller.activity_manager
         self.config = main_controller.config

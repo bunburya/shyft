@@ -13,7 +13,7 @@ from shyft.app.controllers._base import _BaseDashController
 
 DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 class ConfigController(_BaseDashController):
@@ -101,7 +101,7 @@ class ConfigController(_BaseDashController):
         ]
 
     def register_callbacks(self):
-        logger.debug(f'Registering callbacks for {self.__class__.__name__}.')
+        _logger.debug(f'Registering callbacks for {self.__class__.__name__}.')
 
         @self.dash_app.callback(
             Output('config_saved_modal', 'is_open'),
@@ -123,9 +123,9 @@ class ConfigController(_BaseDashController):
             if not ctx.triggered:
                 return False
             button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-            logger.debug(f'save_config triggered by f{button_id}.')
+            _logger.debug(f'save_config triggered by f{button_id}.')
             if button_id == 'save_button':
-                logger.info(f'Saving configuration to "{self.config_file}".')
+                _logger.info(f'Saving configuration to "{self.config_file}".')
                 self.config.data_dir = data_dir
                 self.config.user_name = user_name
                 self.config.distance_unit = dist_unit

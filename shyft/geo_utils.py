@@ -91,16 +91,13 @@ def norm_length_diff(len_1: float, len_2: float) -> float:
     return abs(len_1 - len_2) / ((len_1 + len_2) / 2)
 
 
-def norm_center_diff(center_1: np.ndarray, center_2: np.ndarray, std_1: np.ndarray, std_2: np.ndarray) -> float:
+def norm_center_diff(center_1: np.ndarray, center_2: np.ndarray) -> float:
     """Return the distance between two center points, normalised by the
     standard deviations of the series.
      """
 
-    #norm_center_1 = center_1 / std_1
-    #norm_center_2 = center_2 / std_2
     norm_center_1 = center_1
     norm_center_2 = center_2
-    #print(f'distance: {float(distance(norm_center_1[0], norm_center_1[1], norm_center_2[0], norm_center_2[1]))}')
     return float(distance(norm_center_1[0], norm_center_1[1], norm_center_2[0], norm_center_2[1]))
 
 

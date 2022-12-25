@@ -12,7 +12,7 @@ from shyft.logger import get_logger
 from shyft.app.controllers._base import _BaseDashController
 from shyft.app.view.dash_components.activity_view import ActivityViewComponentFactory
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 class ActivityController(_BaseDashController):
@@ -50,7 +50,7 @@ class ActivityController(_BaseDashController):
             """Update the map of the activity upon a change in the
             selected splits in the accompanying splits table.
             """
-            logger.info('Updating map.')
+            _logger.info('Updating map.')
             activity = self.activity_manager.get_activity_by_id(activity_id)
             new_map = self.dc_factory.map_figure(activity.points, figure=figure,
                                                  highlight_col=self.dc_factory.get_split_type(activity),

@@ -11,7 +11,7 @@ from shyft.logger import get_logger
 from shyft.app.controllers._base import _BaseDashController
 from shyft.app.view.dash_components.overview import OverviewComponentFactory
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 class OverviewController(_BaseDashController):
     """Controller for the overview page."""
@@ -22,7 +22,7 @@ class OverviewController(_BaseDashController):
         """Generate page content based on the current configuration and
         activities.
         """
-        logger.info('Generating page content for overview.')
+        _logger.info('Generating page content for overview.')
         return [
             *self.dc_factory.display_all_messages(),
             self.dc_factory.page_heading(),

@@ -19,7 +19,7 @@ from shyft.serialize.parse import parser_factory
 
 MILE = 1609.344
 pd.options.plotting.backend = "plotly"
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 @dataclass
@@ -79,7 +79,7 @@ class ActivityMetaData:
             fname, ext = os.path.splitext(self.source_file)
             correct_src_file = os.path.join(self.config.source_file_dir, f'{self.file_name}{ext}')
             if (self.source_file != correct_src_file) and not os.path.exists (correct_src_file):
-                logger.info(f'Copying source file to "{correct_src_file}".')
+                _logger.info(f'Copying source file to "{correct_src_file}".')
                 shutil.copyfile(self.source_file, correct_src_file)
                 self.source_file = correct_src_file
 
@@ -375,11 +375,11 @@ class Activity:
         :return: The new Activity object.
 
         """
-        logger.info(f'Generating activity from file: "{fpath}".')
+        _logger.info(f'Generating activity from file: "{fpath}".')
         try:
             parser = parser_factory(fpath, config)
         except Exception as e:
-            logger.error('Could not load parser object.', exc_info=e)
+            _logger.error('Could not load parser object.', exc_info=e)
             raise e
 
         metadata = parser.metadata
@@ -399,9 +399,9 @@ class Activity:
                 activity_id=activity_id,
                 **metadata
             )
-            logger.debug(f'Created activity with ID: {activity.metadata.activity_id}')
+            _logger.debug(f'Created activity with ID: {activity.metadata.activity_id}')
         except Exception as e:
-            logger.error('Error creating activity.', exc_info=e)
+            _logger.error('Error creating activity.', exc_info=e)
             raise e
         return activity
 

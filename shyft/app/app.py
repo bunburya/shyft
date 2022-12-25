@@ -15,7 +15,7 @@ from shyft.metadata import APP_NAME
 from shyft.logger import get_logger
 from shyft.app.utils import id_str_to_ints
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 STYLESHEETS = [dbc.themes.SANDSTONE]
 
@@ -27,7 +27,7 @@ def get_apps(config: Config) -> Tuple[Flask, Dash]:
 
     flask_app = Flask('shyft', template_folder=os.path.join(CONTENT_DIR, 'templates'),
                       static_folder=os.path.join(CONTENT_DIR, 'static'))
-    logger.debug(f'static: {flask_app.static_folder}')
+    _logger.debug(f'static: {flask_app.static_folder}')
 
     # Prevent caching of files (such as thumbnails)
     # NOTE: We may actually want to cache when not debugging, as there shouldn't be different activities loaded with the
@@ -50,30 +50,30 @@ def get_apps(config: Config) -> Tuple[Flask, Dash]:
 
     @flask_app.route('/gpx_files')
     def get_gpx_file():
-        logger.debug(f'gpx_files endpoint reached with GET params: "{request.args}".')
+        _logger.debug(f'gpx_files endpoint reached with GET params: "{request.args}".')
         return controller.serve_files_from_get_params(request.args, lambda md: md.gpx_file,
                                                       f'{APP_NAME}_gpx_files.zip',
                                                       'No GPX files found for selected activities.')
 
     @flask_app.route('/tcx_files')
     def get_tcx_file():
-        logger.debug(f'tcx_files endpoint reached with GET params: "{request.args}".')
+        _logger.debug(f'tcx_files endpoint reached with GET params: "{request.args}".')
         return controller.serve_files_from_get_params(request.args, lambda md: md.tcx_file,
                                                       f'{APP_NAME}_tcx_files.zip',
                                                       'No TCX files found for selected activities.')
 
     @flask_app.route('/source_files')
     def get_source_file():
-        logger.debug(f'source_files endpoint reached with GET params: "{request.args}".')
+        _logger.debug(f'source_files endpoint reached with GET params: "{request.args}".')
         return controller.serve_files_from_get_params(request.args, lambda md: md.source_file,
                                                       f'{APP_NAME}_source_files.zip',
                                                       'No source files found for selected activities.')
 
     @flask_app.route('/delete', methods=['POST', 'GET'])
     def delete():
-        logger.debug(f'/delete endpoint reached with args: {request.form}')
+        _logger.debug(f'/delete endpoint reached with args: {request.form}')
         if not request.form:
-            logger.warning('delete function received empty request.form. Not deleting anything.')
+            _logger.warning('delete function received empty request.form. Not deleting anything.')
         else:
             try:
                 activity_ids = [md.activity_id for md in

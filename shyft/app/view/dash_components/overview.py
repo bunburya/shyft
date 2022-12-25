@@ -10,7 +10,7 @@ from dash.development.base_component import Component
 from shyft.app.view.dash_components.base import BaseDashComponentFactory
 from shyft.logger import get_logger
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 class OverviewComponentFactory(BaseDashComponentFactory):
@@ -22,7 +22,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         return html.H1(f'Activity overview for {self.config.user_name}')
 
     def weekday_count(self) -> Component:
-        logger.debug('Generating weekday count graph.')
+        _logger.debug('Generating weekday count graph.')
         counts = self.summary.groupby(['activity_type', 'day']).count()['activity_id'].rename('count')
         for act_type in counts.index.levels[0]:
             for day in self.config.days_of_week:
@@ -109,7 +109,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """
         A configurable scatterplot of all activities.
         """
-        logger.debug('Generating main scatterplot.')
+        _logger.debug('Generating main scatterplot.')
 
         x_dropdown = dcc.Dropdown('overview_main_scatterplot_x_dropdown', options=[
             {'label': 'Distance', 'value': 'distance'},
@@ -190,7 +190,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """
         A line chart plotting some selected value over time.
         """
-        logger.debug('Generating time graph.')
+        _logger.debug('Generating time graph.')
         df = self.activity_manager.metadata_weekly_time_series(activity_type='run')
 
         freq_dropdown = dcc.Dropdown('overview_main_time_chart_freq_dropdown', options=[
@@ -248,7 +248,7 @@ class OverviewComponentFactory(BaseDashComponentFactory):
 
     def graphs_or_no_activity_msg(self, markdown: str = 'No recent activities found. Upload some!') -> Component:
         if self.activity_manager.activity_ids:
-            logger.debug('Activities found; generating graphs.')
+            _logger.debug('Activities found; generating graphs.')
             return html.Div([
                 html.H2('Analysis'),
                 self.weekday_count(),
@@ -257,5 +257,5 @@ class OverviewComponentFactory(BaseDashComponentFactory):
                 *self.custom_graphs(),
             ])
         else:
-            logger.debug('No activities found; returning markdown.')
+            _logger.debug('No activities found; returning markdown.')
             return dcc.Markdown(markdown)

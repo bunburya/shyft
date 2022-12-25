@@ -36,7 +36,7 @@ from shyft.app.controllers.view_activities import ViewActivitiesController
 from shyft.app.controllers.markdown import MarkdownController
 from shyft.app.utils import id_str_to_ints
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 MIMETYPES = {
     '.gpx': 'application/gpx+xml',
@@ -53,19 +53,19 @@ class MainController:
 
     def __init__(self, dash_app: dash.Dash, config: Config, msg_bus: Optional[MessageBus] = None,
                  activity_manager: Optional[ActivityManager] = None):
-        logger.debug('Initialising MainController.')
+        _logger.debug('Initialising MainController.')
         self.dash_app = dash_app
         # Stop Dash complaining if not all components are present when callbacks are registered
         # https://dash.plotly.com/callback-gotchas
         dash_app.config.suppress_callback_exceptions = True
         if msg_bus is None:
-            logger.debug('No value provided for msg_bus: Creating new MessageBus.')
+            _logger.debug('No value provided for msg_bus: Creating new MessageBus.')
             self.msg_bus = MessageBus()
-            logger.debug(f'msg_bus: {self.msg_bus}')
+            _logger.debug(f'msg_bus: {self.msg_bus}')
         else:
             self.msg_bus = msg_bus
         if activity_manager is None:
-            logger.debug('No value provided for activity_manager: Creating new ActivityManager.')
+            _logger.debug('No value provided for activity_manager: Creating new ActivityManager.')
             self.activity_manager = ActivityManager(config)
         else:
             self.activity_manager = activity_manager
@@ -156,7 +156,7 @@ class MainController:
         return json.dumps(data, cls=ShyftJSONEncoder)
 
     def layout(self, content: Optional[List[Component]] = None) -> html.Div:
-        logger.debug('Setting page layout.')
+        _logger.debug('Setting page layout.')
         return html.Div(
             id='layout',
             children=[
@@ -179,7 +179,7 @@ class MainController:
         """Resolve the URL pathname and return the appropriate page
         content.
         """
-        logger.info(f'Resolving URL "{href}" for page content.')
+        _logger.info(f'Resolving URL "{href}" for page content.')
 
         if href is not None:
             parsed = urlparse(href)
@@ -190,11 +190,11 @@ class MainController:
                 try:
                     return self.activity_controller.page_content(self._id_str_to_activities(tokens[1])[0])
                 except IndexError:
-                    logger.error('Could not load activity view: No activity ID provided.')
+                    _logger.error('Could not load activity view: No activity ID provided.')
                     self.msg_bus.add_message('Could not display activity. Check the logs for more details.',
                                              severity=ERROR)
                 except ValueError:
-                    logger.error(f'Could not load activity view: Bad activity ID "{tokens[1]}".')
+                    _logger.error(f'Could not load activity view: Bad activity ID "{tokens[1]}".')
                     self.msg_bus.add_message('Could not display activity. Check the logs for more details.',
                                              severity=ERROR)
             elif tokens[0] == 'upload':
@@ -210,15 +210,15 @@ class MainController:
             elif tokens[0] == 'docs':
                 return self.markdown_controller.page_content(tokens[1])
             elif tokens[0] in {'gpx_files', 'tcx_files', 'source_files'}:
-                logger.debug(f'New pathname contains {tokens[0]}; not updating page content.')
+                _logger.debug(f'New pathname contains {tokens[0]}; not updating page content.')
                 raise PreventUpdate
             elif tokens[0]:
-                logger.warning(f'Received possibly unexpected pathname "{tokens[0]}".')
+                _logger.warning(f'Received possibly unexpected pathname "{tokens[0]}".')
 
         return self.landing_controller.page_content()
 
     def register_callbacks(self):
-        logger.debug('Registering app-level callbacks.')
+        _logger.debug('Registering app-level callbacks.')
 
         @self.dash_app.callback(
             Output('page_content', 'children'),
@@ -226,7 +226,7 @@ class MainController:
         )
         def update_page(href: str) -> List[Component]:
             """Display different page on url update."""
-            logger.debug(f'URL change detected: new URL is "{href}".')
+            _logger.debug(f'URL change detected: new URL is "{href}".')
             return self._resolve_pathname(href)
 
         @self.dash_app.callback(
@@ -238,8 +238,8 @@ class MainController:
             trig = ctx.triggered[0]
             component, prop = trig['prop_id'].split('.')
             value = trig['value']
-            logger.debug(f'update_url called from property "{prop}" of component "{component}" with value "{value}".')
-            logger.debug(f'Updating URL pathname to "{value}".')
+            _logger.debug(f'update_url called from property "{prop}" of component "{component}" with value "{value}".')
+            _logger.debug(f'Updating URL pathname to "{value}".')
             return value
 
         # The below callbacks are used for manipulating activity tables. They are registered here in MainController
@@ -271,7 +271,7 @@ class MainController:
             and the disabled status, POST data and form action
             associated with the "Delete" button.
             """
-            logger.debug(f'Value "{download}" selected from download dropdown.')
+            _logger.debug(f'Value "{download}" selected from download dropdown.')
             # logger.debug(f'Selected rows: {selected_rows}')
             del_path = f'/delete?redirect={pathname}'
             if not selected_rows:
@@ -286,7 +286,7 @@ class MainController:
             else:
                 download_href = f'/{download}?id={ids_str}'
                 download_disabled = False
-            logger.debug(f'Setting download link to "{download_href}".')
+            _logger.debug(f'Setting download link to "{download_href}".')
             return ids_str, False, del_path, download_href, download_disabled
 
         @self.dash_app.callback(
@@ -300,15 +300,15 @@ class MainController:
             if not component_str:
                 raise PreventUpdate
             component = json.loads(component_str)
-            logger.debug(f'un_select called with trigger "{trig["prop_id"]}".')
+            _logger.debug(f'un_select called with trigger "{trig["prop_id"]}".')
             if component['type'] == 'select_all_button':
-                logger.debug('Select button clicked.')
+                _logger.debug('Select button clicked.')
                 return list(range(len(self.activity_manager)))
             elif component['type'] == 'unselect_all_button':
-                logger.debug('Unselect button clicked.')
+                _logger.debug('Unselect button clicked.')
                 return []
             else:
-                logger.error(f'Unexpected component: "{component}".')
+                _logger.error(f'Unexpected component: "{component}".')
                 raise PreventUpdate
 
         # Unfortunately this seems to be the only way to dynamically set the title in Dash.
@@ -351,7 +351,7 @@ class MainController:
         try:
             with ZipFile(zip_bytes, mode='w') as z:
                 for f in fpaths:
-                    logger.debug(f'Adding {f} to zip archive.')
+                    _logger.debug(f'Adding {f} to zip archive.')
                     z.write(f, os.path.basename(f))
         except FileNotFoundError:
             return abort(404, not_found_msg)

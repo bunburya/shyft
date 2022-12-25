@@ -1,18 +1,12 @@
-from typing import List
-
-import plotly.express as px
-import plotly.graph_objects as go
-import dash_table as dt
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_bootstrap_components as dbc
 from dash.development.base_component import Component
 
 from shyft.app.view.dash_components.base import BaseDashComponentFactory
 from shyft.logger import get_logger
 from shyft.metadata import APP_NAME
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 class LandingViewComponentFactory(BaseDashComponentFactory):
@@ -49,7 +43,7 @@ class LandingViewComponentFactory(BaseDashComponentFactory):
 
     def recent_activities(self) -> Component:
         """Return a table of the most recent activities."""
-        logger.debug('Generating recent activity table.')
+        _logger.debug('Generating recent activity table.')
         metadata = self.activity_manager.all_metadata
         metadata.sort(key=lambda md: md.date_time, reverse=True)
         return html.Div([

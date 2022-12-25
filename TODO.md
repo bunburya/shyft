@@ -2,9 +2,6 @@
 
 - More logging
   
-- Prevent uploading duplicate activities
-  - Store source file hash in metadata
-  
 - More parsers:
   - Gzipped FIT files
   - FitoTrack

@@ -5,7 +5,7 @@ from dash.development.base_component import Component
 from shyft.app.controllers._base import _BaseDashController
 from shyft.logger import get_logger
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 class CalendarController(_BaseDashController):
 

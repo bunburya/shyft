@@ -12,7 +12,7 @@ from shyft.app.view.dash_components.base import BaseDashComponentFactory
 from shyft.logger import get_logger
 from shyft.activity import ActivityMetaData, Activity
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 class ActivityViewComponentFactory(BaseDashComponentFactory):
     """A class for generating Dash components used to view a single
@@ -123,7 +123,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                     )
                 )
             except Exception as e:
-                logger.warning(f'Could not create graph from file "{source}".', exc_info=True)
+                _logger.warning(f'Could not create graph from file "{source}".', exc_info=True)
         return graphs
 
     def splits_table_data(self, activity: Activity,

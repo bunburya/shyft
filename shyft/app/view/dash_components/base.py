@@ -17,7 +17,7 @@ from shyft.activity import ActivityMetaData
 import shyft.message as msg
 from shyft.metadata import APP_NAME, VERSION, URL
 
-logger = get_logger(__name__)
+_logger = get_logger(__name__)
 
 
 class BaseDashComponentFactory:
