@@ -9,7 +9,6 @@
 
 - Config:
   - Additional options
-  - Allow resetting options in Dash view
   
 - View single activity:
   - Tidy up

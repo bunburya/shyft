@@ -1,6 +1,6 @@
 import re
 import threading
-from datetime import timezone, timedelta, datetime
+from datetime import timezone, timedelta, datetime, date
 from typing import Any, Dict, Optional, Sequence, List, Collection, Set
 import sqlite3 as sql
 
@@ -278,8 +278,8 @@ class DatabaseManager:
         return activity_row_to_dict(result)
 
     def search_activity_data(self,
-                             from_date: Optional[datetime] = None,
-                             to_date: Optional[datetime] = None,
+                             from_date: Optional[date] = None,
+                             to_date: Optional[date] = None,
                              prototype: Optional[int] = None,
                              activity_type: Optional[str] = None,
                              number: Optional[int] = None,
@@ -287,13 +287,13 @@ class DatabaseManager:
         where: List[str] = []
         params: List[Any] = []
         if from_date and to_date:
-            where.append('date_time BETWEEN ? and ?')
+            where.append('date(date_time) BETWEEN ? and ?')
             params += [from_date, to_date]
         elif from_date:
-            where.append('date_time > ?')
+            where.append('date(date_time) >= ?')
             params.append(from_date)
         elif to_date:
-            where.append('date_time < ?')
+            where.append('date(date_time) <= ?')
             params.append(to_date)
         if prototype is not None:
             where.append('prototype_id = ?')
@@ -307,6 +307,7 @@ class DatabaseManager:
         query = 'SELECT * FROM "activities"'
         if where:
             query += ' WHERE ' + ' AND '.join(where)
+        query += 'ORDER BY date_time'
         self.sql_execute(query, params)
         results = self.sql_fetchall()
         return [activity_row_to_dict(r) for r in results[:number]]

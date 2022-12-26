@@ -46,7 +46,7 @@ class ActivityManager:
 
     @property
     def all_metadata(self) -> List[ActivityMetaData]:
-        return [self.get_metadata_by_id(i) for i in self.activity_ids]
+        return sorted([self.get_metadata_by_id(i) for i in self.activity_ids], key=lambda md: md.date_time)
 
     @property
     def activity_types(self) -> Set[str]:

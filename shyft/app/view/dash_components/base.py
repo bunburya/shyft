@@ -80,15 +80,20 @@ class BaseDashComponentFactory:
 
         return metadata.name_or_default
 
-    def activities_table(self, metadata_list: Iterable[ActivityMetaData], select: bool = False,
-                         **kwargs) -> dt.DataTable:
-        """A generic function to return a DataTable containing a list of activities."""
-        cols = self.ACTIVITY_TABLE_BASIC_COLS[:]
-        data = [{
+    def metadata_to_tabledata(self, metadata_list: Iterable[ActivityMetaData]) -> List[dict[str, Any]]:
+        """Convert a list of ActivityMetaData objects to a list of dicts in an appropriate format to be used as
+        the `data` argument to a dt.DataTable."""
+        return [{
             'thumb': f'![{md.activity_id}]({self.thumbnail_link(md)})',
             'name': f'[{self.activity_name(md)}]({self.activity_link(md)})',
             'id': md.activity_id
         } for md in metadata_list]
+
+    def activities_table(self, metadata_list: Iterable[ActivityMetaData], select: bool = False,
+                         **kwargs) -> dt.DataTable:
+        """A generic function to return a DataTable containing a list of activities."""
+        cols = self.ACTIVITY_TABLE_BASIC_COLS[:]
+        data = self.metadata_to_tabledata(metadata_list)
         if select:
             row_selectable = 'multi'
         else:
@@ -124,7 +129,7 @@ class BaseDashComponentFactory:
         download_link_id = {'type': 'download_link', 'index': index}
         download_button_id = {'type': 'download_button', 'index': index}
         table = self.activities_table(metadata_list, id=table_id, select=True, **table_kwargs)
-        dropdown = dcc.Dropdown(dropdown_id, options=[
+        dropdown = dcc.Dropdown(id=dropdown_id, options=[
             {'label': 'Download as...', 'value': 'select'},
             # The below values should correspond to the pathname to redirect to
             {'label': 'Export to GPX', 'value': 'gpx_files'},
@@ -275,14 +280,14 @@ class BaseDashComponentFactory:
         type_options = [{'label': 'all types', 'value': ''}]
         for t in self.activity_manager.activity_types:
             type_options.append({'label': t, 'value': t})
-        type_dropdown = dcc.Dropdown(f'filter_activities_type_{id}', options=type_options, value='')
+        type_dropdown = dcc.Dropdown(id=f'filter_activities_type_{id}', options=type_options, value='')
         apply_button = dbc.Button('Apply filters', id=f'filter_activities_apply_button_{id}', style={'width': '100%'})
-        clear_button = dbc.Button('Clear filters', id=f'filter_activities_clear_button_{id}', style={'width': '100%'})
+        reset_button = dbc.Button('Clear filters', id=f'filter_activities_reset_button_{id}', style={'width': '100%'})
         return dbc.Row([
             dbc.Col(date_range, width=4),
             dbc.Col(type_dropdown, width=4),
             dbc.Col(apply_button, width=2),
-            dbc.Col(clear_button, width=2)
+            dbc.Col(reset_button, width=2)
         ])
 
 

@@ -165,9 +165,10 @@ class SerializeTestCase(BaseTestCase):
         """Test that source files are properly saved."""
         for activity, gpx_file in zip(self.manager_stravagpx, TEST_GPX_FILES_2):
             self.assert_files_equal(activity.metadata.source_file, gpx_file)
-        manager_fit = get_manager(CONFIG_FIT, TEST_FIT_FILES)
-        for activity, fit_file in zip(manager_fit, TEST_FIT_FILES):
+        for activity, fit_file in zip(self.manager_fit, TEST_FIT_FILES):
             self.assert_files_equal(activity.metadata.source_file, fit_file)
+        for activity, tcx_file in zip(self.manager_garmintcx, TEST_TCX_FILES):
+            self.assert_files_equal(activity.metadata.source_file, tcx_file)
 
     def test_08_gpx_length(self):
         """Test that the length we calculate for activities generated

@@ -187,7 +187,7 @@ class ActivityManagerTestCase(BaseTestCase):
         """Test searching for activities."""
 
         # Test time range matching
-        results = self.manager_1.search_metadata(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1))
+        results = self.manager_1.search_metadata(from_date=date(2019, 1, 1), to_date=date(2020, 1, 1))
         self.assertSetEqual({a.activity_id for a in results}, set(ACTIVITIES_2019))
 
         # Test prototype matching
@@ -195,7 +195,7 @@ class ActivityManagerTestCase(BaseTestCase):
         self.assertSetEqual({a.activity_id for a in results}, {2, 3})
 
         # Test ID and time range matching
-        results = self.manager_1.search_metadata(from_date=datetime(2019, 1, 1), to_date=datetime(2020, 1, 1),
+        results = self.manager_1.search_metadata(from_date=date(2019, 1, 1), to_date=date(2020, 1, 1),
                                                  ids=[6, 7, 8, 9, 15])
         self.assertSetEqual({a.activity_id for a in results}, {6, 7, 8, 9})
 

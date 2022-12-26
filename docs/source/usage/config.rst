@@ -10,3 +10,8 @@ Matching thresholds
 When you upload an activity, Shyft will try to identify existing activities of the same type that involve a similar
 route, so you can compare this activity against other similar activities and track your progress on that route over
 time.
+
+Default activity name format
+****************************
+
+You can tell Shyft how to name an activity where no name is specified.
