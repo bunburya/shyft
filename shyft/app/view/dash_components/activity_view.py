@@ -134,7 +134,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
         splits_df = self.get_splits_df(activity, split_type)
         splits_df = splits_df['duration'].reset_index()
         # TODO:  Make this less awful
-        splits_df['duration'] = splits_df['duration'].astype(str).str.split(' ').str[-1].str.split('.').str[:-1]
+        splits_df['duration'] = splits_df['duration'].astype(str).str.split(' ').str[-1].str.split('.').str[:-1].str[0]
         cols = [{'name': i, 'id': i} for i in splits_df.columns]
         data = splits_df.to_dict('records')
         return cols, data
@@ -250,7 +250,7 @@ class ActivityViewComponentFactory(BaseDashComponentFactory):
                 width=8
             )
         #], style={'height': 450}, no_gutters=True)
-        ], no_gutters=True, id='map_and_splits_row')
+        ], id='map_and_splits_row')
 
     def matched_activities(self, activity: Activity) -> dbc.Row:
         """Return a table listing the given activity's matched activities."""

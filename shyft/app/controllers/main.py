@@ -340,7 +340,7 @@ class MainController:
             _, ext = os.path.splitext(fpath)
             mimetype = MIMETYPES.get(ext, MIMETYPE_FALLBACK)
             return flask.send_file(fpath, mimetype=mimetype, as_attachment=True,
-                                   attachment_filename=os.path.basename(fpath))
+                                   download_name=os.path.basename(fpath))
         else:
             return abort(404, not_found_msg.format(id=id))
 
@@ -357,7 +357,7 @@ class MainController:
             return abort(404, not_found_msg)
         zip_bytes.seek(0)
         return flask.send_file(zip_bytes, mimetype='application/zip', as_attachment=True,
-                               attachment_filename=attachment_filename)
+                               download_name=attachment_filename)
 
     def serve_files_from_get_params(self, params: Dict[str, str], fpath_getter: Callable[[ActivityMetaData], str],
                                     attachment_filename: str,

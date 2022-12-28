@@ -16,7 +16,7 @@
   - Get auto-scaled map (see https://github.com/plotly/plotly.js/issues/3434 and https://community.plotly.com/t/dynamic-zoom-for-mapbox/32658/9)
   
 - Implement filtering in overview, activities view
-  - Button linking to same page with query
+  - take from URL params
 
 - Improve documentation
   - Add docstrings and rewrite in rST.
