@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple, Dict, Any
 
 import plotly.graph_objects as go
 import dash_core_components as dcc
-import dash_html_components as html
+from dash import html
 from dash.dependencies import Output, Input, State
 from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate

@@ -9,10 +9,8 @@ from zipfile import ZipFile
 
 import flask
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
 import dash_bootstrap_components as dbc
-from dash import callback_context
+from dash import callback_context, html, dcc
 from dash.development.base_component import Component
 from dash.dependencies import Input, Output, ALL, MATCH, State
 from dash.exceptions import PreventUpdate

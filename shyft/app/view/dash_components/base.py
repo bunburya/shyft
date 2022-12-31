@@ -3,11 +3,8 @@ from typing import Optional, Iterable, List, Dict, Any
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import dash_table as dt
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dash, html, dcc, dash_table as dt
 import dash_bootstrap_components as dbc
-from dash import dash
 from dash.development.base_component import Component
 
 from shyft.logger import get_logger

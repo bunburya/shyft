@@ -361,5 +361,13 @@ class ActivityManagerTestCase(BaseTestCase):
             self.assertRaises(ActivityExistsError, self.manager_1.add_activity, a)
         self.assertListEqual(ids, self.manager_1.activity_ids)
 
+    def test_22_date_time(self):
+        """Tests relating to the `date_time` attribute of an activity."""
+        latest = self.manager_1.latest_datetime
+        self.assertIsInstance(latest, datetime)
+        earliest = self.manager_1.earliest_datetime
+        self.assertIsInstance(earliest, datetime)
+
+
 if __name__ == '__main__':
     unittest.main()

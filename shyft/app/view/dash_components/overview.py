@@ -2,8 +2,7 @@ from typing import List, Tuple
 
 import plotly.express as px
 import plotly.graph_objects as go
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 from dash.development.base_component import Component
 
@@ -111,13 +110,13 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         """
         _logger.debug('Generating main scatterplot.')
 
-        x_dropdown = dcc.Dropdown('overview_main_scatterplot_x_dropdown', options=[
+        x_dropdown = dcc.Dropdown(id='overview_main_scatterplot_x_dropdown', options=[
             {'label': 'Distance', 'value': 'distance'},
             {'label': 'Average speed', 'value': 'mean_speed'},
             {'label': 'Average heart rate', 'value': 'mean_hr'},
             {'label': 'Duration', 'value': 'duration'}
         ], value='distance')
-        y_dropdown = dcc.Dropdown('overview_main_scatterplot_y_dropdown', options=[
+        y_dropdown = dcc.Dropdown(id='overview_main_scatterplot_y_dropdown', options=[
             {'label': 'Distance', 'value': 'distance'},
             {'label': 'Average speed', 'value': 'mean_speed'},
             {'label': 'Average heart rate', 'value': 'mean_hr'},
@@ -193,12 +192,12 @@ class OverviewComponentFactory(BaseDashComponentFactory):
         _logger.debug('Generating time graph.')
         df = self.activity_manager.metadata_weekly_time_series(activity_type='run')
 
-        freq_dropdown = dcc.Dropdown('overview_main_time_chart_freq_dropdown', options=[
+        freq_dropdown = dcc.Dropdown(id='overview_main_time_chart_freq_dropdown', options=[
             {'label': 'Weekly', 'value': 'weekly'},
             {'label': 'Monthly', 'value': 'monthly'}
         ], value='monthly')
 
-        y_dropdown = dcc.Dropdown('overview_main_time_chart_y_dropdown', options=[
+        y_dropdown = dcc.Dropdown(id='overview_main_time_chart_y_dropdown', options=[
             {'label': 'Average speed', 'value': 'mean_speed'},
             {'label': 'Total distance', 'value': 'total_distance'},
             {'label': 'Total duration', 'value': 'total_duration'},

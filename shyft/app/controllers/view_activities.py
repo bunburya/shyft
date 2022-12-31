@@ -1,9 +1,7 @@
-from datetime import datetime, date
+from datetime import datetime
 from typing import List, Dict, Any
 
-import dash_core_components as dcc
-import dash_html_components as html
-from dash import callback_context
+from dash import callback_context, html, dcc
 from dash.dependencies import Input, State, Output
 from dash.development.base_component import Component
 

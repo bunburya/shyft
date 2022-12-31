@@ -1,7 +1,7 @@
 import os
 from typing import List
 
-import dash_core_components as dcc
+from dash import dcc
 from dash.development.base_component import Component
 
 from shyft.app.controllers._base import _BaseDashController

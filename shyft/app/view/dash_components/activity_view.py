@@ -3,9 +3,7 @@ from typing import Optional, List, Dict, Any, Tuple
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import dash_table as dt
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import html, dcc, dash_table as dt
 import dash_bootstrap_components as dbc
 
 from shyft.app.view.dash_components.base import BaseDashComponentFactory

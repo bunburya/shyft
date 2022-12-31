@@ -5,8 +5,7 @@ from typing import Optional, List
 
 from werkzeug.utils import secure_filename
 from dash.dependencies import Input, Output, State
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html, dcc
 from dash.exceptions import PreventUpdate
 
 from shyft.exceptions import ActivityExistsError
@@ -97,7 +96,7 @@ class UploadController(_BaseDashController):
             return id
         except ActivityExistsError:
             self.msg_bus.add_message(f'Activity for file {fname} already exists in database.',
-                                     severity=INFO, logger_=_logger)
+                                     severity=INFO, logger=_logger)
             return None
         except Exception as e:
             _logger.error('Error adding activity.', exc_info=e)

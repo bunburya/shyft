@@ -1,6 +1,5 @@
 from typing import List
-import dash_html_components as html
-from dash.dependencies import Output, Input, State
+from dash import html
 from dash.development.base_component import Component
 from shyft.app.controllers._base import _BaseDashController
 from shyft.logger import get_logger
